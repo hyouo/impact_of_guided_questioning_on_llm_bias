@@ -15,8 +15,8 @@
 ### 1. 克隆仓库
 
 ```bash
-git clone <repository_url>
-cd project-directory
+git clone https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias
+#cd u project-directory
 ```
 
 ### 2. 配置 API 密钥
