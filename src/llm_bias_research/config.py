@@ -6,17 +6,15 @@ import datetime
 load_dotenv()
 
 class Config:
-    # API Key
+    # API Keys
     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
     # Paths
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     DATA_DIR = os.path.join(BASE_DIR, "data")
     RESULTS_DIR = os.path.join(BASE_DIR, "results")
     PROMPTS_FILE = os.path.join(DATA_DIR, "prompts.csv")
-
-    # Default model if not chosen by user (optional, will be dynamically selected)
-    DEFAULT_MODEL = "gemini-1.5-pro" # This might be removed later if always dynamic
 
     # API Retry settings
     API_MAX_RETRIES = 3

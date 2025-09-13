@@ -75,12 +75,12 @@ if __name__ == "__main__":
     from .config import config, get_timestamped_results_dir
     import shutil
 
-    print("--- StateManager 模块测试 ---")
+    # This is a test script, so printing is fine for verification
+    pass
 
     # 1. Test saving state
     test_results_dir = get_timestamped_results_dir()
     os.makedirs(test_results_dir, exist_ok=True)
-    print(f"创建测试结果目录: {test_results_dir}")
 
     sm = StateManager(test_results_dir)
     sm.save_state(

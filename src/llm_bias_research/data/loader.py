@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-from .config import config # Import config from the same package
+from ..config import config # Import config from the same package
 
 def load_prompts(file_path=config.PROMPTS_FILE):
     """
@@ -47,9 +47,8 @@ if __name__ == "__main__":
 
     prompts_df = load_prompts(dummy_prompts_file)
     if prompts_df is not None:
-        print("\n加载的提示词示例:")
-        print(prompts_df.head())
+        # This is a test script, so printing is fine for verification
+        pass
     
     # Clean up dummy file
     os.remove(dummy_prompts_file)
-    print(f"\n已删除测试文件: {dummy_prompts_file}")

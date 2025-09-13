@@ -38,30 +38,31 @@ from llm_bias_research.engine import AnalysisEngine
 from llm_bias_research.config import config # Import config to check API key
 
 def main():
-    display_message("欢迎使用语言模型偏见研究工具！", level="info")
+    display_message("Welcome to the BiasScope LLM Analysis Framework!", "info")
 
-    # Check if API key is set after environment setup
     if not config.GEMINI_API_KEY:
-        display_message("错误: GEMINI_API_KEY 未设置。请在 .env 文件中配置您的 API 密钥。", level="error")
+        display_message("GEMINI_API_KEY not found. Please ensure it is set in your .env file.", "error")
         sys.exit(1)
 
-    display_message("环境已准备就绪。", level="info")
+    display_message("Environment is ready.", "info")
 
-    # Step 2: Get user choices (model, range, resume)
     user_choices = get_user_choices()
     if user_choices is None:
-        display_message("用户选择过程被中断或发生错误，程序退出。", level="error")
+        display_message("User cancelled or an error occurred during setup. Exiting.", "error")
         sys.exit(1)
 
-    # Step 3: Initialize and run the analysis engine
     try:
-        engine = AnalysisEngine(user_choices)
+        engine = AnalysisEngine(
+            provider=user_choices['provider'],
+            metric=user_choices['metric'],
+            user_choices=user_choices
+        )
         engine.run_analysis()
     except Exception as e:
-        display_message(f"程序运行过程中发生未捕获错误: {e}", level="error")
+        display_message(f"An uncaught error occurred during analysis: {e}", "error")
         sys.exit(1)
 
-    display_message("分析任务完成。", level="info")
+    display_message("Analysis run has finished.", "info")
 
 
 if __name__ == "__main__":

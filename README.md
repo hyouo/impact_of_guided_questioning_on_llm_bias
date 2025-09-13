@@ -1,119 +1,143 @@
-# 语言模型偏见研究：引导式提问的影响
+# BiasScope: A Research Framework for Evaluating and Understanding Bias in Large Language Models
 
-本项目旨在通过实验方法，系统性地研究引导式提问对大型语言模型（LLM）在生成文本时所表现出的偏见（Bias）的影响。
-## 核心功能
+## Abstract
+BiasScope is a modular and extensible Python framework designed for the systematic evaluation of social biases embedded in Large Language Models (LLMs). This project provides researchers with a robust toolset to investigate the impact of various prompting strategies and model architectures on biased text generation. By offering a pluggable architecture for evaluation metrics, language models, and datasets, BiasScope aims to facilitate reproducible, transparent, and comprehensive research into the societal implications of AI. Our initial study focuses on quantifying the effect of "guided" versus "neutral" prompts on the manifestation of stereotypical associations across multiple bias dimensions.
 
-    自动化环境设置: 首次运行时，脚本会自动检测、创建 Python 虚拟环境并安装所有必需的依赖项。
-    交互式控制: 程序启动后会引导用户进行选择，包括要使用的 LLM 模型、要分析的数据范围等。
-    断点续传: 在 API 请求失败或用户主动中断后，程序会保存当前进度。下次运行时可选择从上次中断的地方继续，避免重复工作和资源浪费。
-    错误处理: API 请求会自动重试 3 次。若持续失败，程序会询问用户是否要保存当前进度并退出。
+## 1. Motivation and Research Goals
+As LLMs become increasingly integrated into daily life, their potential to perpetuate and amplify harmful social stereotypes poses a significant societal risk. While many studies have demonstrated the existence of bias in LLMs, a systematic framework for evaluating these biases under controlled experimental conditions is still lacking.
 
-## 如何运行
+This project addresses this gap by providing a tool that allows for:
+- **Controlled Experimentation:** Systematically comparing different models and prompting techniques.
+- **Reproducibility:** Ensuring that experiments can be easily replicated by other researchers.
+- **Extensibility:** Allowing the community to contribute new evaluation metrics, datasets, and model integrations.
 
-与传统脚本不同，本项目提供了一键启动的体验。
+Our primary research goal is to answer the question: **How does the specificity of a prompt (i.e., "guided" vs. "neutral") influence the degree and type of social bias exhibited by different LLMs?**
 
-### 1. 克隆仓库
+## 2. Framework Overview
+BiasScope is designed with a "pluggable" architecture, allowing researchers to easily mix and match components for their experiments.
 
+- **LLM Providers:** A standardized interface allows for the integration of various LLM APIs (e.g., Google Gemini, OpenAI GPT series, Anthropic Claude).
+- **Datasets:** A simple, well-defined CSV format for prompt datasets, enabling easy creation and sharing of new test cases.
+- **Evaluation Metrics:** A modular system for bias measurement. Researchers can implement and select from a variety of metrics to get a multi-faceted view of bias.
+- **Analysis Engine:** A core orchestrator that runs experiments based on a user's configuration, handles state management (pausing/resuming), and saves results in a structured format.
+- **Reporting Module:** Tools for post-experiment analysis and visualization of results.
+
+## 3. Methodology
+
+### 3.1. Bias Dimensions
+We investigate bias across several internationally recognized dimensions, including but not limited to:
+- Gender
+- Race and Ethnicity
+- Age
+- Profession
+- Socioeconomic Status
+- Nationality
+- Religion
+- Disability
+
+### 3.2. Evaluation Metrics
+Our framework supports multiple types of bias evaluation, which can be extended by users:
+
+1.  **LLM as a Judge (LLM-a-J):**
+    - **Description:** Uses a powerful LLM to evaluate the bias of a generated text based on a structured rubric.
+    - **Output:** Provides a numerical score (e.g., 0-10) and a qualitative rationale for the score. This is the primary metric used in our initial experiments.
+
+2.  **Stereotype Association Test (SAT):**
+    - **Description:** A future planned metric inspired by the Word Embedding Association Test (WEAT). It will measure the association strength between target concepts (e.g., demographic groups) and attribute words (e.g., stereotypical traits or professions).
+
+### 3.3. Datasets
+The primary dataset is located at `data/prompts.csv`. Each row represents a test case and must conform to the following schema:
+- `id`: A unique integer identifier.
+- `category`: The bias dimension being tested (e.g., `gender`, `race`).
+- `type`: The prompt type, either `neutral` or `guided`.
+- `prompt_text`: The actual text of the prompt to be sent to the LLM.
+
+## 4. Installation and Usage
+
+### Step 1: Clone and Set Up Environment
 ```bash
-git clone https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias
-#cd u project-directory
+git clone https://github.com/your-repo/BiasScope.git
+cd BiasScope
+python main.py
+```
+The first time you run `main.py`, it will automatically create a Python virtual environment (`.venv/`) and install all required dependencies from `requirements.txt`. Subsequent runs will use this pre-configured environment.
+
+### Step 2: Configure API Keys
+Copy the example environment file and add your API keys:
+```bash
+cp .env.example .env
+```
+Open the `.env` file and fill in your API key(s):
+```
+GEMINI_API_KEY="YOUR_GEMINI_API_KEY"
+# OPENAI_API_KEY="YOUR_OPENAI_API_KEY" # For future use
 ```
 
-### 2. 配置 API 密钥
-
-本项目需要 Google Gemini API 密钥。
-
-1.  复制 `.env.example` 文件并重命名为 `.env`。
-    ```bash
-    # Windows
-    copy .env.example .env
-    # macOS/Linux
-    cp .env.example .env
-    ```
-2.  打开 `.env` 文件，填入您的 API 密钥：
-    ```
-    GEMINI_API_KEY="YOUR_API_KEY_HERE"
-    ```
-
-### 3. 运行主程序
-
-只需执行 `main.py`，程序将引导您完成所有后续步骤。
-
+### Step 3: Run an Experiment
+Execute the main program and follow the interactive prompts:
 ```bash
 python main.py
 ```
+The program will guide you through:
+1.  Selecting the LLM model to evaluate.
+2.  Choosing whether to resume a previous experiment or start a new one.
+3.  Specifying the range of prompts from `data/prompts.csv` to use.
 
----
+Results for each run are saved in a timestamped directory under `results/`.
 
-## 详细工作流程
-
-运行 `python main.py` 后，您将经历以下步骤：
-
-1.  **环境检查**:
-    脚本首先调用 `setup.py` 检查是否存在 `venv` 虚拟环境。
-    如果不存在，它会自动创建虚拟环境，并使用 `pip` 安装 `requirements.txt` 中列出的所有依赖。
-
-2.  **模型选择**:
-    程序会列出可用的 Google AI 模型（例如 `gemini-1.5-pro`, `gemini-1.0-pro` 等）。
-    您将被要求输入数字来选择本次分析要使用的模型。
-
-3.  **数据加载与预览**:
-    程序会加载 `data/prompts.csv` 文件。
-    它会显示文件的基本信息，如总行数。
-
-4.  **断点续传检查**:
-    程序会扫描 `results/` 目录，寻找之前未完成的分析（通过检查 `analysis_state.json` 文件）。
-    如果找到，它会询问您是否要从上次的进度继续。
-
-5.  **范围选择**:
-    您将被要求指定要分析的数据范围（例如，从第 50 行到第 100 行）。这对于分批次进行大型实验非常有用。
-
-6.  **开始分析**:
-    确认后，程序会以当前时间创建一个新的结果文件夹 `results/YYYYMMDD_HHMMSS/`。
-    分析开始，屏幕上会显示进度条，并显示当前处理的条目数和总条目数。
-
-7.  **错误与中断处理**:
-    如果在与 API 交互时发生错误，程序会静默重试最多 3 次。
-    如果依然失败，程序会暂停，并询问您：“API 请求失败，是否要保存当前进度并退出？(y/n)”。
-    如果您选择 `y`，`engine.py` 会调用 `state_manager.py` 将已完成的部分写入 `analysis_state.json`，然后安全退出。
-
-8.  **完成与分析**:
-    任务完成后，所有原始回复和偏见分数会保存在本次创建的结果文件夹中。
-    您可以像以前一样，使用 `notebooks/analysis_and_visualization.ipynb` 进行后续的数据分析。
-
-## 项目结构
+## 5. Code Architecture
+The project is organized into a modular `src` directory to promote clarity and maintainability.
 
 ```
 /
-├── main.py              # 唯一的项目入口点
-├── setup.py             # 自动化环境安装脚本
+├── main.py              # Main entry point for the application
+├── setup.py             # Handles automatic environment setup
+├── README.md            # This document
 ├── requirements.txt
-├── README.md            # 本文档
 ├── .env.example
-├── .env
 │
 ├── data/
-│   └── prompts.csv
+│   └── prompts.csv      # Default dataset of prompts
 │
 ├── results/
-│   └── YYYYMMDD_HHMMSS/
-│       ├── analysis_state.json # 断点续传状态文件
-│       ├── ...
+│   └── YYYYMMDD_HHMMSS/ # Directory for a single experiment's results
+│       ├── state.json   # For resuming experiments
+│       └── results.csv  # Aggregated scores and outputs
 │
 └── src/
     └── llm_bias_research/
-        ├── cli.py         # 用户交互模块
-        ├── config.py      # 配置模块
-        ├── data_loader.py # 数据加载模块
-        ├── engine.py      # 核心分析引擎
-        ├── llm_api.py     # API 交互与错误处理模块
-        └── state_manager.py # 分析状态读写模块
+        ├── __init__.py
+        ├── cli.py             # Command-line interface and user interaction
+        ├── config.py          # Configuration loading (API keys, paths)
+        ├── engine.py          # Core analysis orchestration logic
+        ├── state_manager.py   # Handles saving and loading experiment state
+        │
+        ├── data/
+        │   └── loader.py      # Data loading and validation logic
+        │
+        ├── llm_providers/     # Pluggable LLM API clients
+        │   ├── __init__.py
+        │   ├── base_provider.py # Abstract base class for all providers
+        │   └── gemini_provider.py # Implementation for Google Gemini
+        │
+        └── metrics/           # Pluggable bias evaluation metrics
+            ├── __init__.py
+            ├── base_metric.py   # Abstract base class for all metrics
+            └── llm_as_judge.py  # The "LLM as a Judge" evaluation metric
 ```
 
-## 许可证
+## 6. Contributing and Extensibility
+We welcome contributions from the research community. The framework is designed to be easily extended.
 
-本项目采用 MIT 许可证。详情请参阅 `LICENSE` 文件。
+- **Adding a new LLM:** Create a new class in `src/llm_bias_research/llm_providers/` that inherits from `BaseProvider` and implements the required methods.
+- **Adding a new Metric:** Create a new class in `src/llm_bias_research/metrics/` that inherits from `BaseMetric` and implements the `evaluate` method.
+- **Adding a new Dataset:** Create a new CSV file in the `data/` directory following the schema defined in section 3.3.
 
-## 开发者
+## 7. Roadmap
+- [ ] Implement the Stereotype Association Test (SAT) metric.
+- [ ] Add support for OpenAI and Anthropic models.
+- [ ] Develop a comprehensive reporting module with automated chart generation.
+- [ ] Package the framework for distribution via PyPI.
 
-yu hong
+## 8. License
+This project is licensed under the MIT License. See the `LICENSE` file for details.
