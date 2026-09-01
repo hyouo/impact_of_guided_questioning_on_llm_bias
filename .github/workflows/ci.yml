@@ -16,4 +16,5 @@ jobs:
       - run: pip install -e ".[dev]"
       - run: python scripts/normalize_markdown_math.py --check
       - run: python scripts/validate_catalog.py
+      - run: python scripts/validate_source_digest.py
       - run: pytest
