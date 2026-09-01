@@ -2,7 +2,7 @@
 
 ## 1.1 首要纠正：参数一般不会“被激活”
 
-一次标准推理中，模型参数 \(\theta\) 通常保持不变。输入改变的是：
+一次标准推理中，模型参数 $\theta$ 通常保持不变。输入改变的是：
 
 - token embedding 与位置表示；
 - residual stream 中的向量；
@@ -15,15 +15,15 @@
 
 最简单的线性层为：
 
-\[
+$$
 y=Wx+b.
-\]
+$$
 
-第 \(j\) 个输入维度通过第 \(i,j\) 个连接对输出 \(i\) 的直接贡献为：
+第 $j$ 个输入维度通过第 $i,j$ 个连接对输出 $i$ 的直接贡献为：
 
-\[
+$$
 c_{ij}=w_{ij}x_j.
-\]
+$$
 
 因此：
 
@@ -36,11 +36,11 @@ c_{ij}=w_{ij}x_j.
 
 ### 训练时间尺度
 
-\[
+$$
 \mathcal L(\theta)
 =\mathbb E_{s\sim D_{train}}
 \left[-\sum_t\log p_\theta(s_t\mid s_{<t})\right].
-\]
+$$
 
 训练 token 分布通过梯度累计改变参数。数据频率、共现结构、语言比例、任务混合、安全后训练样本和损失权重都会形成长期先验。
 
@@ -50,17 +50,17 @@ c_{ij}=w_{ij}x_j.
 
 给定 token 序列：
 
-\[
+$$
 h_i^{(0)}=E(x_i)+P_i,
-\]
+$$
 
 每层近似执行：
 
-\[
+$$
 h^{(\ell+1)}=h^{(\ell)}+
 \operatorname{Attn}_\ell(h^{(\ell)})+
 \operatorname{MLP}_\ell(h^{(\ell)}).
-\]
+$$
 
 输入与固定权重共同决定当前激活。这里的因果顺序是：
 
@@ -72,11 +72,11 @@ input → activations / attention → logits → token distribution
 
 ### 自回归时间尺度
 
-\[
+$$
 y_t\sim p_\theta(\cdot\mid x,y_{<t}),
 \qquad
 p_{t+1}=p_\theta(\cdot\mid x,y_{<t},y_t).
-\]
+$$
 
 当前分布选出的 token 被写回上下文，才成为下一步激活的原因。于是完整闭环是：
 
@@ -101,23 +101,23 @@ p_{t+1}=p_\theta(\cdot\mid x,y_{<t},y_t).
 
 最终状态通过 unembedding 得到 logits：
 
-\[
+$$
 z=W_Uh^{(L)}.
-\]
+$$
 
-温度为 \(T\) 时：
+温度为 $T$ 时：
 
-\[
+$$
 p_i=\frac{e^{z_i/T}}{\sum_j e^{z_j/T}}.
-\]
+$$
 
 两个 token 的赔率只取决于相对 logit：
 
-\[
+$$
 \log\frac{p_i}{p_j}=\frac{z_i-z_j}{T}.
-\]
+$$
 
-当 \(T=1\) 时，相对 logit 增加 1 会把赔率乘以 \(e\approx2.718\)。所以隐藏状态中的小方向变化，可能翻转首 token；首 token 再通过反馈产生大规模轨迹差异。
+当 $T=1$ 时，相对 logit 增加 1 会把赔率乘以 $e\approx2.718$。所以隐藏状态中的小方向变化，可能翻转首 token；首 token 再通过反馈产生大规模轨迹差异。
 
 ## 1.5 四类“token 分布偏置”
 

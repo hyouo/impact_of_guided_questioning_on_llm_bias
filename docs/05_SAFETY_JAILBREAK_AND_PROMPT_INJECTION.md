@@ -67,9 +67,9 @@
 
 最终 logits 可以概念性地写成：
 
-\[
+$$
 z_v=z_v^{task}+z_v^{syntax}+z_v^{persona}+z_v^{safety}+z_v^{memory}+\cdots.
-\]
+$$
 
 越狱可能不是“安全信号归零”，而是其他倾向在关键 token 上更强。
 

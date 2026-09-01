@@ -44,9 +44,9 @@
 
 Probe 训练映射：
 
-\[
+$$
 \hat y=g(h^{(\ell)}).
-\]
+$$
 
 它证明表示中含有可解码信息。常见风险：
 
@@ -62,9 +62,9 @@ Probe 训练映射：
 
 把中间表示投影到 vocabulary，可观察其直接输出倾向：
 
-\[
+$$
 z^{(\ell)}=W_Uh^{(\ell)}.
-\]
+$$
 
 但中间层表示未必为最终 unembedding 坐标准备；LayerNorm、后续层和校正回路可改变含义。Logit attribution 能分解某路径对目标 logit 的直接贡献，但不能自动证明该路径必要。
 
@@ -72,9 +72,9 @@ z^{(\ell)}=W_Uh^{(\ell)}.
 
 构造 clean 与 corrupted 输入：
 
-1. clean 输入产生正确行为和激活 \(h_c\)；
-2. corrupted 输入破坏行为，产生 \(h_b\)；
-3. 把某层/位置/组件的 \(h_c\) patch 到 corrupted run；
+1. clean 输入产生正确行为和激活 $h_c$；
+2. corrupted 输入破坏行为，产生 $h_b$；
+3. 把某层/位置/组件的 $h_c$ patch 到 corrupted run；
 4. 测量目标行为恢复程度。
 
 Patching 可定位承载因果信息的位置，但仍需注意：

@@ -4,9 +4,9 @@
 
 Transformer 的每一层把信息读自并写回 residual stream：
 
-\[
+$$
 h^{(\ell+1)}=h^{(\ell)}+a^{(\ell)}+m^{(\ell)}.
-\]
+$$
 
 它不是一个单一语义向量，而是许多并行信号共享的高维工作区。不同层可以：
 
@@ -22,43 +22,43 @@ Residual connection 使许多模块的输出可以近似相加，也使 path exp
 
 对一个 attention head：
 
-\[
+$$
 q_i=W_Qh_i,\qquad k_j=W_Kh_j,\qquad v_j=W_Vh_j.
-\]
+$$
 
 注意力分数：
 
-\[
+$$
 s_{ij}=\frac{q_i^\top k_j}{\sqrt{d_h}},
 \qquad
 \alpha_{ij}=\operatorname{softmax}_j(s_{ij}).
-\]
+$$
 
 输出：
 
-\[
+$$
 o_i=W_O\sum_j\alpha_{ij}v_j.
-\]
+$$
 
 机制上应拆成：
 
 ### QK circuit：选择信息源
 
-\[
+$$
 s_{ij}=h_i^\top W_Q^\top W_Kh_j.
-\]
+$$
 
 它回答“为什么当前位置从那个位置读取”。输入特征、角色、位置和语法都可能通过 query-key 交互改变路由。
 
 ### OV circuit：处理并写入信息
 
-\[
+$$
 W_OW_Vh_j.
-\]
+$$
 
 它回答“读取后向 residual stream 写了什么”。一个头可以复制、抑制、旋转、选择或转换被注意内容。
 
-只展示 attention heatmap 只能看到 \(\alpha\)，既没有解释分数如何形成，也没有说明读到的信息对 logits 有何影响。
+只展示 attention heatmap 只能看到 $\alpha$，既没有解释分数如何形成，也没有说明读到的信息对 logits 有何影响。
 
 ## 3.3 Virtual weights 与路径
 
@@ -78,11 +78,11 @@ OV：提高该后继 token 的 logit
 
 ## 3.4 条件计算图
 
-固定参数定义所有潜在路径，prompt 决定每条路径的当前强度。对源特征 \(s\) 和目标特征 \(t\)，局部边归因可近似为：
+固定参数定义所有潜在路径，prompt 决定每条路径的当前强度。对源特征 $s$ 和目标特征 $t$，局部边归因可近似为：
 
-\[
+$$
 A_{s\to t}(x)=a_s(x)w_{s\to t}.
-\]
+$$
 
 于是同一虚拟连接：
 

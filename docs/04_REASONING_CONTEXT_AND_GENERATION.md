@@ -39,9 +39,9 @@
 
 Induction head 给出一个早期、具体的上下文学习机制：
 
-\[
+$$
 [A][B]\ldots[A]\rightarrow[B].
-\]
+$$
 
 在小型模型中，前一层头可以把前 token 信息写入当前位置，后一层 induction head 依据前缀匹配寻找过去相似位置，并复制其后继 token。大模型中的上下文学习显然比字面复制更丰富，但该机制证明：
 
@@ -55,9 +55,9 @@ Induction head 给出一个早期、具体的上下文学习机制：
 
 一个答案可能同时受到：
 
-\[
+$$
 z=z^{memory}+z^{algorithm}+z^{heuristic}+z^{format}+z^{persona}+z^{safety}+\cdots
-\]
+$$
 
 的支持。这个分解是分析语言，不意味着模型真的有完全独立模块。
 
@@ -134,11 +134,11 @@ Activation Oracles、Emergent Introspective Awareness 和 NLA 都探索“模型
 
 ## 4.9 生成轨迹与锁定
 
-第一个 token 往往确定响应模式。设第 \(t\) 步状态为 \(h_t\)，选中 token \(y_t\) 后：
+第一个 token 往往确定响应模式。设第 $t$ 步状态为 $h_t$，选中 token $y_t$ 后：
 
-\[
+$$
 h_{t+1}=F_\theta(h_t, e(y_t), x).
-\]
+$$
 
 一个回答式开头会增加任务完成、自洽和语法续写压力；拒绝式开头也会加强拒绝模板。于是微小的首 token logit 差可以被反复放大。
 
