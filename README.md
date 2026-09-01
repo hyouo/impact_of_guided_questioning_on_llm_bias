@@ -1,119 +1,120 @@
-# 语言模型偏见研究：引导式提问的影响
+# 大模型理论：从权重、激活到回路、推理与安全
 
-本项目旨在通过实验方法，系统性地研究引导式提问对大型语言模型（LLM）在生成文本时所表现出的偏见（Bias）的影响。
-## 核心功能
+> **研究快照：2026-09-01**  
+> 本仓库是对 [Transformer Circuits Thread](https://transformer-circuits.pub/) 的中文、理论化、可检验的综合整理。它不是网页镜像，也不复制原文；目标是把分散的研究结果组织成一套能指导阅读、建模与实验的统一框架。
 
-    自动化环境设置: 首次运行时，脚本会自动检测、创建 Python 虚拟环境并安装所有必需的依赖项。
-    交互式控制: 程序启动后会引导用户进行选择，包括要使用的 LLM 模型、要分析的数据范围等。
-    断点续传: 在 API 请求失败或用户主动中断后，程序会保存当前进度。下次运行时可选择从上次中断的地方继续，避免重复工作和资源浪费。
-    错误处理: API 请求会自动重试 3 次。若持续失败，程序会询问用户是否要保存当前进度并退出。
+仓库沿用旧项目的 GitHub 地址，但旧的“引导式提问偏见打分”研究、Gemini API 自评、旧 prompts 数据和旧实验代码已经全部移除。原方法只能观察输出相关性，却把黑盒评分过早解释成内部机制；本版本改为 **理论主线 + 证据等级 + 因果验证 + 无害玩具实验**。
 
-## 如何运行
+## 核心命题
 
-与传统脚本不同，本项目提供了一键启动的体验。
+```text
+训练数据分布 ──梯度统计──> 权重 θ
+                                │
+输入 token + 上下文 ────────────┼──> 激活 / 注意力路由 / 临时计算图
+                                │                     │
+                                └────────────────────> logits → token 分布
+                                                              │
+                                                     选中 token 并回填上下文
+                                                              │
+                                                              └──> 下一步激活与生成轨迹
+```
 
-### 1. 克隆仓库
+一句话概括：
+
+> **权重规定模型可能怎样计算；输入决定这一次实际激活哪些表示和路径；解码决定哪种输出倾向暂时胜出；生成出的 token 又成为下一轮输入。**
+
+这套框架要求始终区分：
+
+- 参数、激活、特征、注意力模式和输出概率；
+- 权重大小、当前贡献、数据分布上的有效性和真正的因果重要性；
+- 训练分布偏置、prompt 条件偏置、解码偏置与自回归轨迹偏置；
+- 可解码信息、模型实际使用的信息和经干预验证的机制；
+- 有害性识别、拒绝状态与最终行为。
+
+## 仓库结构
+
+| 路径 | 内容 |
+|---|---|
+| [`docs/00_THEORY_MAP.md`](docs/00_THEORY_MAP.md) | 全局理论图、层级关系与阅读入口 |
+| [`docs/01_PARAMETERS_ACTIVATIONS_AND_TOKENS.md`](docs/01_PARAMETERS_ACTIVATIONS_AND_TOKENS.md) | 权重、激活、token、logits 与三种时间尺度 |
+| [`docs/02_REPRESENTATIONS_SUPERPOSITION_AND_GEOMETRY.md`](docs/02_REPRESENTATIONS_SUPERPOSITION_AND_GEOMETRY.md) | 特征、叠加、可解释基底、SAE、流形与干扰权重 |
+| [`docs/03_CIRCUITS_ATTENTION_AND_CONDITIONAL_COMPUTATION.md`](docs/03_CIRCUITS_ATTENTION_AND_CONDITIONAL_COMPUTATION.md) | residual stream、QK/OV、回路、归因图和条件计算 |
+| [`docs/04_REASONING_CONTEXT_AND_GENERATION.md`](docs/04_REASONING_CONTEXT_AND_GENERATION.md) | 上下文学习、推理、规划、CoT 忠实性和生成反馈 |
+| [`docs/05_SAFETY_JAILBREAK_AND_PROMPT_INJECTION.md`](docs/05_SAFETY_JAILBREAK_AND_PROMPT_INJECTION.md) | 越狱、过度拒绝、角色混淆、prompt injection 的机制框架 |
+| [`docs/06_METHODS_AND_CAUSAL_VALIDATION.md`](docs/06_METHODS_AND_CAUSAL_VALIDATION.md) | 从观察、probe 到 ablation、patching 与跨分布复现 |
+| [`docs/07_EVIDENCE_LIMITS_AND_CLAIMS.md`](docs/07_EVIDENCE_LIMITS_AND_CLAIMS.md) | E0–E5 证据等级、已知结论和不可越界的主张 |
+| [`docs/08_OPEN_PROBLEMS_AND_RESEARCH_ROADMAP.md`](docs/08_OPEN_PROBLEMS_AND_RESEARCH_ROADMAP.md) | 开放问题和可执行研究路线 |
+| [`docs/TRANSFORMER_CIRCUITS_INDEX.md`](docs/TRANSFORMER_CIRCUITS_INDEX.md) | 官网时间线上全部条目的中文索引 |
+| [`sources/transformer_circuits_catalog.csv`](sources/transformer_circuits_catalog.csv) | 可机器读取的完整目录与分类 |
+| [`src/llm_theory/`](src/llm_theory/) | 固定权重、条件激活、logit 赔率与轨迹反馈的玩具模型 |
+
+## 建议阅读路径
+
+```text
+01 参数与激活
+  → 02 表征、叠加与几何
+  → 03 回路与注意力
+  → 04 推理与生成
+  → 05 安全失配
+  → 06 因果验证
+  → 07 证据边界
+  → 08 开放问题
+```
+
+首次接触机制可解释性时，可同步阅读：
+
+```text
+Mathematical Framework
+  → Induction Heads
+  → Toy Models of Superposition
+  → Towards / Scaling Monosemanticity
+  → Circuit Tracing
+  → On the Biology of a Large Language Model
+  → 2025–2026 的 attention、geometry、workspace、NLA 与 interference weights
+```
+
+## 可运行的无害玩具实验
+
+这些实验不声称重现真实前沿模型；它们只把概念变成可以检查的最小数学对象。
 
 ```bash
-git clone https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias
-#cd u project-directory
+python -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
+pip install -e ".[dev]"
+
+python scripts/validate_catalog.py
+python scripts/run_toy_lab.py
+pytest
 ```
 
-### 2. 配置 API 密钥
+实验演示四件事：
 
-本项目需要 Google Gemini API 密钥。
+1. 权重固定时，不同输入仍会选择不同特征与输出路径；
+2. 单个连接的当前贡献取决于“权重 × 源激活”；
+3. 相对 logit 的小变化会指数级改变 token 赔率；
+4. 不同首 token 被写回上下文后，会产生分叉的自回归轨迹。
 
-1.  复制 `.env.example` 文件并重命名为 `.env`。
-    ```bash
-    # Windows
-    copy .env.example .env
-    # macOS/Linux
-    cp .env.example .env
-    ```
-2.  打开 `.env` 文件，填入您的 API 密钥：
-    ```
-    GEMINI_API_KEY="YOUR_API_KEY_HERE"
-    ```
+## 研究原则
 
-### 3. 运行主程序
+1. **先定义对象，再讨论机制。** 不把参数、神经元、特征、方向、头和行为混为一谈。
+2. **先做对照，再看故事。** 解释必须经消融、替换、激活修补或定向干预验证。
+3. **局部解释不冒充全局理论。** 单个 prompt 的 attribution graph 是条件计算的局部近似。
+4. **可解码不等于被使用。** probe 只能证明信息存在，不能自动证明它控制输出。
+5. **把不确定性写进结论。** 月度更新、工具说明、玩具模型和正式论文使用不同证据标签。
+6. **安全研究采用无害代理。** 仓库不收录可直接复用的越狱载荷或危险操作步骤。
 
-只需执行 `main.py`，程序将引导您完成所有后续步骤。
+## 范围与边界
 
-```bash
-python main.py
-```
+本仓库覆盖 Transformer Circuits 官网截至 2026-09-01 可见的时间线条目，并把它们映射到一套统一理论。所谓“覆盖”指：建立完整索引、提取核心问题、连接概念与标注证据状态；并不意味着逐句复刻，也不意味着相关研究已经构成封闭、完备、获得共识的“大模型定律”。
 
----
+尤其需要保留以下限制：
 
-## 详细工作流程
+- SAE、crosscoder、transcoder 和 NLA 都是近似接口，不是模型内部唯一正确的坐标系；
+- attribution graph 可能遗漏误差节点、非线性和替代路径；
+- 2025–2026 年若干页面明确属于研究更新或初步结果；
+- 小模型、单层模型和特定 Claude 版本上的结果不能无条件外推到所有模型；
+- “能够语言化内部状态”不等于意识，“情绪概念影响行为”不等于主观体验。
 
-运行 `python main.py` 后，您将经历以下步骤：
+## 版权与归属
 
-1.  **环境检查**:
-    脚本首先调用 `setup.py` 检查是否存在 `venv` 虚拟环境。
-    如果不存在，它会自动创建虚拟环境，并使用 `pip` 安装 `requirements.txt` 中列出的所有依赖。
-
-2.  **模型选择**:
-    程序会列出可用的 Google AI 模型（例如 `gemini-1.5-pro`, `gemini-1.0-pro` 等）。
-    您将被要求输入数字来选择本次分析要使用的模型。
-
-3.  **数据加载与预览**:
-    程序会加载 `data/prompts.csv` 文件。
-    它会显示文件的基本信息，如总行数。
-
-4.  **断点续传检查**:
-    程序会扫描 `results/` 目录，寻找之前未完成的分析（通过检查 `analysis_state.json` 文件）。
-    如果找到，它会询问您是否要从上次的进度继续。
-
-5.  **范围选择**:
-    您将被要求指定要分析的数据范围（例如，从第 50 行到第 100 行）。这对于分批次进行大型实验非常有用。
-
-6.  **开始分析**:
-    确认后，程序会以当前时间创建一个新的结果文件夹 `results/YYYYMMDD_HHMMSS/`。
-    分析开始，屏幕上会显示进度条，并显示当前处理的条目数和总条目数。
-
-7.  **错误与中断处理**:
-    如果在与 API 交互时发生错误，程序会静默重试最多 3 次。
-    如果依然失败，程序会暂停，并询问您：“API 请求失败，是否要保存当前进度并退出？(y/n)”。
-    如果您选择 `y`，`engine.py` 会调用 `state_manager.py` 将已完成的部分写入 `analysis_state.json`，然后安全退出。
-
-8.  **完成与分析**:
-    任务完成后，所有原始回复和偏见分数会保存在本次创建的结果文件夹中。
-    您可以像以前一样，使用 `notebooks/analysis_and_visualization.ipynb` 进行后续的数据分析。
-
-## 项目结构
-
-```
-/
-├── main.py              # 唯一的项目入口点
-├── setup.py             # 自动化环境安装脚本
-├── requirements.txt
-├── README.md            # 本文档
-├── .env.example
-├── .env
-│
-├── data/
-│   └── prompts.csv
-│
-├── results/
-│   └── YYYYMMDD_HHMMSS/
-│       ├── analysis_state.json # 断点续传状态文件
-│       ├── ...
-│
-└── src/
-    └── llm_bias_research/
-        ├── cli.py         # 用户交互模块
-        ├── config.py      # 配置模块
-        ├── data_loader.py # 数据加载模块
-        ├── engine.py      # 核心分析引擎
-        ├── llm_api.py     # API 交互与错误处理模块
-        └── state_manager.py # 分析状态读写模块
-```
-
-## 许可证
-
-本项目采用 MIT 许可证。详情请参阅 `LICENSE` 文件。
-
-## 开发者
-
-yu hong
+理论整理与代码采用 MIT License。原始论文、交互图和研究页面的版权归各自作者及发布方所有。引用研究结论时，请优先引用 [`docs/TRANSFORMER_CIRCUITS_INDEX.md`](docs/TRANSFORMER_CIRCUITS_INDEX.md) 中对应的原始页面，而不是只引用本仓库。
