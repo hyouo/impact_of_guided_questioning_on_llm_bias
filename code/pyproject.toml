@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "llm-theory-lab"
+version = "0.1.0"
+description = "Reproducible, theory-linked experiments for LLM mechanisms and interpretability."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Yu Hong" }]
+dependencies = [
+  "numpy>=1.26,<3",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8,<10",
+]
+models = [
+  "torch>=2.2",
+  "transformers>=4.45,<6",
+  "safetensors>=0.4",
+]
+all = [
+  "pytest>=8,<10",
+  "torch>=2.2",
+  "transformers>=4.45,<6",
+  "safetensors>=0.4",
+]
+
+[project.scripts]
+llm-theory-lab = "llm_theory_lab.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]

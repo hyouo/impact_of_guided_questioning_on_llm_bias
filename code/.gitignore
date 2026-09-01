@@ -2,14 +2,6 @@ __pycache__/
 *.py[cod]
 *.egg-info/
 .pytest_cache/
-.coverage
-htmlcov/
 .venv/
-venv/
-build/
-dist/
 reports/
 model_cache/
-.DS_Store
-.idea/
-.vscode/
