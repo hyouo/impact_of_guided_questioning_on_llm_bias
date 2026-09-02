@@ -62,7 +62,7 @@ cd impact_of_guided_questioning_on_llm_bias
 python -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
 python -m pip install --upgrade pip
-pip install -e ".[dev]"
+pip install -e ".[dev,docs]"
 ```
 
 ### 2. 查看并运行透明实验
