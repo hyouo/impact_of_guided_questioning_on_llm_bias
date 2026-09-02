@@ -8,7 +8,6 @@ from ..math_utils import softmax
 from ..repro import runtime_metadata
 from ..result import CheckResult, ExperimentResult, checked_result
 
-
 TOKEN_LABELS = ("A", "B", "C")
 OUTPUT_MAP = np.array(
     [
@@ -27,7 +26,9 @@ FEEDBACK = np.array(
 )
 
 
-def _generate(initial_state: np.ndarray, first_token: int, steps: int = 6) -> tuple[list[str], np.ndarray]:
+def _generate(
+    initial_state: np.ndarray, first_token: int, steps: int = 6
+) -> tuple[list[str], np.ndarray]:
     state = initial_state.copy()
     tokens: list[str] = []
     for step in range(steps):

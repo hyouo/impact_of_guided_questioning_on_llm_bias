@@ -43,7 +43,9 @@ def run_attention_routing() -> ExperimentResult:
     perturbed_tokens[0, 0] = 3.0
 
     baseline_scores, baseline_attention, baseline_output = _attend(baseline_tokens, query_index=3)
-    perturbed_scores, perturbed_attention, perturbed_output = _attend(perturbed_tokens, query_index=3)
+    perturbed_scores, perturbed_attention, perturbed_output = _attend(
+        perturbed_tokens, query_index=3
+    )
 
     baseline_top = int(np.argmax(baseline_attention))
     perturbed_top = int(np.argmax(perturbed_attention))

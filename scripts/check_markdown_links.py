@@ -26,9 +26,7 @@ def normalize_target(raw: str) -> str:
 def main() -> int:
     errors: list[str] = []
     markdown_files = sorted(
-        path
-        for path in ROOT.rglob("*.md")
-        if ".git" not in path.parts and "site" not in path.parts
+        path for path in ROOT.rglob("*.md") if ".git" not in path.parts and "site" not in path.parts
     )
 
     for document in markdown_files:

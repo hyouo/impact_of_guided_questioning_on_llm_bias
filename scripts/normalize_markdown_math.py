@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Normalize Markdown math delimiters to GitHub-supported dollar syntax.
+r"""Normalize Markdown math delimiters to GitHub-supported dollar syntax.
 
 GitHub reliably renders inline math as ``$...$`` and display math as
 ``$$...$$``.  This script converts legacy ``\(...\)`` and ``\[...\]``
@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
-
 
 REPLACEMENTS = (
     (r"\[", "$$"),
@@ -57,9 +56,7 @@ def markdown_files(root: Path) -> list[Path]:
     """Return tracked-style Markdown paths, excluding common generated dirs."""
     ignored = {".git", ".venv", "venv", "build", "dist", "node_modules"}
     return sorted(
-        path
-        for path in root.rglob("*.md")
-        if not any(part in ignored for part in path.parts)
+        path for path in root.rglob("*.md") if not any(part in ignored for part in path.parts)
     )
 
 
