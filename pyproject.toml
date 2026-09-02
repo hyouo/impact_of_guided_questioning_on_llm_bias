@@ -45,7 +45,7 @@ dev = [
   "pytest>=8,<10",
   "pytest-cov>=6,<8",
   "ruff>=0.16,<0.17",
-  "twine>=6,<7",
+  "twine>=6,<8",
 ]
 docs = [
   "mkdocs>=1.6,<2",
@@ -67,7 +67,7 @@ all = [
   "safetensors>=0.4",
   "torch>=2.2",
   "transformers>=4.45,<6",
-  "twine>=6,<7",
+  "twine>=6,<8",
 ]
 
 [project.scripts]
