@@ -122,4 +122,4 @@
 
 ## 机器可读版本
 
-完整字段见 [`sources/transformer_circuits_catalog.csv`](../sources/transformer_circuits_catalog.csv)。CI 会检查条目数量、链接唯一性、状态枚举和首页关键条目。
+完整字段见 [`sources/transformer_circuits_catalog.csv`](https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias/blob/main/sources/transformer_circuits_catalog.csv)。CI 会检查条目数量、链接唯一性、状态枚举和首页关键条目。

@@ -45,7 +45,9 @@ def run_weight_activation(seed: int = 7, samples: int = 20_000) -> ExperimentRes
         ),
         CheckResult(
             name="权重大小不等于分布有效性",
-            passed=bool(large_weight > smaller_weight and large_effectiveness < small_effectiveness),
+            passed=bool(
+                large_weight > smaller_weight and large_effectiveness < small_effectiveness
+            ),
             observed={
                 "large_weight": large_weight,
                 "large_effectiveness": large_effectiveness,

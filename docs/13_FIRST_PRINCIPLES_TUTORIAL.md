@@ -467,7 +467,7 @@ Prompt injection 主要利用指令和数据共同进入模型上下文。角色
 
 # 13.13 对应代码
 
-本章中的核心命题已经在独立子项目 [`../code/`](../code/) 中操作化：
+本章中的核心命题已经在标准根目录中的 [`src/llm_theory_lab/`](https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias/tree/main/src/llm_theory_lab) 和 [`tests/`](https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias/tree/main/tests) 中操作化：
 
 ```text
 C01 权重 × 激活与分布有效性

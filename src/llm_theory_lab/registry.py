@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass
-from typing import Callable, Iterable
 
 from .experiments.attention import run_attention_routing
 from .experiments.conditional import run_input_conditioning
@@ -118,5 +118,9 @@ def get_experiment(experiment_id: str) -> ExperimentSpec:
 
 
 def run_toy_suite(experiment_ids: Iterable[str] | None = None) -> list[ExperimentResult]:
-    specs = EXPERIMENTS if experiment_ids is None else tuple(get_experiment(item) for item in experiment_ids)
+    specs = (
+        EXPERIMENTS
+        if experiment_ids is None
+        else tuple(get_experiment(item) for item in experiment_ids)
+    )
     return [spec.runner() for spec in specs]

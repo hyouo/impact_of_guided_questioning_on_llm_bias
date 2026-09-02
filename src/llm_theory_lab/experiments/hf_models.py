@@ -7,8 +7,9 @@ evidence about the selected model version; they are not universal LLM tests.
 
 from __future__ import annotations
 
+from collections.abc import Iterator
 from contextlib import contextmanager
-from typing import Any, Iterator
+from typing import Any
 
 import numpy as np
 
@@ -22,9 +23,7 @@ def _require_dependencies() -> tuple[Any, Any, Any]:
         import torch
         from transformers import AutoModelForCausalLM, AutoTokenizer
     except ImportError as exc:
-        raise RuntimeError(
-            "model experiments require: pip install -e '.[models]'"
-        ) from exc
+        raise RuntimeError("model experiments require: pip install -e '.[models]'") from exc
     return torch, AutoModelForCausalLM, AutoTokenizer
 
 
@@ -98,7 +97,9 @@ def run_tokenization_sensitivity(
     ]
 
     attention_last_query_l1: list[float] = []
-    for attention_a, attention_b in zip(output_a.attentions or (), output_b.attentions or (), strict=True):
+    for attention_a, attention_b in zip(
+        output_a.attentions or (), output_b.attentions or (), strict=True
+    ):
         # Different sequence lengths make a direct full-vector comparison invalid.
         shared = min(attention_a.shape[-1], attention_b.shape[-1])
         a = attention_a[0, :, -1, -shared:].detach().cpu().numpy()

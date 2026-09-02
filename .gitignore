@@ -1,15 +1,41 @@
+# Python
 __pycache__/
 *.py[cod]
+*.so
 *.egg-info/
+.eggs/
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
 .coverage
+.coverage.*
+coverage.xml
 htmlcov/
+
+# Environments
 .venv/
 venv/
+.env
+.env.*
+
+# Packaging and documentation
 build/
 dist/
+site/
+
+# Experiment outputs and model caches
 reports/
+runs/
 model_cache/
+.cache/
+*.safetensors
+*.bin
+*.pt
+*.pth
+
+# Notebooks and editors
+.ipynb_checkpoints/
 .DS_Store
 .idea/
 .vscode/
+*.swp

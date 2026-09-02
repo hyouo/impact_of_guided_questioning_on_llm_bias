@@ -1,11 +1,21 @@
 cff-version: 1.2.0
-message: "Please cite the original Transformer Circuits sources for scientific claims, and this repository for the synthesis or code."
-title: "大模型理论：从权重、激活到回路、推理与安全"
+message: "Please cite the original scientific sources for specific claims, and cite this repository for its synthesis or software."
+title: "LLM Theory Lab: Weights, Activations, Circuits, Reasoning, and Safety"
 type: software
 authors:
-  - family-names: Hong
-    given-names: Yu
-version: 0.1.0
-date-released: 2026-09-01
-license: MIT
+  - family-names: "Hong"
+    given-names: "Yu"
+version: 0.2.0
+date-released: 2026-09-02
 repository-code: "https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias"
+url: "https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias"
+license: MIT
+abstract: >-
+  A Chinese theory synthesis and reproducible experiment suite for studying
+  language-model weights, activations, transformer circuits, reasoning,
+  autoregressive feedback, and safety-related routing.
+keywords:
+  - mechanistic interpretability
+  - transformer circuits
+  - large language models
+  - causal interventions

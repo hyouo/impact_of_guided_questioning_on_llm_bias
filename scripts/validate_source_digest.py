@@ -12,7 +12,6 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = ROOT / "sources" / "transformer_circuits_catalog.csv"
 DIGEST = ROOT / "docs" / "10_SOURCE_BY_SOURCE_DIGEST.md"
@@ -44,8 +43,7 @@ def load_catalog() -> list[Source]:
         raise ValueError(f"catalog 缺少字段: {sorted(missing)}")
 
     sources = [
-        Source(row["period"].strip(), row["title"].strip(), row["url"].strip())
-        for row in rows
+        Source(row["period"].strip(), row["title"].strip(), row["url"].strip()) for row in rows
     ]
     if len(sources) != 56:
         raise ValueError(f"预期 56 条来源，实际 {len(sources)} 条")
@@ -115,13 +113,9 @@ def validate() -> None:
         block = blocks[(source.title, source.url)]
         missing_fields = [field for field in REQUIRED_FIELDS if field not in block]
         if missing_fields:
-            raise ValueError(
-                f"{source.title!r} 缺少结构字段: {', '.join(missing_fields)}"
-            )
+            raise ValueError(f"{source.title!r} 缺少结构字段: {', '.join(missing_fields)}")
 
-    print(
-        f"source digest 校验通过：{len(sources)} 条 catalog 来源均有独立、结构完整的精华条目。"
-    )
+    print(f"source digest 校验通过：{len(sources)} 条 catalog 来源均有独立、结构完整的精华条目。")
 
 
 def main() -> int:
