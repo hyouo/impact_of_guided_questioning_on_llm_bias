@@ -22,22 +22,37 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
-      - name: Update legacy documentation paths
+      - name: Update migrated paths and warning-free scripts
         run: |
           python - <<'PY'
           from pathlib import Path
 
-          path = Path("docs/13_FIRST_PRINCIPLES_TUTORIAL.md")
-          old = "独立子项目 [`../code/`](../code/) 中操作化"
-          new = (
-              "标准根目录中的 "
-              "[`src/llm_theory_lab/`](https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias/tree/main/src/llm_theory_lab) "
-              "和 [`tests/`](https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias/tree/main/tests) 中操作化"
+          def replace_once(path: str, old: str, new: str) -> None:
+              target = Path(path)
+              text = target.read_text(encoding="utf-8")
+              if old not in text:
+                  raise SystemExit(f"expected legacy text not found in {target}: {old!r}")
+              target.write_text(text.replace(old, new), encoding="utf-8")
+
+          replace_once(
+              "docs/13_FIRST_PRINCIPLES_TUTORIAL.md",
+              "独立子项目 [`../code/`](../code/) 中操作化",
+              (
+                  "标准根目录中的 "
+                  "[`src/llm_theory_lab/`](https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias/tree/main/src/llm_theory_lab) "
+                  "和 [`tests/`](https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias/tree/main/tests) 中操作化"
+              ),
           )
-          text = path.read_text(encoding="utf-8")
-          if old not in text:
-              raise SystemExit(f"expected legacy text not found in {path}")
-          path.write_text(text.replace(old, new), encoding="utf-8")
+          replace_once(
+              "docs/TRANSFORMER_CIRCUITS_INDEX.md",
+              "../sources/transformer_circuits_catalog.csv",
+              "https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias/blob/main/sources/transformer_circuits_catalog.csv",
+          )
+          replace_once(
+              "scripts/normalize_markdown_math.py",
+              '"""Normalize Markdown math delimiters',
+              'r"""Normalize Markdown math delimiters',
+          )
           PY
       - name: Install development tools
         run: |
