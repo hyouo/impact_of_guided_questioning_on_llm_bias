@@ -1,0 +1,46 @@
+name: Theory or evidence issue
+description: 讨论理论表述、来源、范围、反例或证据等级
+title: "[Theory]: "
+labels:
+  - theory
+body:
+  - type: input
+    id: claim
+    attributes:
+      label: 被讨论的具体主张
+      placeholder: "请写成可以判断真假的句子"
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: 原始来源或相关文档
+      description: 优先给出论文、官方研究页面或仓库内章节。
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: 适用范围
+      placeholder: "模型、任务、输入、训练阶段或干预条件"
+    validations:
+      required: true
+  - type: textarea
+    id: concern
+    attributes:
+      label: 问题、反例或替代解释
+    validations:
+      required: true
+  - type: textarea
+    id: falsifier
+    attributes:
+      label: 能区分解释的实验或证据
+    validations:
+      required: false
+  - type: checkboxes
+    id: copyright
+    attributes:
+      label: 引用确认
+      options:
+        - label: 我没有粘贴大段受版权保护的原文
+          required: true

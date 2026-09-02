@@ -1,0 +1,63 @@
+site_name: LLM Theory Lab
+site_description: 大模型权重、激活、回路、推理与安全的理论和可复现实验
+site_url: https://hyouo.github.io/impact_of_guided_questioning_on_llm_bias/
+repo_url: https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias
+repo_name: hyouo/impact_of_guided_questioning_on_llm_bias
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  language: zh
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - content.action.edit
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - footnotes
+  - md_in_html
+  - tables
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+
+extra_javascript:
+  - assets/javascripts/mathjax.js
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+nav:
+  - 首页: index.md
+  - 入门:
+      - 第一性原理教程: 13_FIRST_PRINCIPLES_TUTORIAL.md
+      - 理论总图: 00_THEORY_MAP.md
+      - 统一综合: 09_UNIFIED_SYNTHESIS.md
+  - 理论专题:
+      - 参数、激活与 token: 01_PARAMETERS_ACTIVATIONS_AND_TOKENS.md
+      - 表征、叠加与几何: 02_REPRESENTATIONS_SUPERPOSITION_AND_GEOMETRY.md
+      - 回路、Attention 与条件计算: 03_CIRCUITS_ATTENTION_AND_CONDITIONAL_COMPUTATION.md
+      - 推理、上下文与生成: 04_REASONING_CONTEXT_AND_GENERATION.md
+      - 安全、越狱与 Prompt Injection: 05_SAFETY_JAILBREAK_AND_PROMPT_INJECTION.md
+  - 研究方法:
+      - 方法与因果验证: 06_METHODS_AND_CAUSAL_VALIDATION.md
+      - 证据边界: 07_EVIDENCE_LIMITS_AND_CLAIMS.md
+      - 方法解释矩阵: 12_METHODS_AND_INTERPRETATION_MATRIX.md
+      - 理论到代码实验: 14_THEORY_TO_CODE_LAB.md
+      - 实验协议: experiments/EXPERIMENT_PROTOCOL.md
+      - 结果结构: experiments/RESULT_SCHEMA.md
+  - 案例与来源:
+      - 经典机制案例: 11_CANONICAL_CASE_STUDIES.md
+      - 全部来源逐条精华: 10_SOURCE_BY_SOURCE_DIGEST.md
+      - Transformer Circuits 索引: TRANSFORMER_CIRCUITS_INDEX.md
+      - 术语表: GLOSSARY.md
+  - 项目:
+      - 架构: ARCHITECTURE.md
+      - 开发指南: DEVELOPMENT.md
+      - 维护者指南: MAINTAINER_GUIDE.md
+      - 发布流程: RELEASING.md
+      - 开放问题与路线: 08_OPEN_PROBLEMS_AND_RESEARCH_ROADMAP.md

@@ -1,8 +1,8 @@
 # 14｜理论如何变成代码实验
 
-> 理论不是“听起来合理的解释”。一个机制命题必须明确对象、作用范围、干预、指标、对照和反证条件。本章把核心理论逐条映射到 [`../code/`](../code/) 实验子项目。
+> 理论不是“听起来合理的解释”。机制命题必须明确对象、范围、干预、指标、对照、反证条件和结论边界。本章把核心理论映射到标准根目录中的 [`src/llm_theory_lab/`](https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias/tree/main/src/llm_theory_lab) 与 [`tests/`](https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias/tree/main/tests)。
 
-# 14.1 证据阶梯
+## 14.1 证据阶梯
 
 ```text
 L0 数学恒等式或精确程序性质
@@ -13,52 +13,49 @@ L4 跨模板、任务、checkpoint 和模型的稳定回路证据
 L5 产生新反事实预测并被独立复现的机制理论
 ```
 
-“实验通过”只表示该实验预先定义的检查通过。它不自动把 L1 结果升级成 L4 或 L5。
+实验 `pass` 只表示预先定义的检查通过，不会自动把 L1 结果升级为 L4 或 L5。
 
-# 14.2 C01｜权重、激活与有效性
+## 14.2 实验总览
 
-**理论命题**
+| ID | 核心命题 | 代码 | 主要边界 |
+|---|---|---|---|
+| C01 | 权重大小不等于当前贡献或有效性 | `experiments/weights.py` | 玩具分布，不估计真实模型比例 |
+| C02 | 正温度下 log-odds 由相对 logit 决定 | `experiments/temperature.py` | 不保证某 token 一定被采样 |
+| C03 | 固定权重可执行输入条件计算 | `experiments/conditional.py` | 不说明真实模型只有少数特征 |
+| C04 | QK 路由和 OV 写回是不同对象 | `experiments/attention.py` | 低维单头演示 |
+| C05 | 首 token 可造成轨迹分叉 | `experiments/feedback.py` | 人工反馈模型 |
+| C06 | Superposition 可压缩但会干扰 | `experiments/superposition.py` | 人工几何 |
+| C07 | Probe 可解码不等于因果使用 | `experiments/probe_causality.py` | 结构反例 |
+| C08 | Patching 可测试候选中介 | `experiments/patching.py` | 足够性不等于唯一性 |
+| C09 | 识别、策略状态和行为可分离 | `experiments/safety_routing.py` | 无害安全代理 |
+| M01 | Prompt 格式影响 token、状态和分布 | `experiments/hf_models.py` | 观察性，因素可能混杂 |
+| M02 | 替代前缀改变下一步条件分布 | `experiments/hf_models.py` | 不比较前缀自然概率 |
+| M03 | 逐层 patch 传递目标 logit 效应 | `experiments/hf_models.py` | 粒度粗、架构有限 |
+
+下文中的代码路径均相对于 `src/llm_theory_lab/`。
+
+## 14.3 C01｜权重、激活与有效性
+
+一条连接的当前贡献为：
 
 $$
 c_{ij}(x)=w_{ij}a_j(x).
 $$
 
-单个连接的当前贡献依赖固定权重与源激活。权重大小、当前贡献、分布有效性和因果帮助性不是同一个量。
+实验构造“大但罕见”和“小但常见”的连接，比较当前贡献与透明的分布有效性代理。
 
-**代码**
+**反证条件：** 在已明确的输入分布中，绝对权重无论源激活如何都必然给出相同的重要性排序。
 
-```text
-code/src/llm_theory_lab/experiments/weights.py
-```
+**允许结论：** 权重绝对值不是功能重要性的充分指标。
 
-**实验设计**
+**禁止结论：** 不能由玩具代理估计真实模型中 interference weights 的比例。
 
-- 构造一个很大但罕见、很弱激活的连接；
-- 构造一个较小但经常激活的连接；
-- 比较当前贡献与 $E[(wa)^2]$ 玩具有效性代理。
-
-**反证条件**
-
-在这个明确分布中，若大权重不论源激活如何都必然具有更大当前贡献和有效性，则命题失败。
-
-**允许结论**
-
-这是一个数学结构反例，足以否定“按绝对权重排序就是功能重要性排序”的一般推理。
-
-**禁止结论**
-
-不能由这个玩具代理估计真实大模型中有多少 interference weights。
-
-# 14.3 C02｜温度与 token 赔率
-
-**理论命题**
+## 14.4 C02｜温度与 token 赔率
 
 对 $T>0$：
 
 $$
-\log\frac{p_i}{p_j}
-=
-\frac{z_i-z_j}{T}.
+\log\frac{p_i}{p_j}=\frac{z_i-z_j}{T}.
 $$
 
 相对 logit 增加 $\Delta z$ 后，赔率乘以：
@@ -67,345 +64,152 @@ $$
 e^{\Delta z/T}.
 $$
 
-**代码**
+实验直接比较解析式和数值 softmax。
 
-```text
-code/src/llm_theory_lab/experiments/temperature.py
-```
+**边界：** API 中的 `temperature=0` 通常代表 greedy/argmax 约定，不应代入上述公式。
 
-**实验设计**
-
-- 对多个温度直接计算 softmax；
-- 比较概率赔率与解析式；
-- 验证 $T=1$、$\Delta z=1$ 时赔率乘数为 $e$。
-
-**反证条件**
-
-数值 softmax 系统性偏离解析恒等式。
-
-**允许结论**
-
-这是精确数学关系。
-
-**禁止结论**
-
-不能只凭赔率变化断言某 token 一定被采样，也不能把 API 的 `temperature=0` 代入该公式。
-
-# 14.4 C03｜固定权重下的输入条件计算
-
-**理论命题**
+## 14.5 C03｜固定权重下的条件计算
 
 $$
-h=f_\theta(x),
+h=f_\theta(x).
 $$
 
-即使 $\theta$ 不变，不同 $x$ 也会产生不同激活、路由和输出。
+保持 $\theta$ 不变，对任务证据、安全证据和不确定性输入进行对照，检查激活模式与 top token 是否改变。
 
-**代码**
+**允许结论：** input 无需修改参数也能改变实际计算路径。
 
-```text
-code/src/llm_theory_lab/experiments/conditional.py
-```
-
-**实验设计**
-
-同一固定 ReLU 网络接收任务证据、策略证据和不确定性三种状态，检查特征模式和 top token 是否分别变化。
-
-**反证条件**
-
-固定权重网络对不同输入无法产生不同激活或输出。
-
-**理论意义**
-
-它纠正“input 要影响行为就必须改参数”的错误。
-
-# 14.5 C04｜Attention 是条件路由，不是静态关注标签
-
-**理论命题**
+## 14.6 C04｜Attention 的 QK 与 OV
 
 $$
 \alpha_{ij}
 =
 \operatorname{softmax}_j
-\left(\frac{q_i^\top k_j}{\sqrt d}\right),
-$$
-
-$$
+\left(
+\frac{q_i^\top k_j}{\sqrt d}
+\right),
+\qquad
 o_i=\sum_j\alpha_{ij}v_jW_O.
 $$
 
-输入扰动可以通过 QK 改变读取位置，并通过 OV 改变写回内容。
+实验固定所有矩阵，只改变一个 token 在 key-relevant 方向上的表示，分别记录注意力路由和聚合输出。
 
-**代码**
+**禁止结论：** 一张热力图不能单独说明为什么读取、写入什么或该头是否必要。
 
-```text
-code/src/llm_theory_lab/experiments/attention.py
-```
-
-**实验设计**
-
-固定全部矩阵，只改变一个 token 在 key-relevant 方向上的表示，记录最高注意力位置和聚合输出。
-
-**反证条件**
-
-该 key 扰动不改变注意力分布或写回向量。
-
-**禁止结论**
-
-单头演示不能说明真实模型中的某个头具有唯一、全分布不变的标签。
-
-# 14.6 C05｜首 token 与自回归轨迹
-
-**理论命题**
+## 14.7 C05｜自回归反馈
 
 $$
-s_{t+1}=F_\theta(s_t,y_t).
+y_t\sim p_\theta(\cdot\mid x,y_{<t}),
+\qquad
+p_{t+1}=p_\theta(\cdot\mid x,y_{<t},y_t).
 $$
 
-在权重固定时，不同 $y_t$ 仍可改变未来状态。
+强制两个不同首 token 后，比较未来状态和序列。
 
-**代码**
+**允许结论：** 生成 token 可以作为新输入产生路径依赖。
 
-```text
-code/src/llm_theory_lab/experiments/feedback.py
-```
+**禁止结论：** 人工反馈矩阵不能量化真实模型的越狱惯性。
 
-**实验设计**
+## 14.8 C06｜Superposition
 
-从同一初始状态出发，只强制第一个 token 为 A 或 B，后续全部 greedy，比较序列与最终状态。
+将 $F>d$ 个稀疏特征放入低维空间，比较单特征激活与共激活时的重建误差。
 
-**反证条件**
+**允许结论：** 过完备表示在特征稀疏时可行，但非正交方向会产生干扰。
 
-两条运行在首 token 不同后仍具有完全相同后续状态与序列。
+**禁止结论：** 人工方向不是训练出的 SAE 字典。
 
-**开放模型延伸**
+## 14.9 C07｜可解码与被使用
 
-`M02` 把两个替代前缀追加到真实 tokenizer 上下文，比较下一步完整分布。
+实验构造一个可被 probe 高准确率恢复、但输出头权重为零的变量，再与真正控制输出的变量比较消融效应。
 
-# 14.7 C06｜Superposition 与干扰
+**允许结论：** `decodable` 不蕴含 `causally used`。
 
-**理论命题**
+## 14.10 C08｜Activation patching
 
-$$
-h=Dx,
-\qquad F>d.
-$$
+从 clean 运行提取候选中间状态，替换 corrupted 运行中的对应状态，并测量目标输出恢复；无关维度作为负对照。
 
-稀疏时，多个特征可以共享较少维度；非正交方向在共激活时会产生干扰。
+**允许结论：** 被替换状态对目标效应具有局部因果充分性。
 
-**代码**
+**禁止结论：** 正恢复不证明该状态是唯一自然中介。
 
-```text
-code/src/llm_theory_lab/experiments/superposition.py
-```
+## 14.11 C09｜安全识别、策略与行为分离
 
-**实验设计**
+使用无害访问控制任务，把类别识别、策略状态和最终动作分成独立维度，再 patch 策略状态。
 
-- 把五个特征方向放入二维空间；
-- 单特征激活时用最近方向解码；
-- 两特征共激活时比较 top-2 解码准确率。
+**允许结论：** 检测信号存在不保证最终行为与之对齐。
 
-**反证条件**
+**安全边界：** 不包含真实越狱载荷、危险操作或攻击搜索。
 
-$F>d$ 时单特征完全不可识别，或者共激活永远不增加混淆。
+## 14.12 M01–M03｜开放模型实验
 
-**禁止结论**
-
-人工正五边形不证明真实 LLM 恰好使用相同几何。
-
-# 14.8 C07｜Probe 不等于因果使用
-
-**理论命题**
-
-存在一个表示 $h$，变量 $u$ 可由 probe 从 $h$ 解码，但模型输出 $g(h)$ 完全不依赖 $u$。
-
-**代码**
-
-```text
-code/src/llm_theory_lab/experiments/probe_causality.py
-```
-
-**实验设计**
-
-- 隐藏状态包含一个真正影响输出的变量和一个未被输出头读取的变量；
-- 线性 probe 高准确率解码未使用变量；
-- 消融它后输出不变；
-- 消融真正因果变量作为正对照。
-
-**反证条件**
-
-任何可被高准确率 probe 解码的变量，消融后都必然改变输出。
-
-**意义**
-
-这是方法论中的关键反例：信息存在、相关性、被使用和因果必要性必须分开。
-
-# 14.9 C08｜Activation patching
-
-**理论命题**
-
-若中间状态 $m$ 是 clean 与 corrupted 输出差异的候选中介，则将 $m_{clean}$ 替换到 corrupted 运行可能恢复目标指标。
-
-恢复比例：
-
-$$
-R=
-\frac{M_{patched}-M_{corrupted}}
-     {M_{clean}-M_{corrupted}}.
-$$
-
-**代码**
-
-```text
-code/src/llm_theory_lab/experiments/patching.py
-```
-
-**实验设计**
-
-- patch 真正因果维度；
-- patch 同规模无关维度作为负对照；
-- 比较恢复比例。
-
-**反证条件**
-
-候选中介与无关维度的 patch 效应相同。
-
-**开放模型延伸**
-
-`M03` 对 GPT-2 风格模型逐层 patch 最终位置 residual block 输出，扫描目标 token logit 改变。
-
-**边界**
-
-成功 patch 主要说明状态足以传递效应；不自动证明唯一性、自然性或完整机制。
-
-# 14.10 C09｜识别、策略与行为分离
-
-**理论命题**
-
-安全或策略链条至少可以分成：
-
-```text
-识别表示
-→ 策略状态
-→ 输出动作
-```
-
-前一变量存在不逻辑蕴含后一变量一定形成或获胜。
-
-**代码**
-
-```text
-code/src/llm_theory_lab/experiments/safety_routing.py
-```
-
-**实验设计**
-
-使用无害的“受限资源访问”代理：
-
-- restricted-category 检测维度为高；
-- 输出头不直接读取该检测维度；
-- completion state 使 PROCEED 获胜；
-- patch decline-policy state 后动作翻转为 DECLINE。
-
-**反证条件**
-
-检测维度存在时必然直接决定输出动作，策略中介没有独立作用。
-
-**安全边界**
-
-实验不含真实越狱载荷，也不搜索绕过字符串。它只检验机制分层。
-
-# 14.11 M01｜开放模型 tokenization 与格式敏感性
-
-**代码**
-
-```text
-code/src/llm_theory_lab/experiments/hf_models.py
-```
-
-**记录内容**
-
-- token IDs 与 token 文本；
-- next-token Jensen–Shannon divergence；
-- 最终位置隐藏状态逐层 cosine similarity；
-- 最后 query 的 attention 差异；
-- top-k token。
-
-**正确解释**
-
-格式变化与分布变化共现。
-
-**错误解释**
-
-“已经证明某个换行特征是唯一因果机制。”
-
-进一步需要长度匹配对照、位置匹配、patching 和跨 prompt 复现。
-
-# 14.12 M02｜开放模型前缀反馈
-
-**操作**
-
-把两个替代前缀分别写入相同 base prompt，比较下一 token 完整分布。
-
-**允许结论**
-
-在该模型和上下文中，已写入前缀改变了下一步条件分布。
-
-**禁止结论**
-
-不能说明两个前缀在自然生成中的首步概率相同，也不能由一步 JS divergence 推断全部长期语义后果。
-
-# 14.13 M03｜开放模型逐层 patch scan
-
-**操作**
-
-- clean prompt 产生目标 token；
-- corrupted prompt 改变事实条件；
-- 对每个 GPT-2 block，把 clean 最终位置 residual 输出 patch 到 corrupted 运行；
-- 测量目标 token logit 改善。
-
-**需要的对照**
-
-1. clean/corrupted 对调；
-2. 随机等范数向量；
-3. 非最终位置；
-4. 无关目标 token；
-5. 多组事实和模板；
-6. patch 单头、MLP 或特征，而不只是整条 residual。
-
-# 14.14 从当前代码到真正研究项目
-
-当前实验代码已经建立正确的研究骨架，但要升级为严谨论文，需要按以下顺序扩展：
-
-```text
-透明 C 系列验证概念
-→ M 系列确认开放模型中存在相似现象
-→ 建立成百上千个匹配样本
-→ 自动保存 token、激活、logits 和环境元数据
-→ 增加多层/多头/多特征干预
-→ 加随机与语义负对照
-→ 跨 checkpoint、模型家族和语言复现
-→ 预测未见反事实
-→ 独立代码实现复现
-```
-
-# 14.15 运行
+安装：
 
 ```bash
-cd code
+pip install -e ".[models]"
+```
+
+### M01：格式与 tokenization
+
+```bash
+llm-theory-lab hf-tokenization \
+  --model openai-community/gpt2 \
+  --prompt-a "A careful answer begins with" \
+  --prompt-b $'A careful answer begins with\n'
+```
+
+记录 token IDs、top-k、分布差异、逐层表示和 attention。结果是观察性证据，不能把所有变化归因于单个语义特征。
+
+### M02：前缀反馈
+
+```bash
+llm-theory-lab hf-prefix \
+  --model openai-community/gpt2 \
+  --prompt "The response begins:" \
+  --prefix-a " Yes" \
+  --prefix-b " No"
+```
+
+它测试固定权重下，把不同 token 写回上下文是否改变下一步分布。
+
+### M03：逐层 patch
+
+```bash
+llm-theory-lab hf-patch \
+  --model openai-community/gpt2 \
+  --clean "The capital of France is" \
+  --corrupted "The capital of Italy is" \
+  --target-token " Paris"
+```
+
+程序对 GPT-2 风格 block 的最终位置 residual state 逐层 patch。整个 residual 向量包含许多变量，因此正效应不等于找到单一概念神经元。
+
+## 14.13 标准实验报告
+
+每次实验至少记录：
+
+```text
+理论 claim / experiment ID
+代码版本和 Git commit
+模型名称、revision 和 tokenizer
+完整输入与 token IDs
+随机种子与解码参数
+层、位置、头、特征或 patch 对象
+基线、正对照、负对照和干预
+指标、聚合方式和不确定性
+失败样本
+允许结论与禁止外推
+```
+
+结果结构见 [`experiments/RESULT_SCHEMA.md`](experiments/RESULT_SCHEMA.md)，设计规范见
+[`experiments/EXPERIMENT_PROTOCOL.md`](experiments/EXPERIMENT_PROTOCOL.md)。
+
+## 14.14 运行与验证
+
+```bash
 pip install -e ".[dev]"
 llm-theory-lab list
 llm-theory-lab run-toy
 pytest
+make check
 ```
 
-开放模型：
-
-```bash
-pip install -e ".[all]"
-llm-theory-lab hf-tokenization
-llm-theory-lab hf-prefix
-llm-theory-lab hf-patch
-```
-
-所有实验都输出 JSON 和 Markdown 报告，而不是只打印一个不可审计总分。
+代码注册表位于 [`src/llm_theory_lab/registry.py`](https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias/blob/main/src/llm_theory_lab/registry.py)。新增实验时必须同步更新测试、本文和变更日志。

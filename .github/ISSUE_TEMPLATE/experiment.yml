@@ -1,0 +1,50 @@
+name: Experiment proposal
+description: 提议一个有对照、指标和反证条件的理论实验
+title: "[Experiment]: "
+labels:
+  - experiment
+body:
+  - type: input
+    id: claim
+    attributes:
+      label: 要检验的理论命题
+    validations:
+      required: true
+  - type: textarea
+    id: design
+    attributes:
+      label: 实验设计
+      placeholder: "对象、数据、模型、干预和保持不变的变量"
+    validations:
+      required: true
+  - type: textarea
+    id: controls
+    attributes:
+      label: 正对照与负对照
+    validations:
+      required: true
+  - type: textarea
+    id: metrics
+    attributes:
+      label: 指标、样本和统计方法
+    validations:
+      required: true
+  - type: textarea
+    id: falsifier
+    attributes:
+      label: 反证条件
+    validations:
+      required: true
+  - type: textarea
+    id: boundary
+    attributes:
+      label: 允许结论与禁止外推
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: 安全
+      options:
+        - label: 实验不包含真实危险步骤、秘密提取或可复用越狱载荷
+          required: true

@@ -1,0 +1,59 @@
+name: Standardize repository once
+
+on:
+  push:
+    branches:
+      - chore/standardize-repository
+    paths:
+      - ".github/workflows/standardize-once.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  normalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Update legacy documentation paths
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path("docs/13_FIRST_PRINCIPLES_TUTORIAL.md")
+          old = "独立子项目 [`../code/`](../code/) 中操作化"
+          new = (
+              "标准根目录中的 "
+              "[`src/llm_theory_lab/`](https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias/tree/main/src/llm_theory_lab) "
+              "和 [`tests/`](https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias/tree/main/tests) 中操作化"
+          )
+          text = path.read_text(encoding="utf-8")
+          if old not in text:
+              raise SystemExit(f"expected legacy text not found in {path}")
+          path.write_text(text.replace(old, new), encoding="utf-8")
+          PY
+      - name: Install development tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev,docs]"
+      - name: Normalize source
+        run: |
+          ruff check --fix .
+          ruff format .
+      - name: Remove one-time workflow
+        run: rm .github/workflows/standardize-once.yml
+      - name: Run complete quality gate
+        run: make check
+      - name: Commit standardized repository
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add --all
+          git commit -m "style: normalize standard repository layout"
+          git push

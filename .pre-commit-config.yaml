@@ -1,0 +1,25 @@
+minimum_pre_commit_version: "4.0.0"
+
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: ruff check
+        entry: ruff check --fix
+        language: system
+        types_or: [python, pyi]
+      - id: ruff-format
+        name: ruff format
+        entry: ruff format
+        language: system
+        types_or: [python, pyi]
+      - id: repository-contract
+        name: repository contract
+        entry: python scripts/check_repository.py
+        language: system
+        pass_filenames: false
+      - id: markdown-links
+        name: internal Markdown links
+        entry: python scripts/check_markdown_links.py
+        language: system
+        pass_filenames: false
