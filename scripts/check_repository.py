@@ -32,6 +32,10 @@ REQUIRED_FILES = (
     ".github/ISSUE_TEMPLATE/bug.yml",
     ".github/ISSUE_TEMPLATE/theory.yml",
     ".github/ISSUE_TEMPLATE/experiment.yml",
+    ".github/workflows/ci.yml",
+    ".github/workflows/codeql.yml",
+    ".github/workflows/docs.yml",
+    "scripts/check_learning_path.py",
     "src/llm_theory_lab/__init__.py",
     "src/llm_theory_lab/py.typed",
     "tests/test_package_metadata.py",
@@ -53,6 +57,11 @@ REQUIRED_DIRS = (
     "sources",
     "src/llm_theory_lab",
     "tests",
+)
+
+FORBIDDEN_PATHS = (
+    "code",
+    ".github/workflows/integrate-exercises-once.yml",
 )
 
 STALE_PATTERNS = (
@@ -82,9 +91,10 @@ def main() -> int:
             fail(f"missing required directory: {relative}")
             errors += 1
 
-    if (ROOT / "code").exists():
-        fail("obsolete nested code/ directory still exists")
-        errors += 1
+    for relative in FORBIDDEN_PATHS:
+        if (ROOT / relative).exists():
+            fail(f"obsolete or one-time path still exists: {relative}")
+            errors += 1
 
     pyproject_path = ROOT / "pyproject.toml"
     if pyproject_path.is_file():
