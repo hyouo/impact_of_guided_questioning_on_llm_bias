@@ -4,41 +4,60 @@
 
 - 区分神经元、特征、方向、子空间和流形；
 - 解释为什么特征数可以超过表示维度；
-- 说明 superposition 带来的容量收益和干扰成本；
+- 说明 superposition 的容量收益和干扰成本；
+- 推导线性子图中的可逆基底变换；
 - 正确理解 SAE、transcoder 和 crosscoder 的价值与限制。
 
 ## 核心模型
 
-假设模型需要表示 $F$ 个稀疏特征，但 residual stream 只有 $d$ 个维度，且 $F>d$。可以写成：
+假设模型需要表示 $F$ 个稀疏特征，但 residual stream 只有 $d$ 个维度，且 $F>d$：
 
 $$
 h=Dx,
 $$
 
-其中 $x\in\mathbb R^F$ 是稀疏特征激活，$D\in\mathbb R^{d\times F}$ 是特征方向。因为 $F>d$，这些方向不可能全部正交。
+其中 $x\in\mathbb R^F$ 是稀疏特征激活，$D\in\mathbb R^{d\times F}$ 是特征方向。因为 $F>d$，方向不可能全部正交。
 
-如果特征很少同时出现，模型可以接受少量干扰，换取更多表示容量。这就是 superposition 的核心直觉。
+如果特征很少同时出现，模型可以接受少量干扰，换取更多表示容量。这是 superposition 的核心直觉。
 
 ## 逐步理解
 
-### 1. 神经元只是坐标，不一定是概念
+### 1. 神经元只是坐标，不自动等于概念
 
-单个神经元是当前基底中的一个轴。一个语义变量可能分散在多个轴上；一个轴也可能同时参与多个不相关模式。把最高激活样本贴上标签，只能得到一个假设。
+单个神经元是当前基底中的一个轴。一个语义变量可能分散在多个轴上；一个轴也可能参与多个无关模式。给最高激活样本贴标签，只得到一个候选解释。
 
 ### 2. Composition 与 superposition 不同
 
 - **Composition**：多个有意义成分组合成复杂概念；
 - **Superposition**：多个原本独立的稀疏特征因容量有限共享维度。
 
-“法国科学家”可由国家与职业成分组合；这些成分各自又可能与其他稀疏特征发生 superposition。
+“法国科学家”可以由国家与职业成分组合；这些成分本身又可能与其他稀疏特征发生 superposition。
 
 ### 3. 干扰取决于共激活
 
-两个方向不正交并不必然造成严重错误。如果它们几乎从不同时激活，干扰很少暴露。真正危险的是罕见分布变化让原本分离的特征异常共激活。
+方向不正交不必然造成严重错误。如果它们很少同时激活，干扰很少暴露。分布变化让原本分离的特征异常共激活时，问题才会明显。
 
-这给 prompt 敏感性提供了一个重要视角：异常格式或组合可能把训练中很少共同出现的特征带到同一状态区域。
+### 4. 基底不唯一的精确例子
 
-### 4. SAE 在做什么
+对行向量表示 $h$、可逆矩阵 $R$ 和线性下游映射 $W$：
+
+$$
+h'=hR,
+\qquad
+W'=R^{-1}W.
+$$
+
+于是：
+
+$$
+h'W'=hRR^{-1}W=hW.
+$$
+
+内部坐标可以明显改变，输入—输出函数却完全相同。因此“某个神经元就是某个概念”不是仅由函数自动确定的结论。
+
+但这不等于所有基底同样好。非线性、LayerNorm、稀疏性、优化器和架构可能让某些坐标更特殊，这就是 privileged basis 问题。
+
+### 5. SAE 在做什么
 
 稀疏自编码器尝试找到过完备字典：
 
@@ -46,15 +65,15 @@ $$
 h\approx b+\sum_k f_k(h)d_k,
 $$
 
-并让大多数 $f_k(h)=0$。它常能得到比神经元更可读的方向，但必须记住：
+并让大多数 $f_k(h)=0$。它常得到比神经元更可读的方向，但必须保留以下限制：
 
-- 字典不是唯一的；
-- 宽度和稀疏惩罚会导致 feature splitting 或 merging；
+- 字典不唯一；
+- 宽度和稀疏惩罚会导致 splitting 或 merging；
 - 重建残差可能仍携带重要计算；
 - 最高激活样本容易高精度、低召回；
 - 可解释方向不一定是模型自然使用的因果变量。
 
-### 5. 从表示走向计算
+### 6. 从表示走向计算
 
 - **SAE** 主要重建某层激活；
 - **Transcoder** 近似模块输入到输出的变换；
@@ -68,49 +87,39 @@ $$
 
 ```bash
 llm-theory-lab explain C06
-llm-theory-lab run-toy --ids C06
+llm-theory-lab explain C10
+llm-theory-lab run-toy --ids C06 C10
+python examples/06_basis_invariance.py
 ```
 
-C06 把五个特征方向放进二维空间，比较单特征激活和共激活时的重建干扰。运行后回答：
-
-- 为什么单个特征仍可能被辨认？
-- 为什么共激活误差更大？
-- 这个二维人工几何与真实 SAE 有哪些根本差异？
+C06 比较单特征与共激活干扰；C10 同时改变表示基底与下游映射，验证输出在数值精度内保持不变，并用“只改表示”的正对照确认补偿是必要的。
 
 ## 常见误区
 
-**“一个 SAE 特征就是模型中的一个概念神经元。”** SAE 是重参数化接口，结果依赖训练目标和字典大小。
+**“一个 SAE 特征就是概念神经元。”** SAE 是重参数化接口，结果依赖训练目标和字典大小。
 
 **“方向非正交就是模型坏了。”** 对稀疏特征而言，非正交可能是高效容量分配。
 
-**“找到可解释基底后模型就会变成很小的稀疏程序。”** 特征间虚拟连接仍可发生叠加与干扰，真实计算也可能需要大量路径。
+**“存在基底等价，所以神经元永远没意义。”** 实际网络的非线性和训练过程可能形成 privileged basis。
 
-**“连续流形与离散特征互相排斥。”** 离散特征可以是连续流形的局部坐标，两种视角可能同时正确。
+**“找到可解释基底后模型就变成小型稀疏程序。”** 特征间虚拟连接仍可叠加，真实计算也可能需要大量路径。
 
 ## 结论边界
 
-这一章给出的是表示理论和分析接口，不是已经完成的“模型概念字典”。必须保留以下限制：
-
-- C06 是人为设置的二维几何，只证明稀疏过完备表示与共激活干扰在数学上可以发生；
-- 一个 SAE 特征可读，不等于它是唯一、完整或自然使用的概念变量；
-- reconstruction error 小，只说明某种坐标能近似重建激活，不自动说明计算路径被忠实重建；
-- feature splitting、merging、absorption、遮蔽和残差暗物质会改变解释；
-- 神经元基底可能既不完全任意，也不天然单义，需要跨样本和干预证据；
-- 来自某个模型、某层和某个字典宽度的特征，不能无条件外推到其他模型或训练阶段。
-
-因此可以把 SAE、transcoder、crosscoder 和流形分析当作强大的候选变量生成器，但不能把它们的输出直接宣布为模型唯一真实的内部本体。
+C06 与 C10 都是 L0/L1 透明结果。它们证明结构可能与逻辑限制，不证明真实模型的具体特征字典、几何形状或自然基底。
 
 ## 自测
 
-1. 为什么 $F>d$ 时特征方向必然存在非零内积？
+1. 为什么 $F>d$ 时特征方向不可能全部正交？
 2. 两个高度相似但从不共现的特征，是否一定造成大行为误差？
-3. SAE reconstruction error 小，是否足以证明机制忠实？
-4. 你会怎样检验某个 SAE 特征在自然运行中真的控制输出？
+3. 推导 $h'=hR, W'=R^{-1}W$ 的函数不变性。
+4. 为什么这个推导不能直接跨过 ReLU？
+5. 怎样检验某个 SAE 特征在自然运行中真的控制输出？
 
 ## 来源
 
 - [Toy Models of Superposition](https://transformer-circuits.pub/2022/toy_model/index.html)
-- [Distributed Representations: Composition & Superposition](https://transformer-circuits.pub/2023/superposition-composition/index.html)
+- [Privileged Bases in the Transformer Residual Stream](https://transformer-circuits.pub/2023/privileged-basis/index.html)
 - [Towards Monosemanticity](https://transformer-circuits.pub/2023/monosemantic-features/index.html)
 - [Scaling Monosemanticity](https://transformer-circuits.pub/2024/scaling-monosemanticity/index.html)
 - [Sparse Crosscoders](https://transformer-circuits.pub/2024/crosscoders/index.html)
