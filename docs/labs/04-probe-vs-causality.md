@@ -1,40 +1,49 @@
-# 实验 4｜可解码信息不等于模型使用
+# C07｜可解码信息不等于模型自然使用
 
 ## 问题
 
-一个变量能被线性 probe 以接近 100% 准确率读出，是否说明模型依赖它？
+一个变量能被线性 probe 以接近 100% 的准确率读出，是否说明原模型依赖它生成输出？
 
 ## 先做预测
 
-模型隐藏状态有两维：第 0 维真正进入输出头；第 1 维编码另一个高度可解码变量，但输出头权重为 0。预测消融两维后的输出变化。
+隐藏状态有两维：第 0 维进入输出头，第 1 维编码另一个高度可解码变量，但输出权重为 0。预测：
+
+- probe 对第 1 维标签的准确率；
+- 消融第 1 维后的输出变化；
+- 消融第 0 维后的输出变化。
 
 ## 运行
 
 ```bash
 llm-theory-lab explain C07
-llm-theory-lab explain C08
-llm-theory-lab run-toy --ids C07 C08 --output-dir reports/lab04
+llm-theory-lab run-toy --ids C07 --output-dir reports/c07
 python examples/04_probe_vs_causality.py
 ```
 
 ## 要检查的量
 
-C07：
-
 - `probe_accuracy_unused_variable`；
 - `mean_output_change_after_unused_ablation`；
 - `mean_output_change_after_causal_ablation`。
 
-C08：
+若 probe 很准，但未使用维度的消融效应为零，而真正因果维度的消融效应很大，就得到一个结构反例：
 
-- corrupted baseline；
-- patch 候选中介后的恢复；
-- patch 无关维度的负对照。
+```text
+信息存在并可被外部读出
+≠ 原模型自然计算时使用了它
+```
 
-## 解释任务
+## 改动实验
 
-分别用一句话说明 probe、ablation 和 patching 给出的证据，以及三者仍不能证明的内容。
+打开 `src/llm_theory_lab/experiments/probe_causality.py`：
+
+- 让两个隐藏维度相关；
+- 给原输出头增加很小的第 1 维权重；
+- 降低样本数并提高 probe 容量；
+- 构造训练集准确、分布外失效的 probe；
+- 比较 probe 证据与 C08 patching 证据。
 
 ## 结论边界
 
-C07 是逻辑反例：它证明“可解码 ⇒ 被使用”不是一般定理。C08 的恢复说明候选状态能传递因果信息，但不证明它是唯一、最自然或完整的中介。
+**支持：** 高 probe 准确率本身不能证明模型自然使用该变量。  
+**不支持：** 所有 probe 都无价值。Probe 仍适合定位候选信息、比较层和生成干预假设。
