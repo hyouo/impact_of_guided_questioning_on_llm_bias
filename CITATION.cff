@@ -5,7 +5,7 @@ type: software
 authors:
   - family-names: "Hong"
     given-names: "Yu"
-version: 0.3.0
+version: 0.4.0
 date-released: 2026-09-03
 repository-code: "https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias"
 url: "https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias"
@@ -13,8 +13,8 @@ license: MIT
 abstract: >-
   A Chinese learning course, source synthesis, and reproducible experiment
   suite for studying language-model weights, activations, transformer
-  circuits, reasoning, autoregressive feedback, causal interpretability,
-  and safety-related routing.
+  circuits, representation basis choices, redundant mechanisms, steering
+  controls, reasoning, autoregressive feedback, and safety-related routing.
 keywords:
   - mechanistic interpretability
   - transformer circuits

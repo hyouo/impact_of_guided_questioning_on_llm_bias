@@ -58,16 +58,25 @@ nav:
       - 8. 综合项目: course/08-capstone.md
   - 实验手册:
       - 实验导览: labs/index.md
-      - 1. Softmax 与赔率: labs/01-softmax-and-odds.md
-      - 2. 权重与激活: labs/02-weight-vs-activation.md
-      - 3. Attention 路由: labs/03-attention-routing.md
-      - 4. Probe 与因果: labs/04-probe-vs-causality.md
-      - 5. 反馈与安全: labs/05-feedback-and-safety.md
+      - C01. 权重与激活: labs/02-weight-vs-activation.md
+      - C02. Softmax 与赔率: labs/01-softmax-and-odds.md
+      - C03. 输入条件计算: labs/06-input-conditioning.md
+      - C04. Attention 路由: labs/03-attention-routing.md
+      - C05. 自回归反馈: labs/05-autoregressive-feedback.md
+      - C06. Superposition: labs/07-superposition.md
+      - C07. Probe 与因果: labs/04-probe-vs-causality.md
+      - C08. Activation patching: labs/08-activation-patching.md
+      - C09. 安全路由代理: labs/09-safety-routing.md
+      - C10. 基底不变性: labs/10-basis-invariance.md
+      - C11. 冗余路径: labs/11-redundant-paths.md
+      - C12. Steering 对照: labs/12-steering-controls.md
       - 实验协议: experiments/EXPERIMENT_PROTOCOL.md
       - 结果结构: experiments/RESULT_SCHEMA.md
   - 练习与评估:
-      - 练习册: exercises/index.md
-      - 答案与解析: exercises/solutions.md
+      - 基础练习册: exercises/index.md
+      - 基础答案与解析: exercises/solutions.md
+      - 进阶方法练习: exercises/advanced.md
+      - 进阶答案与解析: exercises/advanced-solutions.md
   - 深度参考:
       - 统一理论: reference/unified-theory.md
       - 经典机制案例: reference/case-studies.md
