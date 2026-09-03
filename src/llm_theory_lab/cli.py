@@ -1,4 +1,4 @@
-"""Command-line interface for the theory lab."""
+"""Command-line interface for the theory-first learning and experiment lab."""
 
 from __future__ import annotations
 
@@ -12,24 +12,52 @@ from .experiments.hf_models import (
     run_prefix_feedback,
     run_tokenization_sensitivity,
 )
-from .registry import list_experiments, run_toy_suite
+from .registry import ExperimentSpec, get_experiment, list_experiments, run_toy_suite
 from .result import ExperimentResult, write_report
+
+COURSE_STEPS: tuple[tuple[str, str, str], ...] = (
+    ("1", "模型是条件系统", "docs/course/01-model-as-conditional-system.md"),
+    ("2", "权重、激活与 logits", "docs/course/02-weights-activations-and-logits.md"),
+    ("3", "Attention 与回路", "docs/course/03-attention-and-circuits.md"),
+    ("4", "特征与 superposition", "docs/course/04-features-and-superposition.md"),
+    ("5", "推理与生成反馈", "docs/course/05-reasoning-and-feedback.md"),
+    ("6", "因果可解释性", "docs/course/06-causal-interpretability.md"),
+    ("7", "安全路由", "docs/course/07-safety-routing.md"),
+    ("8", "综合项目", "docs/course/08-capstone.md"),
+)
 
 
 def _print_result(result: ExperimentResult) -> None:
     print(json.dumps(result.to_dict(), ensure_ascii=False, indent=2))
 
 
+def _print_spec(spec: ExperimentSpec) -> None:
+    print(f"{spec.experiment_id} | {spec.title}")
+    print(f"理论命题: {spec.theory_claim}")
+    print(f"直觉: {spec.intuition}")
+    print(f"反证条件: {spec.falsifier}")
+    print(f"课程: {spec.lesson_path}")
+    print(f"实验手册: {spec.lab_path}")
+    print(f"不能推出: {spec.does_not_show}")
+    print(f"运行: llm-theory-lab run-toy --ids {spec.experiment_id}")
+
+
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="llm-theory-lab",
-        description="Run theory-linked LLM mechanism experiments.",
+        description="Learn and test theory-linked LLM mechanism claims.",
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    subparsers.add_parser("list", help="list transparent toy experiments")
+    listing = subparsers.add_parser("list", help="list transparent experiments")
+    listing.add_argument("--category", default=None, help="optional category filter")
 
-    toy = subparsers.add_parser("run-toy", help="run the transparent toy suite")
+    subparsers.add_parser("roadmap", help="print the recommended learning path")
+
+    explain = subparsers.add_parser("explain", help="explain one experiment before running it")
+    explain.add_argument("experiment_id", help="experiment ID, e.g. C01")
+
+    toy = subparsers.add_parser("run-toy", help="run transparent C01-C09 experiments")
     toy.add_argument(
         "--ids",
         nargs="*",
@@ -89,12 +117,34 @@ def main(argv: Sequence[str] | None = None) -> None:
     args = parser.parse_args(argv)
 
     if args.command == "list":
-        for spec in list_experiments():
-            print(f"{spec.experiment_id}\t{spec.category}\t{spec.title}\n  {spec.theory_claim}")
+        specs = list_experiments()
+        if args.category:
+            specs = tuple(spec for spec in specs if spec.category == args.category)
+        for spec in specs:
+            print(f"{spec.experiment_id}\t{spec.category}\t{spec.title}")
+        if not specs:
+            parser.error(f"no experiments found for category {args.category!r}")
+        return
+
+    if args.command == "roadmap":
+        print("推荐学习路径")
+        for number, title, path in COURSE_STEPS:
+            print(f"{number}. {title}\n   {path}")
+        print("\n开始: llm-theory-lab explain C01")
+        return
+
+    if args.command == "explain":
+        try:
+            _print_spec(get_experiment(args.experiment_id))
+        except KeyError as exc:
+            parser.error(str(exc))
         return
 
     if args.command == "run-toy":
-        results = run_toy_suite(args.ids)
+        try:
+            results = run_toy_suite(args.ids)
+        except KeyError as exc:
+            parser.error(str(exc))
         output_dir = Path(args.output_dir)
         write_report(
             results,
@@ -103,6 +153,7 @@ def main(argv: Sequence[str] | None = None) -> None:
         )
         for result in results:
             print(f"{result.experiment_id}: {result.status} — {result.title}")
+        print(f"报告: {output_dir / 'report.md'}")
         if any(result.status == "fail" for result in results):
             raise SystemExit(1)
         return
