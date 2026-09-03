@@ -13,9 +13,6 @@ plugins:
         - zh
         - en
 
-not_in_nav: |
-  reference/source-digest.md
-
 theme:
   name: material
   language: zh
