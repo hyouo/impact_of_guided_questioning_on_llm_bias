@@ -2,7 +2,7 @@
 
 ## 1. Purpose
 
-This document identifies security and integrity risks for the repository, experiment runner, model backends, data, and published conclusions. It complements [`../SECURITY.md`](../SECURITY.md), which describes private vulnerability reporting.
+This document identifies security and integrity risks for the repository, experiment runner, model backends, data, and published conclusions. It complements the repository-level [SECURITY.md](https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias/blob/main/SECURITY.md), which describes private vulnerability reporting.
 
 The project is a research and education platform, not a hardened multi-tenant inference service. Controls should be interpreted against that scope.
 
