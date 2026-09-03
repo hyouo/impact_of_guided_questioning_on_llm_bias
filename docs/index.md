@@ -1,37 +1,68 @@
 # LLM Theory Lab
 
-本仓库将 Transformer Circuits 研究线索组织成一套可检验的大模型理论，并提供对应实验代码。
+这是一门“边学边验证”的大模型机制课程。它不要求你先懂稀疏自编码器，也不要求你相信任何漂亮的内部可视化。
 
 ## 从哪里开始
 
-第一次阅读建议按以下顺序：
+<div class="grid cards" markdown>
 
-1. [第一性原理教程](13_FIRST_PRINCIPLES_TUTORIAL.md)
-2. [统一理论综合](09_UNIFIED_SYNTHESIS.md)
-3. [经典机制案例](11_CANONICAL_CASE_STUDIES.md)
-4. [方法与解释矩阵](12_METHODS_AND_INTERPRETATION_MATRIX.md)
-5. [理论到代码实验](14_THEORY_TO_CODE_LAB.md)
-6. [全部来源逐条精华](10_SOURCE_BY_SOURCE_DIGEST.md)
+-   :material-school: **学习课程**
 
-## 核心框架
+    ---
+
+    按因果顺序理解 token、权重、激活、Attention、推理和安全。
+
+    [进入课程](course/index.md)
+
+-   :material-flask: **运行实验**
+
+    ---
+
+    用透明数值模型检验每个核心命题，并学习怎样解释结果。
+
+    [进入实验手册](labs/index.md)
+
+-   :material-bookshelf: **查研究资料**
+
+    ---
+
+    阅读统一理论、案例、方法边界和 Transformer Circuits 来源摘要。
+
+    [进入深度参考](reference/unified-theory.md)
+
+</div>
+
+## 最小心智模型
 
 ```text
 训练分布 → 权重
-输入与历史 + 固定权重 → 激活与条件路由
-激活与回路 → logits
-解码 → token
-token 写回 → 下一步状态
+输入 + 固定权重 → 激活、路由和局部计算图
+局部计算图 → logits → token 分布
+token 被选中并写回 → 下一步状态
 ```
 
-研究目标不是为模型行为编写听起来合理的故事，而是提出能够通过对照、干预和反事实预测被检验的机制命题。
+这条链可以统一解释很多现象，但不会把它们粗暴归结为一个“神经元”或一个“安全参数”。
 
-## 运行实验
+## 五分钟验证环境
 
 ```bash
-pip install -e ".[dev]"
-llm-theory-lab list
-llm-theory-lab run-toy
-pytest
+python -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
+python -m pip install -e .
+
+llm-theory-lab roadmap
+llm-theory-lab run-toy --ids C01 C02
 ```
 
-完整安装、治理和安全说明见仓库根目录 README。
+看到 `pass` 只表示预先写下的数值检查成立。它不是“所有大模型都被证明如此”。
+
+## 学完后你应该能
+
+- 用三个时间尺度解释训练分布、输入和生成 token 各自影响什么；
+- 从 $c=w\cdot a$ 理解权重大小为什么不等于当前作用；
+- 推导 softmax 下的 token 相对赔率；
+- 区分 Attention 的 QK 路由和 OV 写回；
+- 解释 superposition、特征、SAE 与基底不唯一；
+- 区分相关、可解码、必要、充分和机制忠实；
+- 用“识别—策略—输出—反馈”分析安全失配；
+- 为一个机制主张写出对照、干预、指标和反证条件。
