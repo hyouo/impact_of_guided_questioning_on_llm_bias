@@ -1,21 +1,23 @@
 cff-version: 1.2.0
-message: "Please cite the original scientific sources for specific claims, and cite this repository for its synthesis or software."
-title: "LLM Theory Lab: Weights, Activations, Circuits, Reasoning, and Safety"
+message: "Please cite the original scientific sources for specific claims, and cite this repository for its synthesis, curriculum, or software."
+title: "LLM Theory Lab: A Course and Experiment Suite for Weights, Circuits, Reasoning, and Safety"
 type: software
 authors:
   - family-names: "Hong"
     given-names: "Yu"
-version: 0.2.0
-date-released: 2026-09-02
+version: 0.3.0
+date-released: 2026-09-03
 repository-code: "https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias"
-url: "https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias"
+url: "https://hyouo.github.io/impact_of_guided_questioning_on_llm_bias/"
 license: MIT
 abstract: >-
-  A Chinese theory synthesis and reproducible experiment suite for studying
-  language-model weights, activations, transformer circuits, reasoning,
-  autoregressive feedback, and safety-related routing.
+  A Chinese learning course, source synthesis, and reproducible experiment
+  suite for studying language-model weights, activations, transformer
+  circuits, reasoning, autoregressive feedback, causal interpretability,
+  and safety-related routing.
 keywords:
   - mechanistic interpretability
   - transformer circuits
   - large language models
   - causal interventions
+  - education
