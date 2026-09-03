@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the repository's standard layout and version contract."""
+"""Validate the repository's standard layout, learning path, and version contract."""
 
 from __future__ import annotations
 
@@ -35,10 +35,16 @@ REQUIRED_FILES = (
     "src/llm_theory_lab/__init__.py",
     "src/llm_theory_lab/py.typed",
     "tests/test_package_metadata.py",
+    "docs/course/index.md",
+    "docs/labs/index.md",
+    "docs/reference/unified-theory.md",
+    "docs/reference/source-digest.md",
 )
 
 REQUIRED_DIRS = (
-    "docs",
+    "docs/course",
+    "docs/labs",
+    "docs/reference",
     "examples",
     "scripts",
     "sources",
@@ -51,6 +57,8 @@ STALE_PATTERNS = (
     "pytest code/tests",
     "code/src/llm_theory_lab",
     "cd code\n",
+    "13_FIRST_PRINCIPLES_TUTORIAL.md",
+    "14_THEORY_TO_CODE_LAB.md",
 )
 
 
@@ -70,6 +78,10 @@ def main() -> int:
         if not (ROOT / relative).is_dir():
             fail(f"missing required directory: {relative}")
             errors += 1
+
+    if (ROOT / "code").exists():
+        fail("obsolete nested code/ directory still exists")
+        errors += 1
 
     pyproject_path = ROOT / "pyproject.toml"
     if pyproject_path.is_file():
@@ -106,7 +118,7 @@ def main() -> int:
             for pattern in STALE_PATTERNS:
                 if pattern in text:
                     fail(
-                        f"stale nested-project reference {pattern!r} "
+                        f"stale or duplicate reference {pattern!r} "
                         f"in {candidate.relative_to(ROOT)}"
                     )
                     errors += 1
