@@ -30,6 +30,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      pages-enabled: ${{ steps.pages.outputs.enabled }}
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-python@v7
@@ -42,19 +44,36 @@ jobs:
           python -m pip install -e ".[docs]"
       - name: Build documentation
         run: python -m mkdocs build --strict
-      - name: Configure Pages
-        if: github.event_name != 'pull_request'
-        uses: actions/configure-pages@v5
+      - name: Upload built documentation
+        uses: actions/upload-artifact@v7
         with:
-          enablement: true
-      - name: Upload Pages artifact
+          name: documentation-site-${{ github.sha }}
+          path: site/
+          if-no-files-found: error
+          retention-days: 14
+      - name: Detect Pages configuration
+        id: pages
         if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh api "repos/${GITHUB_REPOSITORY}/pages" >/dev/null 2>&1; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Documentation built successfully, but GitHub Pages is not enabled. Enable Settings → Pages → Source: GitHub Actions, then re-run this workflow."
+          fi
+      - name: Configure Pages
+        if: steps.pages.outputs.enabled == 'true'
+        uses: actions/configure-pages@v5
+      - name: Upload Pages artifact
+        if: steps.pages.outputs.enabled == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
           path: site
 
   deploy:
-    if: github.event_name != 'pull_request'
+    if: github.event_name != 'pull_request' && needs.build.outputs.pages-enabled == 'true'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

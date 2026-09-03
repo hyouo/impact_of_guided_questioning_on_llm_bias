@@ -8,7 +8,7 @@ authors:
 version: 0.3.0
 date-released: 2026-09-03
 repository-code: "https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias"
-url: "https://hyouo.github.io/impact_of_guided_questioning_on_llm_bias/"
+url: "https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias"
 license: MIT
 abstract: >-
   A Chinese learning course, source synthesis, and reproducible experiment
