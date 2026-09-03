@@ -32,18 +32,34 @@ REQUIRED_FILES = (
     ".github/ISSUE_TEMPLATE/bug.yml",
     ".github/ISSUE_TEMPLATE/theory.yml",
     ".github/ISSUE_TEMPLATE/experiment.yml",
+    "docs/course/index.md",
+    "docs/labs/index.md",
+    "docs/exercises/index.md",
     "src/llm_theory_lab/__init__.py",
+    "src/llm_theory_lab/learning.py",
+    "src/llm_theory_lab/data/curriculum.json",
     "src/llm_theory_lab/py.typed",
+    "scripts/validate_curriculum.py",
+    "tests/test_learning.py",
     "tests/test_package_metadata.py",
 )
 
 REQUIRED_DIRS = (
     "docs",
+    "docs/course",
+    "docs/labs",
+    "docs/exercises",
     "examples",
     "scripts",
     "sources",
     "src/llm_theory_lab",
+    "src/llm_theory_lab/data",
     "tests",
+)
+
+BANNED_PATHS = (
+    "code",
+    ".github/workflows/integrate-exercises-once.yml",
 )
 
 STALE_PATTERNS = (
@@ -69,6 +85,11 @@ def main() -> int:
     for relative in REQUIRED_DIRS:
         if not (ROOT / relative).is_dir():
             fail(f"missing required directory: {relative}")
+            errors += 1
+
+    for relative in BANNED_PATHS:
+        if (ROOT / relative).exists():
+            fail(f"obsolete or one-time path must be removed: {relative}")
             errors += 1
 
     pyproject_path = ROOT / "pyproject.toml"

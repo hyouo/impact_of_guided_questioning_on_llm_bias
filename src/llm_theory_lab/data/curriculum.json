@@ -1,0 +1,192 @@
+{
+  "schema_version": 1,
+  "curriculum_version": "0.3.0",
+  "modules": [
+    {
+      "id": "M01",
+      "title": "模型是条件系统",
+      "chapter": "docs/course/01-model-as-conditional-system.md",
+      "prerequisites": [],
+      "estimated_hours": 0.75,
+      "labs": ["C03"],
+      "exercise_groups": ["B2", "B4"],
+      "outcomes": [
+        "区分训练、单次前向传播和连续生成",
+        "写出 input 到激活、logits、token 和下一步状态的因果链"
+      ],
+      "deliverable": "画出一次自回归生成的状态更新图，并标注哪些量在标准推理中固定。"
+    },
+    {
+      "id": "M02",
+      "title": "权重、激活与 logits",
+      "chapter": "docs/course/02-weights-activations-and-logits.md",
+      "prerequisites": ["M01"],
+      "estimated_hours": 1.0,
+      "labs": ["C01", "C02"],
+      "exercise_groups": ["A1", "A2", "A3", "B1"],
+      "outcomes": [
+        "区分权重大小、当前贡献、分布有效性与因果帮助性",
+        "推导正温度下两个 token 的赔率关系"
+      ],
+      "deliverable": "给出一个最大权重不是最大当前贡献的数值反例，并解释温度的作用。"
+    },
+    {
+      "id": "M03",
+      "title": "Attention 与回路",
+      "chapter": "docs/course/03-attention-and-circuits.md",
+      "prerequisites": ["M02"],
+      "estimated_hours": 1.0,
+      "labs": ["C04"],
+      "exercise_groups": ["C1", "C2", "C3", "C4"],
+      "outcomes": [
+        "分别解释 QK 路由和 OV 写回",
+        "说明为何 Attention heatmap 不是完整因果解释"
+      ],
+      "deliverable": "为一个单头 Attention 例子同时写出 score、权重、value 和输出解释。"
+    },
+    {
+      "id": "M04",
+      "title": "特征与 Superposition",
+      "chapter": "docs/course/04-features-and-superposition.md",
+      "prerequisites": ["M02"],
+      "estimated_hours": 1.0,
+      "labs": ["C06"],
+      "exercise_groups": ["D1", "D2", "D3"],
+      "outcomes": [
+        "区分神经元、特征、方向、子空间与流形",
+        "解释稀疏特征共享维度的容量收益和干扰成本"
+      ],
+      "deliverable": "构造一个 F>d 的表示，并比较单特征与共激活误差。"
+    },
+    {
+      "id": "M05",
+      "title": "推理与生成反馈",
+      "chapter": "docs/course/05-reasoning-and-feedback.md",
+      "prerequisites": ["M01", "M03"],
+      "estimated_hours": 1.0,
+      "labs": ["C05"],
+      "exercise_groups": ["E1", "E2", "E3"],
+      "outcomes": [
+        "区分层内中间状态、跨 token 计算和外显 chain-of-thought",
+        "解释首 token 如何通过写回形成轨迹依赖"
+      ],
+      "deliverable": "构造两条只在首 token 不同的轨迹，并分析它们为何分叉。"
+    },
+    {
+      "id": "M06",
+      "title": "因果可解释性",
+      "chapter": "docs/course/06-causal-interpretability.md",
+      "prerequisites": ["M03", "M04"],
+      "estimated_hours": 1.5,
+      "labs": ["C07", "C08"],
+      "exercise_groups": ["D4", "F1", "F2", "F3", "F4", "F5"],
+      "outcomes": [
+        "区分相关、可解码、必要、充分和机制忠实",
+        "为 probe、ablation、steering 与 patching 配置正确对照"
+      ],
+      "deliverable": "写一张含正负对照、反证条件和结论边界的机制实验卡。"
+    },
+    {
+      "id": "M07",
+      "title": "安全路由",
+      "chapter": "docs/course/07-safety-routing.md",
+      "prerequisites": ["M05", "M06"],
+      "estimated_hours": 1.0,
+      "labs": ["C09"],
+      "exercise_groups": ["E4", "E5"],
+      "outcomes": [
+        "区分内容识别、角色权限、策略状态和最终行为",
+        "用无害代理分析越狱、过度拒绝与 prompt injection 的机制接口"
+      ],
+      "deliverable": "为识别—权限—策略—输出链的每个环节写出一个失败模式和防御层。"
+    },
+    {
+      "id": "M08",
+      "title": "综合项目",
+      "chapter": "docs/course/08-capstone.md",
+      "prerequisites": ["M06", "M07"],
+      "estimated_hours": 4.0,
+      "labs": [],
+      "exercise_groups": ["综合项目"],
+      "outcomes": [
+        "把模糊直觉改写为可证伪的机制命题",
+        "生成可复现报告并明确最大允许结论"
+      ],
+      "deliverable": "完成一份包含理论、toy、反例、干预、对照和证据等级的研究报告。"
+    }
+  ],
+  "experiments": {
+    "C01": {
+      "guide": "docs/labs/c01-weight-activation.md",
+      "readings": ["docs/course/02-weights-activations-and-logits.md"],
+      "why_it_matters": "防止把参数绝对值直接当成功能重要性。",
+      "inspection_points": ["current_contributions", "rare_feature_activation_rate", "effectiveness proxies"],
+      "allowed_conclusion": "权重大小不足以决定当前贡献或给定分布上的有效性。",
+      "forbidden_inference": "真实大模型中的大权重通常都无效。"
+    },
+    "C02": {
+      "guide": "docs/labs/c02-softmax-odds.md",
+      "readings": ["docs/course/02-weights-activations-and-logits.md"],
+      "why_it_matters": "把隐藏状态变化与 token 竞争连接到精确数学关系。",
+      "inspection_points": ["identity_absolute_errors", "odds multiplier", "temperature comparison"],
+      "allowed_conclusion": "在正温度 softmax 中，pairwise log-odds 等于 logit difference 除以温度。",
+      "forbidden_inference": "赔率上升保证某 token 最终被采样。"
+    },
+    "C03": {
+      "guide": "docs/labs/c03-input-conditioning.md",
+      "readings": ["docs/course/01-model-as-conditional-system.md"],
+      "why_it_matters": "纠正 input 必须修改参数才能改变行为的误解。",
+      "inspection_points": ["input states", "feature activations", "logits", "top token"],
+      "allowed_conclusion": "固定参数函数可以对不同输入形成不同激活与输出。",
+      "forbidden_inference": "真实模型只由 toy 中少数可分离状态构成。"
+    },
+    "C04": {
+      "guide": "docs/labs/c04-attention-routing.md",
+      "readings": ["docs/course/03-attention-and-circuits.md"],
+      "why_it_matters": "迫使解释同时覆盖 QK 路由、OV 内容和下游效应。",
+      "inspection_points": ["attention scores", "attention probabilities", "aggregated output"],
+      "allowed_conclusion": "输入变化可在固定矩阵下改变 Attention 路由和写回。",
+      "forbidden_inference": "最高 Attention 位置是最终输出的唯一原因。"
+    },
+    "C05": {
+      "guide": "docs/labs/c05-autoregressive-feedback.md",
+      "readings": ["docs/course/05-reasoning-and-feedback.md"],
+      "why_it_matters": "解释首 token 和已有前缀为何能放大成长期轨迹差异。",
+      "inspection_points": ["forced trajectories", "state feedback", "final state distance"],
+      "allowed_conclusion": "token 写回可以在固定权重系统中产生路径依赖。",
+      "forbidden_inference": "任意真实提示的首 token 都会无限放大。"
+    },
+    "C06": {
+      "guide": "docs/labs/c06-superposition.md",
+      "readings": ["docs/course/04-features-and-superposition.md"],
+      "why_it_matters": "说明多义神经元和非正交特征可能是容量分配结果。",
+      "inspection_points": ["feature directions", "off-diagonal overlap", "coactivation error"],
+      "allowed_conclusion": "稀疏特征可以共享低维空间，并在共激活时产生干扰。",
+      "forbidden_inference": "真实语言特征具有 toy 中相同的规则几何。"
+    },
+    "C07": {
+      "guide": "docs/labs/c07-probe-causality.md",
+      "readings": ["docs/course/06-causal-interpretability.md"],
+      "why_it_matters": "阻止从高 probe 准确率直接跳到模型自然使用。",
+      "inspection_points": ["probe accuracy", "unused-variable ablation", "causal-variable ablation"],
+      "allowed_conclusion": "可解码性本身不证明自然因果使用。",
+      "forbidden_inference": "所有 probe 都没有研究价值。"
+    },
+    "C08": {
+      "guide": "docs/labs/c08-activation-patching.md",
+      "readings": ["docs/course/06-causal-interpretability.md"],
+      "why_it_matters": "把中间状态从相关候选升级为可干预候选中介。",
+      "inspection_points": ["clean margin", "corrupt margin", "patched margin", "negative control"],
+      "allowed_conclusion": "指定状态在指定反事实中可以传递目标效应。",
+      "forbidden_inference": "恢复证明该状态是唯一自然中介。"
+    },
+    "C09": {
+      "guide": "docs/labs/c09-safety-routing.md",
+      "readings": ["docs/course/07-safety-routing.md", "docs/THREAT_MODEL.md"],
+      "why_it_matters": "区分检测、权限、策略和最终行为，避免把安全看成一个开关。",
+      "inspection_points": ["recognition signal", "policy state", "action logits", "policy patch"],
+      "allowed_conclusion": "识别、策略状态与行为在机制上可以分离。",
+      "forbidden_inference": "toy 测量了现实越狱成功率或真实模型使用相同坐标。"
+    }
+  }
+}
