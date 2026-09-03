@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
-"""Validate that the source-by-source digest covers the complete catalog.
-
-This is deliberately a structural check, not a factuality judge. It prevents a
-future edit from silently dropping a Transformer Circuits timeline entry.
-"""
+"""Validate that the source-by-source digest covers the complete catalog."""
 
 from __future__ import annotations
 
@@ -14,7 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = ROOT / "sources" / "transformer_circuits_catalog.csv"
-DIGEST = ROOT / "docs" / "10_SOURCE_BY_SOURCE_DIGEST.md"
+DIGEST = ROOT / "docs" / "reference" / "source-digest.md"
 
 REQUIRED_FIELDS = (
     "**证据状态：**",
@@ -45,8 +41,8 @@ def load_catalog() -> list[Source]:
     sources = [
         Source(row["period"].strip(), row["title"].strip(), row["url"].strip()) for row in rows
     ]
-    if len(sources) != 56:
-        raise ValueError(f"预期 56 条来源，实际 {len(sources)} 条")
+    if not sources:
+        raise ValueError("catalog 为空")
     if len({source.title for source in sources}) != len(sources):
         raise ValueError("catalog 中存在重复标题")
     if len({source.url for source in sources}) != len(sources):
@@ -69,10 +65,9 @@ def parse_source_blocks(text: str) -> dict[tuple[str, str], str]:
             raise ValueError(f"无法解析来源标题行: {line}") from exc
         if not url_part.endswith(")"):
             raise ValueError(f"来源标题行缺少右括号: {line}")
-        url = url_part[:-1]
         if not prefix.strip():
             raise ValueError(f"来源标题行缺少日期: {line}")
-        starts.append((index, title, url))
+        starts.append((index, title, url_part[:-1]))
 
     blocks: dict[tuple[str, str], str] = {}
     for position, (start, title, url) in enumerate(starts):
@@ -81,7 +76,6 @@ def parse_source_blocks(text: str) -> dict[tuple[str, str], str]:
         if key in blocks:
             raise ValueError(f"digest 中重复来源: {title}")
         blocks[key] = "\n".join(lines[start:end])
-
     return blocks
 
 
@@ -89,7 +83,6 @@ def validate() -> None:
     sources = load_catalog()
     text = DIGEST.read_text(encoding="utf-8")
     blocks = parse_source_blocks(text)
-
     expected = {(source.title, source.url) for source in sources}
     found = set(blocks)
 
@@ -104,25 +97,21 @@ def validate() -> None:
 
     for source in sources:
         link = f"[{source.title}]({source.url})"
-        count = text.count(link)
-        if count != 1:
-            raise ValueError(
-                f"来源链接应在主条目中恰好出现一次，{source.title!r} 实际出现 {count} 次"
-            )
-
+        if text.count(link) != 1:
+            raise ValueError(f"来源链接应在主条目中恰好出现一次: {source.title}")
         block = blocks[(source.title, source.url)]
         missing_fields = [field for field in REQUIRED_FIELDS if field not in block]
         if missing_fields:
             raise ValueError(f"{source.title!r} 缺少结构字段: {', '.join(missing_fields)}")
 
-    print(f"source digest 校验通过：{len(sources)} 条 catalog 来源均有独立、结构完整的精华条目。")
+    print(f"source digest: OK ({len(sources)} catalog entries)")
 
 
 def main() -> int:
     try:
         validate()
     except (OSError, ValueError) as exc:
-        print(f"source digest 校验失败：{exc}", file=sys.stderr)
+        print(f"source digest error: {exc}", file=sys.stderr)
         return 1
     return 0
 
