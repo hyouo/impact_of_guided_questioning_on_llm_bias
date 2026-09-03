@@ -1,37 +1,65 @@
 # LLM Theory Lab
 
-本仓库将 Transformer Circuits 研究线索组织成一套可检验的大模型理论，并提供对应实验代码。
+这里不是论文链接堆，也不是让另一个模型给输出打分的黑盒测试集。它是一条从基本数学对象走向因果机制实验的课程。
 
-## 从哪里开始
+## 从这里开始
 
-第一次阅读建议按以下顺序：
+1. 阅读[课程导览](course/index.md)，先回答五个基线问题；
+2. 按 M01–M07 顺序学习，每章运行对应实验；
+3. 完成[练习册](exercises/index.md)，再核对[答案与解析](exercises/solutions.md)；
+4. 用 M08 的模板完成一个小型机制研究项目；
+5. 最后进入深度参考和原始来源。
 
-1. [第一性原理教程](13_FIRST_PRINCIPLES_TUTORIAL.md)
-2. [统一理论综合](09_UNIFIED_SYNTHESIS.md)
-3. [经典机制案例](11_CANONICAL_CASE_STUDIES.md)
-4. [方法与解释矩阵](12_METHODS_AND_INTERPRETATION_MATRIX.md)
-5. [理论到代码实验](14_THEORY_TO_CODE_LAB.md)
-6. [全部来源逐条精华](10_SOURCE_BY_SOURCE_DIGEST.md)
-
-## 核心框架
+## 你要建立的心智模型
 
 ```text
-训练分布 → 权重
-输入与历史 + 固定权重 → 激活与条件路由
+训练分布 → 参数
+输入与历史 + 固定参数 → 当前激活与路由
 激活与回路 → logits
 解码 → token
-token 写回 → 下一步状态
+token 写回 → 下一步状态与新轨迹
 ```
 
-研究目标不是为模型行为编写听起来合理的故事，而是提出能够通过对照、干预和反事实预测被检验的机制命题。
+这条因果链要求你始终区分：
 
-## 运行实验
+- 权重大小、当前贡献、分布有效性和因果帮助性；
+- 神经元、特征、方向、子空间和流形；
+- Attention 的 QK 路由与 OV 写回；
+- 信息可解码、自然使用、必要性和充分性；
+- 内容识别、角色/权限、策略状态和最终输出。
+
+## 三条使用路线
+
+### 学习路线
+
+从[课程导览](course/index.md)进入八个模块。每章包含学习目标、核心模型、具体例子、常见误区、自测和原始来源。
+
+### 实验路线
+
+从[实验手册](labs/index.md)进入 C01–C09。先写预测，再运行：
 
 ```bash
-pip install -e ".[dev]"
-llm-theory-lab list
-llm-theory-lab run-toy
-pytest
+llm-theory-lab course
+llm-theory-lab explain C04
+llm-theory-lab run-toy --ids C04
 ```
 
-完整安装、治理和安全说明见仓库根目录 README。
+### 研究路线
+
+完成课程后再读：
+
+- [统一理论综合](09_UNIFIED_SYNTHESIS.md)
+- [经典机制案例](11_CANONICAL_CASE_STUDIES.md)
+- [方法与解释矩阵](12_METHODS_AND_INTERPRETATION_MATRIX.md)
+- [Transformer Circuits 逐条精华](10_SOURCE_BY_SOURCE_DIGEST.md)
+
+## 结果状态怎么读
+
+| 状态 | 含义 |
+|---|---|
+| `pass` | 本次预注册数值检查成立 |
+| `fail` | 至少一条检查没有达到预期 |
+| `observational` | 只记录观察，不做二元机制判断 |
+| `skipped` | 缺少模型、依赖或运行条件 |
+
+透明 toy 的作用是证明结构可能、验证恒等式，或构造反例推翻错误逻辑；它不能估计真实前沿模型中的普遍效应大小。

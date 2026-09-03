@@ -1,4 +1,4 @@
-.PHONY: help install install-dev format lint test coverage theory docs docs-serve build toy check clean
+.PHONY: help install install-dev format lint test coverage theory docs docs-serve build course explain toy check clean
 
 PYTHON ?= python
 
@@ -10,10 +10,12 @@ help:
 	  "lint         Run Ruff lint and format checks" \
 	  "test         Run the test suite" \
 	  "coverage     Run tests with coverage reports" \
-	  "theory       Validate theory sources and Markdown" \
+	  "theory       Validate sources, curriculum, Markdown, and repository contract" \
 	  "docs         Build documentation in strict mode" \
 	  "docs-serve   Serve documentation locally" \
 	  "build        Build and validate wheel/sdist" \
+	  "course       Print the course modules" \
+	  "explain      Explain C01 as an example experiment" \
 	  "toy          Run C01-C09 experiments" \
 	  "check        Run all local quality gates" \
 	  "clean        Remove generated artifacts"
@@ -42,6 +44,7 @@ theory:
 	$(PYTHON) scripts/normalize_markdown_math.py --check
 	$(PYTHON) scripts/validate_catalog.py
 	$(PYTHON) scripts/validate_source_digest.py
+	$(PYTHON) scripts/validate_curriculum.py
 	$(PYTHON) scripts/check_repository.py
 	$(PYTHON) scripts/check_markdown_links.py
 
@@ -55,6 +58,12 @@ build:
 	rm -rf build dist
 	$(PYTHON) -m build
 	$(PYTHON) -m twine check dist/*
+
+course:
+	llm-theory-lab course
+
+explain:
+	llm-theory-lab explain C01
 
 toy:
 	llm-theory-lab run-toy

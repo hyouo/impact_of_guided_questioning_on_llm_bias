@@ -32,13 +32,16 @@ jobs:
         run: |
           ruff check .
           ruff format --check .
-      - name: Validate theory and repository
+      - name: Validate theory, curriculum, and repository
         run: |
           python scripts/normalize_markdown_math.py --check
           python scripts/validate_catalog.py
           python scripts/validate_source_digest.py
+          python scripts/validate_curriculum.py
           python scripts/check_repository.py
           python scripts/check_markdown_links.py
+          llm-theory-lab course --json > /tmp/curriculum.json
+          llm-theory-lab explain C01 --json > /tmp/c01.json
       - name: Build documentation
         run: mkdocs build --strict
       - name: Build distribution

@@ -1,5 +1,5 @@
 site_name: LLM Theory Lab
-site_description: 大模型权重、激活、回路、推理与安全的理论和可复现实验
+site_description: 大模型权重、激活、回路、推理与安全的中文课程和可复现实验
 site_url: https://hyouo.github.io/impact_of_guided_questioning_on_llm_bias/
 repo_url: https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias
 repo_name: hyouo/impact_of_guided_questioning_on_llm_bias
@@ -10,9 +10,12 @@ theme:
   language: zh
   features:
     - navigation.sections
+    - navigation.indexes
     - navigation.top
     - content.code.copy
     - content.action.edit
+    - search.suggest
+    - search.highlight
 
 markdown_extensions:
   - admonition
@@ -33,31 +36,55 @@ extra_javascript:
 
 nav:
   - 首页: index.md
-  - 入门:
+  - 主课程:
+      - 课程导览: course/index.md
+      - 1｜模型是条件系统: course/01-model-as-conditional-system.md
+      - 2｜权重、激活与 logits: course/02-weights-activations-and-logits.md
+      - 3｜Attention 与回路: course/03-attention-and-circuits.md
+      - 4｜特征与 Superposition: course/04-features-and-superposition.md
+      - 5｜推理与生成反馈: course/05-reasoning-and-feedback.md
+      - 6｜因果可解释性: course/06-causal-interpretability.md
+      - 7｜安全路由: course/07-safety-routing.md
+      - 8｜综合项目: course/08-capstone.md
+  - 实验手册:
+      - 实验导览: labs/index.md
+      - C01｜权重与激活: labs/c01-weight-activation.md
+      - C02｜Softmax 与赔率: labs/c02-softmax-odds.md
+      - C03｜输入条件计算: labs/c03-input-conditioning.md
+      - C04｜Attention 路由: labs/c04-attention-routing.md
+      - C05｜自回归反馈: labs/c05-autoregressive-feedback.md
+      - C06｜Superposition: labs/c06-superposition.md
+      - C07｜Probe 与因果: labs/c07-probe-causality.md
+      - C08｜Activation patching: labs/c08-activation-patching.md
+      - C09｜安全路由代理: labs/c09-safety-routing.md
+  - 练习与自测:
+      - 题目: exercises/index.md
+      - 答案与解析: exercises/solutions.md
+  - 深度理论:
       - 第一性原理教程: 13_FIRST_PRINCIPLES_TUTORIAL.md
       - 理论总图: 00_THEORY_MAP.md
-      - 统一综合: 09_UNIFIED_SYNTHESIS.md
-  - 理论专题:
       - 参数、激活与 token: 01_PARAMETERS_ACTIVATIONS_AND_TOKENS.md
       - 表征、叠加与几何: 02_REPRESENTATIONS_SUPERPOSITION_AND_GEOMETRY.md
       - 回路、Attention 与条件计算: 03_CIRCUITS_ATTENTION_AND_CONDITIONAL_COMPUTATION.md
       - 推理、上下文与生成: 04_REASONING_CONTEXT_AND_GENERATION.md
       - 安全、越狱与 Prompt Injection: 05_SAFETY_JAILBREAK_AND_PROMPT_INJECTION.md
-  - 研究方法:
       - 方法与因果验证: 06_METHODS_AND_CAUSAL_VALIDATION.md
       - 证据边界: 07_EVIDENCE_LIMITS_AND_CLAIMS.md
+      - 开放问题与路线: 08_OPEN_PROBLEMS_AND_RESEARCH_ROADMAP.md
+      - 统一综合: 09_UNIFIED_SYNTHESIS.md
+      - 经典机制案例: 11_CANONICAL_CASE_STUDIES.md
       - 方法解释矩阵: 12_METHODS_AND_INTERPRETATION_MATRIX.md
       - 理论到代码实验: 14_THEORY_TO_CODE_LAB.md
-      - 实验协议: experiments/EXPERIMENT_PROTOCOL.md
-      - 结果结构: experiments/RESULT_SCHEMA.md
-  - 案例与来源:
-      - 经典机制案例: 11_CANONICAL_CASE_STUDIES.md
+  - 来源:
       - 全部来源逐条精华: 10_SOURCE_BY_SOURCE_DIGEST.md
       - Transformer Circuits 索引: TRANSFORMER_CIRCUITS_INDEX.md
       - 术语表: GLOSSARY.md
-  - 项目:
+  - 实验规范:
+      - 实验协议: experiments/EXPERIMENT_PROTOCOL.md
+      - 结果结构: experiments/RESULT_SCHEMA.md
+  - 项目维护:
       - 架构: ARCHITECTURE.md
       - 开发指南: DEVELOPMENT.md
+      - 威胁模型: THREAT_MODEL.md
       - 维护者指南: MAINTAINER_GUIDE.md
       - 发布流程: RELEASING.md
-      - 开放问题与路线: 08_OPEN_PROBLEMS_AND_RESEARCH_ROADMAP.md
