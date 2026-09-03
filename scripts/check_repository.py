@@ -37,6 +37,8 @@ REQUIRED_FILES = (
     "tests/test_package_metadata.py",
     "docs/course/index.md",
     "docs/labs/index.md",
+    "docs/exercises/index.md",
+    "docs/exercises/solutions.md",
     "docs/reference/unified-theory.md",
     "docs/reference/source-digest.md",
 )
@@ -44,6 +46,7 @@ REQUIRED_FILES = (
 REQUIRED_DIRS = (
     "docs/course",
     "docs/labs",
+    "docs/exercises",
     "docs/reference",
     "examples",
     "scripts",
