@@ -77,7 +77,7 @@ llm-theory-lab = "llm_theory_lab.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias"
-Documentation = "https://hyouo.github.io/impact_of_guided_questioning_on_llm_bias/"
+Documentation = "https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias/tree/main/docs"
 Issues = "https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias/issues"
 Source = "https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias"
 
