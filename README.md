@@ -1,17 +1,18 @@
 # LLM Theory Lab
 
-> 用一条清晰的学习路径，理解大模型的权重、激活、Attention、推理、自回归反馈与安全路由；再用可运行实验检验你是否真的理解了。
+> 用一条清晰的学习路径，理解大模型的权重、激活、Attention、推理、自回归反馈与安全路由；再用可运行实验和练习检验你是否真的理解了。
 
 [![CI](https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias/actions/workflows/ci.yml/badge.svg)](https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias/actions/workflows/codeql.yml/badge.svg)](https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias/actions/workflows/codeql.yml)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-本仓库不是论文堆、链接收藏夹或“看几个输出就解释内部机制”的 prompt 项目。它把 [Transformer Circuits](https://transformer-circuits.pub/) 的研究线索整理成三层：
+本仓库不是论文堆、链接收藏夹或“看几个输出就解释内部机制”的 prompt 项目。它把 [Transformer Circuits](https://transformer-circuits.pub/) 的研究线索整理成四层：
 
 ```text
 课程：先建立正确心智模型
 实验：把命题变成可运行的对照与干预
+练习：手算、构造反例并设计实验
 参考：需要研究细节时再进入深度材料和原始来源
 ```
 
@@ -54,7 +55,7 @@ llm-theory-lab run-toy --ids C01 C02 C04
 
 你应该能够解释：参数和激活为什么不是同一件事、相对 logit 如何决定赔率、QK 与 OV 分别做什么。
 
-### 1 天：完成核心课程与实验
+### 1 天：完成核心课程、实验与练习
 
 ```bash
 python -m pip install -e ".[dev]"
@@ -63,7 +64,13 @@ llm-theory-lab run-toy
 pytest
 ```
 
-按 [课程主线](docs/course/index.md) 阅读 8 章，并完成 [实验手册](docs/labs/index.md) 中的 5 个实验。每章都给出学习目标、推导、反例、运行命令、自测题和来源。
+按 [课程主线](docs/course/index.md) 阅读 8 章，完成 [实验手册](docs/labs/index.md) 中的 5 个实验，再用 [练习册](docs/exercises/index.md) 检查自己能否独立推导和设计对照。答案不只给结论，还解释错误推理为什么错误。
+
+推荐循环：
+
+```text
+阅读 → 预测 → 运行 → 修改条件 → 解释失败 → 做题 → 重写结论边界
+```
 
 ### 研究使用：从观察升级到因果证据
 
@@ -118,12 +125,28 @@ llm-theory-lab hf-patch --help
 llm-theory-lab explain C07
 ```
 
+## 练习与能力评估
+
+[练习册](docs/exercises/index.md) 覆盖：
+
+- 三个时间尺度和完整因果链；
+- 权重贡献、softmax 赔率和隐藏方向；
+- QK/OV、softmax 耦合与跨层回路；
+- superposition、SAE 和基底不唯一；
+- 推理、CoT 忠实性和自回归反馈；
+- probe、steering、patching 与替代模型忠实性；
+- 安全识别、权限、策略和行为路由；
+- 完整机制实验卡与审稿人练习。
+
+先独立作答，再查看 [答案与解析](docs/exercises/solutions.md)。完成标准不是“记住名词”，而是能给机制说法补上对象、范围、对照、反证条件和禁止外推。
+
 ## 仓库结构
 
 ```text
 .
 ├── docs/course/             # 从零开始的 8 章课程
 ├── docs/labs/               # 与课程配套的实验手册
+├── docs/exercises/          # 练习、答案和能力量表
 ├── docs/reference/          # 深度综合、案例、方法和来源
 ├── examples/                # 可直接运行的最小示例
 ├── src/llm_theory_lab/      # 实验包与 CLI
