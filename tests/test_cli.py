@@ -9,7 +9,7 @@ def test_cli_list(capsys) -> None:
     main(["list"])
     output = capsys.readouterr().out
     assert "C01" in output
-    assert "C09" in output
+    assert "C12" in output
 
 
 def test_cli_list_category(capsys) -> None:
@@ -17,6 +17,8 @@ def test_cli_list_category(capsys) -> None:
     output = capsys.readouterr().out
     assert "C07" in output
     assert "C08" in output
+    assert "C11" in output
+    assert "C12" in output
     assert "C01" not in output
 
 
@@ -29,12 +31,12 @@ def test_cli_roadmap(capsys) -> None:
 
 
 def test_cli_explain(capsys) -> None:
-    main(["explain", "c07"])
+    main(["explain", "c10"])
     output = capsys.readouterr().out
-    assert "可解码" in output
+    assert "基底" in output
     assert "反证条件" in output
     assert "不能推出" in output
-    assert "docs/labs/04-probe-vs-causality.md" in output
+    assert "docs/labs/10-basis-invariance.md" in output
 
 
 def test_cli_explain_unknown_is_parser_error() -> None:
@@ -45,6 +47,6 @@ def test_cli_explain_unknown_is_parser_error() -> None:
 
 def test_cli_run_selected_toy(tmp_path: Path) -> None:
     output_dir = tmp_path / "reports"
-    main(["run-toy", "--ids", "C01", "C02", "--output-dir", str(output_dir)])
+    main(["run-toy", "--ids", "C10", "C11", "C12", "--output-dir", str(output_dir)])
     assert (output_dir / "results.json").exists()
     assert (output_dir / "report.md").exists()

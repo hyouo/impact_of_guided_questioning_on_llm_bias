@@ -57,12 +57,12 @@ def _build_parser() -> argparse.ArgumentParser:
     explain = subparsers.add_parser("explain", help="explain one experiment before running it")
     explain.add_argument("experiment_id", help="experiment ID, e.g. C01")
 
-    toy = subparsers.add_parser("run-toy", help="run transparent C01-C09 experiments")
+    toy = subparsers.add_parser("run-toy", help="run transparent C01-C12 experiments")
     toy.add_argument(
         "--ids",
         nargs="*",
         default=None,
-        help="optional experiment IDs, e.g. C01 C04 C07",
+        help="optional experiment IDs, e.g. C01 C04 C11",
     )
     toy.add_argument("--output-dir", default="reports/toy", help="report directory")
 

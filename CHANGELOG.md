@@ -6,7 +6,29 @@
 
 ### Added
 
-- 预留开放模型配对数据、跨模型 patching 与 SAE 评价工作。
+- 预留开放模型配对数据、跨模型 patching、SAE 评价与训练动力学实验。
+
+## [0.4.0] - 2026-09-03
+
+### Added
+
+- C10 可逆基底变换实验，精确区分函数不变性与内部坐标不唯一。
+- C11 冗余路径实验，展示 accuracy 饱和如何掩盖连续 margin 的因果变化。
+- C12 steering 控制实验，加入剂量、反向、随机方向和正交方向基线。
+- C01–C12 一对一实验手册，不再让多个机制共用一个实验页面。
+- 基底、冗余与 steering 的进阶练习和答案。
+- 三个新实验的最小可运行示例和针对性测试。
+
+### Changed
+
+- 第 4 章加入基底不唯一与 privileged basis 的明确边界。
+- 第 6 章加入消融假阴性、连续指标、联合消融和 steering 特异性控制。
+- README、课程地图、实验导航和 CLI 更新为十二个透明实验。
+- 学习路径检查改为从实验注册表验证唯一手册、课程映射和练习覆盖。
+
+### Removed
+
+- 将 C05/C09 混在一起的旧实验页面；两者现在各有独立手册。
 
 ## [0.3.0] - 2026-09-03
 
@@ -26,7 +48,7 @@
 - 将平铺的编号文档重组为 `course/`、`labs/`、`exercises/` 和 `reference/` 四层。
 - 将 README 从文件清单改为按 1 小时、1 天和研究使用划分的学习入口。
 - 为每个 C01–C09 实验补充直觉、反证条件、课程位置和禁止外推。
-- 让 CI 同时验证学习路径、 learner-facing CLI、严格文档构建和实验报告。
+- 让 CI 同时验证学习路径、learner-facing CLI、严格文档构建和实验报告。
 - 将包描述与引用元数据更新为课程和实验平台定位。
 
 ### Removed
@@ -63,7 +85,8 @@
 - C01–C09 透明实验以及 M01–M03 开放模型实验入口。
 - 实验协议、结果结构和基础 CI。
 
-[Unreleased]: https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias/releases/tag/v0.2.0
 [0.1.0]: https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias/commits/4510c197b46a6dee52590ddb4b655cdd69b2779e

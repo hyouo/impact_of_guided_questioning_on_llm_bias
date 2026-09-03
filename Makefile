@@ -15,7 +15,7 @@ help:
 	  "docs         Build documentation in strict mode" \
 	  "docs-serve   Serve documentation locally" \
 	  "build        Build and validate wheel/sdist" \
-	  "toy          Run C01-C09 experiments" \
+	  "toy          Run C01-C12 experiments" \
 	  "smoke        Exercise learner-facing CLI entry points" \
 	  "check        Run all local quality gates" \
 	  "clean        Remove generated artifacts"
@@ -66,7 +66,7 @@ toy:
 
 smoke:
 	llm-theory-lab roadmap
-	llm-theory-lab explain C07
+	llm-theory-lab explain C12
 
 check: lint theory learning test smoke docs build toy
 
