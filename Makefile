@@ -1,4 +1,4 @@
-.PHONY: help install install-dev format lint test coverage theory docs docs-serve build toy check clean
+.PHONY: help install install-dev format lint test coverage theory learning docs docs-serve build toy smoke check clean
 
 PYTHON ?= python
 
@@ -10,11 +10,13 @@ help:
 	  "lint         Run Ruff lint and format checks" \
 	  "test         Run the test suite" \
 	  "coverage     Run tests with coverage reports" \
-	  "theory       Validate theory sources and Markdown" \
+	  "theory       Validate sources, repository, and Markdown" \
+	  "learning     Validate course, labs, exercises, and examples" \
 	  "docs         Build documentation in strict mode" \
 	  "docs-serve   Serve documentation locally" \
 	  "build        Build and validate wheel/sdist" \
 	  "toy          Run C01-C09 experiments" \
+	  "smoke        Exercise learner-facing CLI entry points" \
 	  "check        Run all local quality gates" \
 	  "clean        Remove generated artifacts"
 
@@ -45,11 +47,14 @@ theory:
 	$(PYTHON) scripts/check_repository.py
 	$(PYTHON) scripts/check_markdown_links.py
 
+learning:
+	$(PYTHON) scripts/check_learning_path.py
+
 docs:
-	mkdocs build --strict
+	$(PYTHON) -m mkdocs build --strict
 
 docs-serve:
-	mkdocs serve
+	$(PYTHON) -m mkdocs serve
 
 build:
 	rm -rf build dist
@@ -59,7 +64,11 @@ build:
 toy:
 	llm-theory-lab run-toy
 
-check: lint theory test docs build toy
+smoke:
+	llm-theory-lab roadmap
+	llm-theory-lab explain C07
+
+check: lint theory learning test smoke docs build toy
 
 clean:
 	rm -rf build dist site reports .coverage coverage.xml htmlcov .pytest_cache .ruff_cache

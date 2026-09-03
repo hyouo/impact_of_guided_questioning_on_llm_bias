@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "llm-theory-lab"
-version = "0.2.0"
-description = "Theory-linked, reproducible experiments for LLM mechanisms and mechanistic interpretability."
+version = "0.3.0"
+description = "A Chinese LLM theory course with evidence-bounded, reproducible mechanism experiments."
 readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.10"
 license = "MIT"
@@ -19,9 +19,11 @@ keywords = [
   "transformer-circuits",
   "causal-inference",
   "representation-learning",
+  "education",
 ]
 classifiers = [
   "Development Status :: 3 - Alpha",
+  "Intended Audience :: Education",
   "Intended Audience :: Science/Research",
   "Natural Language :: Chinese (Simplified)",
   "Operating System :: OS Independent",
@@ -75,7 +77,7 @@ llm-theory-lab = "llm_theory_lab.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias"
-Documentation = "https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias/tree/main/docs"
+Documentation = "https://hyouo.github.io/impact_of_guided_questioning_on_llm_bias/"
 Issues = "https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias/issues"
 Source = "https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias"
 

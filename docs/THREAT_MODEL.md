@@ -2,7 +2,7 @@
 
 ## 1. Purpose
 
-This document identifies security and integrity risks for the repository, experiment runner, model backends, data, and published conclusions. It complements [`../SECURITY.md`](../SECURITY.md), which describes private vulnerability reporting.
+This document identifies security and integrity risks for the repository, experiment runner, model backends, data, and published conclusions. It complements the repository [security policy](https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias/blob/main/SECURITY.md), which describes private vulnerability reporting.
 
 The project is a research and education platform, not a hardened multi-tenant inference service. Controls should be interpreted against that scope.
 
@@ -46,7 +46,7 @@ The model includes deliberate and accidental risks:
 - a compromised dependency, GitHub Action, model repository, or dataset;
 - unsafe model loading that executes remote code;
 - accidental credential or private-data publication;
-- prompt or data content influencing an evaluator or report generator as if it were trusted control text;
+- prompt or data content influencing an evaluator as if it were trusted control text;
 - selective reporting, metric changes after inspection, or deletion of falsifying runs;
 - incorrect attribution of a primary-source claim;
 - a reader converting a safety mechanism example into an operational bypass technique;
@@ -131,8 +131,6 @@ Unless the repository later becomes a hosted service, the following are outside 
 
 ## 8. Secure experiment checklist
 
-Before running an external model experiment:
-
 ```text
 [ ] Record exact model and tokenizer revisions.
 [ ] Review model card, license, and remote-code requirements.
@@ -147,13 +145,4 @@ Before running an external model experiment:
 
 ## 9. Reassessment triggers
 
-Revisit this threat model when the project adds:
-
-- a hosted interface or shared execution service;
-- automatic model or dataset downloads in CI;
-- remote-code-enabled models;
-- third-party contribution execution with secrets;
-- large public safety datasets;
-- automated agents, tools, or network access;
-- package publication to a public registry;
-- a second maintainer or organization-level governance.
+Revisit this threat model when the project adds a hosted service, automatic model downloads in CI, remote-code-enabled models, third-party execution with secrets, large public safety datasets, networked agents, or organization-level governance.

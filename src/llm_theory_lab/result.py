@@ -98,6 +98,30 @@ def checked_result(
     )
 
 
+def _learning_metadata(result: ExperimentResult) -> Mapping[str, Any]:
+    value = result.metadata.get("learning")
+    return value if isinstance(value, Mapping) else {}
+
+
+def _append_learning_guide(lines: list[str], result: ExperimentResult) -> None:
+    learning = _learning_metadata(result)
+    if not learning:
+        return
+
+    lines.extend(["", "### 怎样解释这次结果", ""])
+    labels = (
+        ("直觉", "intuition"),
+        ("反证条件", "falsifier"),
+        ("不能推出", "does_not_show"),
+        ("课程位置", "lesson_path"),
+        ("实验手册", "lab_path"),
+    )
+    for label, key in labels:
+        value = learning.get(key)
+        if value:
+            lines.append(f"- **{label}：** {value}")
+
+
 def write_report(
     results: Iterable[ExperimentResult],
     *,
@@ -120,12 +144,15 @@ def write_report(
     lines = [
         "# LLM Theory Lab 实验报告",
         "",
+        "> `pass` 只表示本次预注册检查成立；请同时阅读反证条件与禁止外推。",
+        "",
         "| ID | 实验 | 证据层级 | 状态 |",
         "|---|---|---|---|",
     ]
     for result in result_list:
         lines.append(
-            f"| `{result.experiment_id}` | {result.title} | {result.evidence_level} | **{result.status}** |"
+            f"| `{result.experiment_id}` | {result.title} | {result.evidence_level} | "
+            f"**{result.status}** |"
         )
 
     for result in result_list:
@@ -137,25 +164,29 @@ def write_report(
                 f"**理论命题：** {result.theory_claim}",
                 "",
                 f"**状态：** `{result.status}`；**证据层级：** `{result.evidence_level}`",
-                "",
-                "### 检查",
-                "",
             ]
         )
+        _append_learning_guide(lines, result)
+        lines.extend(["", "### 预注册检查", ""])
+
         if result.checks:
             lines.extend(["| 检查 | 通过 | 观测 | 预期 |", "|---|---:|---|---|"])
             for check in result.checks:
                 observed = json.dumps(_builtin(check.observed), ensure_ascii=False)
                 lines.append(
-                    f"| {check.name} | {'是' if check.passed else '否'} | `{observed}` | {check.expectation} |"
+                    f"| {check.name} | {'是' if check.passed else '否'} | "
+                    f"`{observed}` | {check.expectation} |"
                 )
         else:
             lines.append("该实验是探索性观测，不使用二元通过/失败标准。")
 
-        lines.extend(["", "### 指标", "", "```json"])
+        lines.extend(["", "### 原始指标", "", "```json"])
         lines.append(json.dumps(_builtin(result.metrics), ensure_ascii=False, indent=2))
-        lines.extend(["```", "", "### 限制", ""])
-        for caveat in result.caveats:
-            lines.append(f"- {caveat}")
+        lines.extend(["```", "", "### 实验限制", ""])
+        if result.caveats:
+            for caveat in result.caveats:
+                lines.append(f"- {caveat}")
+        else:
+            lines.append("- 本次结果未附加额外限制；仍受证据层级和实验范围约束。")
 
     markdown_target.write_text("\n".join(lines) + "\n", encoding="utf-8")

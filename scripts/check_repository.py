@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the repository's standard layout and version contract."""
+"""Validate the repository's standard layout, learning path, and version contract."""
 
 from __future__ import annotations
 
@@ -32,13 +32,26 @@ REQUIRED_FILES = (
     ".github/ISSUE_TEMPLATE/bug.yml",
     ".github/ISSUE_TEMPLATE/theory.yml",
     ".github/ISSUE_TEMPLATE/experiment.yml",
+    ".github/workflows/ci.yml",
+    ".github/workflows/codeql.yml",
+    ".github/workflows/docs.yml",
+    "scripts/check_learning_path.py",
     "src/llm_theory_lab/__init__.py",
     "src/llm_theory_lab/py.typed",
     "tests/test_package_metadata.py",
+    "docs/course/index.md",
+    "docs/labs/index.md",
+    "docs/exercises/index.md",
+    "docs/exercises/solutions.md",
+    "docs/reference/unified-theory.md",
+    "docs/reference/source-digest.md",
 )
 
 REQUIRED_DIRS = (
-    "docs",
+    "docs/course",
+    "docs/labs",
+    "docs/exercises",
+    "docs/reference",
     "examples",
     "scripts",
     "sources",
@@ -46,11 +59,18 @@ REQUIRED_DIRS = (
     "tests",
 )
 
+FORBIDDEN_PATHS = (
+    "code",
+    ".github/workflows/integrate-exercises-once.yml",
+)
+
 STALE_PATTERNS = (
     'pip install -e "./code',
     "pytest code/tests",
     "code/src/llm_theory_lab",
     "cd code\n",
+    "13_FIRST_PRINCIPLES_TUTORIAL.md",
+    "14_THEORY_TO_CODE_LAB.md",
 )
 
 
@@ -69,6 +89,11 @@ def main() -> int:
     for relative in REQUIRED_DIRS:
         if not (ROOT / relative).is_dir():
             fail(f"missing required directory: {relative}")
+            errors += 1
+
+    for relative in FORBIDDEN_PATHS:
+        if (ROOT / relative).exists():
+            fail(f"obsolete or one-time path still exists: {relative}")
             errors += 1
 
     pyproject_path = ROOT / "pyproject.toml"
@@ -106,8 +131,7 @@ def main() -> int:
             for pattern in STALE_PATTERNS:
                 if pattern in text:
                     fail(
-                        f"stale nested-project reference {pattern!r} "
-                        f"in {candidate.relative_to(ROOT)}"
+                        f"stale or duplicate reference {pattern!r} in {candidate.relative_to(ROOT)}"
                     )
                     errors += 1
 
