@@ -118,8 +118,7 @@ def main() -> int:
             for pattern in STALE_PATTERNS:
                 if pattern in text:
                     fail(
-                        f"stale or duplicate reference {pattern!r} "
-                        f"in {candidate.relative_to(ROOT)}"
+                        f"stale or duplicate reference {pattern!r} in {candidate.relative_to(ROOT)}"
                     )
                     errors += 1
 
