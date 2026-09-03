@@ -39,6 +39,11 @@ LAB_FILES = (
     "docs/labs/05-feedback-and-safety.md",
 )
 
+EXERCISE_FILES = (
+    "docs/exercises/index.md",
+    "docs/exercises/solutions.md",
+)
+
 EXAMPLE_FILES = tuple(
     f"examples/{index:02d}_{name}.py"
     for index, name in (
@@ -79,10 +84,23 @@ def fail(message: str) -> None:
     print(f"learning-path error: {message}", file=sys.stderr)
 
 
+def _require_text(path: Path, snippets: tuple[str, ...], relative: str) -> int:
+    if not path.is_file():
+        return 0
+    text = path.read_text(encoding="utf-8")
+    errors = 0
+    for snippet in snippets:
+        if snippet not in text:
+            fail(f"{relative} missing required content {snippet!r}")
+            errors += 1
+    return errors
+
+
 def main() -> int:
     errors = 0
 
-    for relative in COURSE_FILES + LAB_FILES + EXAMPLE_FILES:
+    required_files = COURSE_FILES + LAB_FILES + EXERCISE_FILES + EXAMPLE_FILES
+    for relative in required_files:
         if not (ROOT / relative).is_file():
             fail(f"missing required learning file: {relative}")
             errors += 1
@@ -104,10 +122,38 @@ def main() -> int:
             fail(f"{relative} does not state a conclusion boundary")
             errors += 1
 
+    exercise_path = ROOT / "docs/exercises/index.md"
+    solution_path = ROOT / "docs/exercises/solutions.md"
+    exercise_sections = tuple(f"# {letter}｜" for letter in "ABCDEFGH")
+    solution_sections = tuple(f"# {letter}｜" for letter in "ABCDEFGH")
+    errors += _require_text(exercise_path, exercise_sections, "docs/exercises/index.md")
+    errors += _require_text(solution_path, solution_sections, "docs/exercises/solutions.md")
+    errors += _require_text(
+        exercise_path,
+        tuple(f"C{index:02d}" for index in range(1, 10)),
+        "docs/exercises/index.md",
+    )
+    errors += _require_text(
+        solution_path,
+        ("# 自我评分量表", "必要与充分", "Prompt injection"),
+        "docs/exercises/solutions.md",
+    )
+
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
-    for required in ("docs/course/index.md", "docs/labs/index.md", "llm-theory-lab explain"):
+    for required in (
+        "docs/course/index.md",
+        "docs/labs/index.md",
+        "docs/exercises/index.md",
+        "llm-theory-lab explain",
+    ):
         if required not in readme:
             fail(f"README.md missing primary entry {required!r}")
+            errors += 1
+
+    course_index = (ROOT / "docs/course/index.md").read_text(encoding="utf-8")
+    for required in ("../labs/index.md", "../exercises/index.md", "../exercises/solutions.md"):
+        if required not in course_index:
+            fail(f"course index does not complete the learning loop with {required!r}")
             errors += 1
 
     for relative in LEGACY_PATHS:
@@ -121,7 +167,7 @@ def main() -> int:
     print(
         "learning path: OK "
         f"({len(COURSE_FILES) - 1} lessons, {len(LAB_FILES) - 1} labs, "
-        f"{len(EXAMPLE_FILES)} examples)"
+        f"{len(EXERCISE_FILES)} exercise documents, {len(EXAMPLE_FILES)} examples)"
     )
     return 0
 
