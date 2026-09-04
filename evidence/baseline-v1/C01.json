@@ -1,0 +1,72 @@
+{
+  "caveats": [
+    "这里的 effectiveness 是 E[(w·a)^2] 玩具代理，不是任何论文指标的逐字复现。",
+    "真实 Transformer 还包含门控、归一化、注意力、抵消和冗余路径。"
+  ],
+  "checks": [
+    {
+      "expectation": "源激活为 0 时，权重再大也应有 0 直接贡献",
+      "name": "大权重当前可以零贡献",
+      "observed": 0.0,
+      "passed": true,
+      "rationale": ""
+    },
+    {
+      "expectation": "当前贡献由 weight × activation 决定",
+      "name": "较小权重当前可以主导",
+      "observed": [
+        0.0,
+        1.2
+      ],
+      "passed": true,
+      "rationale": ""
+    },
+    {
+      "expectation": "罕见弱激活的大权重可比常见激活的小权重更不有效",
+      "name": "权重大小不等于分布有效性",
+      "observed": {
+        "large_effectiveness": 0.00143092076981,
+        "large_weight": 8.0,
+        "smaller_effectiveness": 1.44407040046,
+        "smaller_weight": 1.2
+      },
+      "passed": true,
+      "rationale": ""
+    }
+  ],
+  "evidence_level": "L1-transparent-toy",
+  "experiment_id": "C01",
+  "metadata": {
+    "learning": {
+      "category": "weights",
+      "claim_id": "H-C01",
+      "claim_revision": 1,
+      "does_not_show": "不估计真实大模型中 interference weights 的比例，也不包含完整下游抵消。",
+      "falsifier": "在构造分布中，大权重无论源激活如何都始终产生更大作用。",
+      "intuition": "连接的当前贡献至少要乘以源激活；在数据分布上还要考虑激活频率。",
+      "lab_path": "docs/labs/02-weight-vs-activation.md",
+      "lesson_path": "docs/course/02-weights-activations-and-logits.md",
+      "model_revision": "transparent-numpy-v1",
+      "reproduction_status": "transparent-proxy",
+      "source_urls": [
+        "https://transformer-circuits.pub/2025/interference-weights/index.html",
+        "https://transformer-circuits.pub/2026/interference_effectiveness_helpfulness/index.html"
+      ]
+    }
+  },
+  "metrics": {
+    "current_contributions": [
+      0.0,
+      1.2
+    ],
+    "effectiveness_ratio_large_over_small": 0.000990894051531,
+    "large_weight_effectiveness_proxy": 0.00143092076981,
+    "rare_feature_activation_rate": 0.00865,
+    "samples": 20000,
+    "seed": 7,
+    "smaller_weight_effectiveness_proxy": 1.44407040046
+  },
+  "status": "pass",
+  "theory_claim": "大权重不必有大当前作用或大分布有效性。",
+  "title": "权重、激活与有效性"
+}

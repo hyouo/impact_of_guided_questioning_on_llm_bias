@@ -1,0 +1,304 @@
+{
+  "caveats": [
+    "正五边形方向是人为构造的，不是从模型中学习出的 SAE 字典。",
+    "真实语言特征并非独立同分布，且可能位于子空间或连续流形上。"
+  ],
+  "checks": [
+    {
+      "expectation": "F>d，表示是过完备的",
+      "name": "特征数大于维度",
+      "observed": {
+        "dimensions": 2,
+        "features": 5
+      },
+      "passed": true,
+      "rationale": ""
+    },
+    {
+      "expectation": "单个特征激活时，最近方向识别准确率为 1",
+      "name": "稀疏单特征仍可识别",
+      "observed": 1.0,
+      "passed": true,
+      "rationale": ""
+    },
+    {
+      "expectation": "两特征共激活时识别下降，且方向非正交",
+      "name": "共激活产生干扰",
+      "observed": {
+        "max_abs_off_diagonal_gram": 0.809016994375,
+        "pair_accuracy": 0.5,
+        "single_accuracy": 1.0
+      },
+      "passed": true,
+      "rationale": ""
+    }
+  ],
+  "evidence_level": "L1-transparent-toy",
+  "experiment_id": "C06",
+  "metadata": {
+    "learning": {
+      "category": "representation",
+      "claim_id": "H-C06",
+      "claim_revision": 1,
+      "does_not_show": "人工二维几何不是学习出的 SAE 字典，也不代表真实模型特征独立。",
+      "falsifier": "F>d 时单特征完全不可辨认，或共激活从不增加干扰。",
+      "intuition": "稀疏特征很少共现时，可以共享少量维度并接受有限干扰。",
+      "lab_path": "docs/labs/07-superposition.md",
+      "lesson_path": "docs/course/04-features-and-superposition.md",
+      "model_revision": "transparent-numpy-v1",
+      "reproduction_status": "transparent-proxy",
+      "source_urls": [
+        "https://transformer-circuits.pub/2022/toy_model/index.html",
+        "https://transformer-circuits.pub/2023/superposition-composition/index.html"
+      ]
+    }
+  },
+  "metrics": {
+    "feature_directions": [
+      [
+        1.0,
+        0.0
+      ],
+      [
+        0.309016994375,
+        0.951056516295
+      ],
+      [
+        -0.809016994375,
+        0.587785252292
+      ],
+      [
+        -0.809016994375,
+        -0.587785252292
+      ],
+      [
+        0.309016994375,
+        -0.951056516295
+      ]
+    ],
+    "gram_matrix": [
+      [
+        1.0,
+        0.309016994375,
+        -0.809016994375,
+        -0.809016994375,
+        0.309016994375
+      ],
+      [
+        0.309016994375,
+        1.0,
+        0.309016994375,
+        -0.809016994375,
+        -0.809016994375
+      ],
+      [
+        -0.809016994375,
+        0.309016994375,
+        1.0,
+        0.309016994375,
+        -0.809016994375
+      ],
+      [
+        -0.809016994375,
+        -0.809016994375,
+        0.309016994375,
+        1.0,
+        0.309016994375
+      ],
+      [
+        0.309016994375,
+        -0.809016994375,
+        -0.809016994375,
+        0.309016994375,
+        1.0
+      ]
+    ],
+    "pair_feature_accuracy": 0.5,
+    "pair_records": [
+      {
+        "active_features": [
+          0,
+          1
+        ],
+        "correct": true,
+        "decoded_top2": [
+          0,
+          1
+        ],
+        "scores": [
+          1.30901699437,
+          1.30901699437,
+          -0.5,
+          -1.61803398875,
+          -0.5
+        ]
+      },
+      {
+        "active_features": [
+          0,
+          2
+        ],
+        "correct": false,
+        "decoded_top2": [
+          1,
+          2
+        ],
+        "scores": [
+          0.190983005625,
+          0.61803398875,
+          0.190983005625,
+          -0.5,
+          -0.5
+        ]
+      },
+      {
+        "active_features": [
+          0,
+          3
+        ],
+        "correct": false,
+        "decoded_top2": [
+          3,
+          4
+        ],
+        "scores": [
+          0.190983005625,
+          -0.5,
+          -0.5,
+          0.190983005625,
+          0.61803398875
+        ]
+      },
+      {
+        "active_features": [
+          0,
+          4
+        ],
+        "correct": true,
+        "decoded_top2": [
+          0,
+          4
+        ],
+        "scores": [
+          1.30901699437,
+          -0.5,
+          -1.61803398875,
+          -0.5,
+          1.30901699437
+        ]
+      },
+      {
+        "active_features": [
+          1,
+          2
+        ],
+        "correct": true,
+        "decoded_top2": [
+          1,
+          2
+        ],
+        "scores": [
+          -0.5,
+          1.30901699437,
+          1.30901699437,
+          -0.5,
+          -1.61803398875
+        ]
+      },
+      {
+        "active_features": [
+          1,
+          3
+        ],
+        "correct": false,
+        "decoded_top2": [
+          2,
+          3
+        ],
+        "scores": [
+          -0.5,
+          0.190983005625,
+          0.61803398875,
+          0.190983005625,
+          -0.5
+        ]
+      },
+      {
+        "active_features": [
+          1,
+          4
+        ],
+        "correct": false,
+        "decoded_top2": [
+          0,
+          4
+        ],
+        "scores": [
+          0.61803398875,
+          0.190983005625,
+          -0.5,
+          -0.5,
+          0.190983005625
+        ]
+      },
+      {
+        "active_features": [
+          2,
+          3
+        ],
+        "correct": true,
+        "decoded_top2": [
+          2,
+          3
+        ],
+        "scores": [
+          -1.61803398875,
+          -0.5,
+          1.30901699437,
+          1.30901699437,
+          -0.5
+        ]
+      },
+      {
+        "active_features": [
+          2,
+          4
+        ],
+        "correct": false,
+        "decoded_top2": [
+          3,
+          4
+        ],
+        "scores": [
+          -0.5,
+          -0.5,
+          0.190983005625,
+          0.61803398875,
+          0.190983005625
+        ]
+      },
+      {
+        "active_features": [
+          3,
+          4
+        ],
+        "correct": true,
+        "decoded_top2": [
+          3,
+          4
+        ],
+        "scores": [
+          -0.5,
+          -1.61803398875,
+          -0.5,
+          1.30901699437,
+          1.30901699437
+        ]
+      }
+    ],
+    "single_feature_accuracy": 1.0
+  },
+  "status": "pass",
+  "theory_claim": "稀疏特征可过完备表示，但共激活会产生非正交干扰。",
+  "title": "Superposition"
+}

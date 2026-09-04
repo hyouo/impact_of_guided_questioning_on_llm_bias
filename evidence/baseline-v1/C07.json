@@ -1,0 +1,64 @@
+{
+  "caveats": [
+    "这是刻意构造的反例，用于否定一种错误推理，而不是估计真实 probe 的可靠度。",
+    "在真实模型中，需要 patching、ablation、mediation 等方法检验信息是否被使用。"
+  ],
+  "checks": [
+    {
+      "expectation": "held-out probe accuracy > 0.98",
+      "name": "未使用变量高度可解码",
+      "observed": 1.0,
+      "passed": true,
+      "rationale": ""
+    },
+    {
+      "expectation": "平均输出变化接近 0",
+      "name": "消融可解码变量不改变模型输出",
+      "observed": 0.0,
+      "passed": true,
+      "rationale": ""
+    },
+    {
+      "expectation": "消融真正被输出头读取的变量应显著改变输出",
+      "name": "正向因果对照有效",
+      "observed": 2.0035783974,
+      "passed": true,
+      "rationale": ""
+    }
+  ],
+  "evidence_level": "L1-transparent-counterexample",
+  "experiment_id": "C07",
+  "metadata": {
+    "learning": {
+      "category": "methods",
+      "claim_id": "H-C07",
+      "claim_revision": 1,
+      "does_not_show": "不估计现实 probe 的平均可靠度；它只构造一个反例推翻错误蕴含。",
+      "falsifier": "任何高准确率 probe 的变量被消融后都必须改变输出。",
+      "intuition": "表示可以包含冗余信息，而原模型的下游计算完全忽略它。",
+      "lab_path": "docs/labs/04-probe-vs-causality.md",
+      "lesson_path": "docs/course/06-causal-interpretability.md",
+      "model_revision": "transparent-numpy-v1",
+      "reproduction_status": "transparent-proxy",
+      "source_urls": [
+        "https://transformer-circuits.pub/2022/mech-interp-essay/index.html",
+        "https://transformer-circuits.pub/2025/attribution-graphs/methods.html"
+      ]
+    }
+  },
+  "metrics": {
+    "mean_output_change_after_causal_ablation": 2.0035783974,
+    "mean_output_change_after_unused_ablation": 0.0,
+    "probe_accuracy_unused_variable": 1.0,
+    "probe_weights": [
+      0.00294447442494,
+      0.994582331446,
+      0.000535608560491
+    ],
+    "samples": 4000,
+    "seed": 13
+  },
+  "status": "pass",
+  "theory_claim": "可解码不等于被模型输出头实际使用。",
+  "title": "Probe 与因果使用"
+}

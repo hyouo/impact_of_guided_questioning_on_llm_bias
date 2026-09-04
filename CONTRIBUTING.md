@@ -1,6 +1,6 @@
 # 贡献指南
 
-感谢你改进本仓库。项目同时包含课程、实验、练习和研究参考；贡献必须让“主张—证据—代码—学习目标—结论边界”保持一致。
+感谢你改进本仓库。项目同时包含课程、实验、练习、研究参考和机器可读证据；贡献必须让“主张—来源—代码—结果—学习目标—结论边界”保持一致。
 
 ## 开发环境
 
@@ -22,6 +22,7 @@ make format       # 自动格式化
 make lint         # 静态检查
 make test         # 单元测试
 make learning     # 课程—实验—练习契约
+make evidence     # 重跑、校验证据并比较审查基线
 make docs         # 严格构建文档
 make check        # 完整本地质量检查
 ```
@@ -36,7 +37,8 @@ make check        # 完整本地质量检查
 | 可运行教学实验 | `src/llm_theory_lab/experiments/` 与 `docs/labs/` | 注册表、测试、示例或练习 |
 | 课后题与推导 | `docs/exercises/` | 答案、解析和对应课程 |
 | 长篇综合、案例、术语或文献 | `docs/reference/` | 原始来源和证据状态 |
-| 实验协议或结果格式 | `docs/experiments/` | 代码与测试同步 |
+| 实验协议、结果或台账格式 | `docs/experiments/`、`schemas/` | 代码、迁移说明与测试同步 |
+| 审查过的规范化结果 | `evidence/` | package-data 镜像与漂移理由 |
 | 项目维护信息 | 现有项目文档 | 不进入课程主线 |
 
 只有当现有 8 章课程无法容纳一个真正独立的学习阶段时，才考虑新增章节；PR 必须说明为什么扩展现有章节不足。
@@ -67,17 +69,19 @@ chore: update dependency constraints
 理论修改至少说明：
 
 ```text
+Claim ID / revision：稳定标识与版本
 Claim：精确主张
 Object：参数、激活、特征、头、路径、logit、token 或行为
 Scope：适用模型、任务、输入与运行条件
-Evidence：来源和证据等级
+Reproduction status：exact、open-model、transparent-proxy、partial 或 blocked
+Evidence：原始来源和证据等级
 Alternatives：至少一个替代解释
 Falsifier：什么结果会削弱该主张
 Forbidden inference：不能据此推出什么
 Learning outcome：学习者完成后能独立做什么
 ```
 
-请区分原始论文结论、作者解释、仓库综合与个人假设。月度研究更新、玩具模型和正式研究论文不能等权引用。
+请区分原始论文结论、作者解释、仓库综合与个人假设。月度研究更新、玩具模型和正式研究论文不能等权引用。已有 `claim_id` 的文字、范围、指标或判定规则发生实质变化时，必须提高 `claim_revision`，不能静默改写旧主张。
 
 ## 实验贡献
 
@@ -101,8 +105,28 @@ Conclusion boundary：实验最多支持什么
 - 固定或保存随机种子；
 - 保存模型 revision、tokenizer、模板、依赖和设备信息；
 - 为错误输入、正常路径和关键边界添加测试；
-- 在 `registry.py` 中连接课程、实验手册、反证条件和禁止外推；
+- 在 `registry.py` 中连接 claim ID、来源、课程、实验手册、反证条件和禁止外推；
 - 不把 `pass` 写成“理论已经在所有模型上成立”。
+
+## 证据台账与基线
+
+运行：
+
+```bash
+llm-theory-lab reproduce --output-dir reports/reproduction
+llm-theory-lab validate-evidence reports/reproduction --bundle
+python scripts/check_evidence_baseline.py
+```
+
+证据更改遵守以下规则：
+
+1. `results.json`、ledger 和 manifest 是生成产物，不手工修改；
+2. `evidence/baseline-v1/Cxx.json` 只在理解差异后更新；
+3. 更新基线时必须同步 `src/llm_theory_lab/data/baseline-v1/` 中的 package-data 镜像；
+4. PR 必须说明变化来自 bug fix、默认参数、依赖数值、实验设计还是理论语义；
+5. 失败、`inconclusive`、`skipped` 和 `error` 记录不能为得到绿色 CI 而删除；
+6. schema 的破坏性变化必须新增版本和迁移说明，不得原地改变旧字段含义；
+7. 公开资产不足时使用 `blocked-public-assets`，不得把透明代理写成专有 Claude 实验的逐字复现。
 
 ## 文档与来源
 
@@ -113,6 +137,7 @@ python scripts/validate_catalog.py
 python scripts/validate_source_digest.py
 python scripts/check_learning_path.py
 python scripts/check_markdown_links.py
+python scripts/check_evidence_baseline.py
 ```
 
 数学公式使用 GitHub 支持的 `$...$` 与 `$$...$$`。不要复制大段受版权保护的原文；使用准确转述，并链接原始来源。
@@ -134,12 +159,13 @@ python scripts/check_markdown_links.py
 提交 PR 前确认：
 
 - [ ] `make check` 通过；
-- [ ] 新行为有测试；
-- [ ] 文档、注册表和代码路径一致；
-- [ ] 新主张有来源、范围和反证条件；
+- [ ] 新行为有测试，证据解析器有恶意或畸形输入测试；
+- [ ] 文档、注册表、claim revision 和代码路径一致；
+- [ ] 新主张有来源、复现类型、范围和反证条件；
 - [ ] 课程改动有学习目标、自测或对应练习；
 - [ ] 没有创建重复入口或新的文档孤岛；
 - [ ] 失败案例和限制没有被删除；
+- [ ] 基线变化附带人工审查理由并同步 package-data；
 - [ ] `CHANGELOG.md` 已在需要时更新；
 - [ ] 不包含秘密、模型权重、缓存或大型生成文件。
 

@@ -1,0 +1,145 @@
+{
+  "caveats": [
+    "这是低维 ReLU 网络，不代表真实模型只有四个可分离特征。",
+    "真实网络的输入作用分布在 token、位置、层、头和非线性之中。"
+  ],
+  "checks": [
+    {
+      "expectation": "三个输入应产生三个不同特征向量",
+      "name": "固定权重下形成不同激活模式",
+      "observed": {
+        "policy_dominant": [
+          0.03,
+          1.3,
+          0.07,
+          0.0
+        ],
+        "task_dominant": [
+          1.21,
+          0.0,
+          0.27,
+          0.6
+        ],
+        "uncertain": [
+          0.13,
+          0.14,
+          1.18,
+          0.04
+        ]
+      },
+      "passed": true,
+      "rationale": ""
+    },
+    {
+      "expectation": "预期顺序为 ['ANSWER', 'DECLINE', 'CLARIFY']",
+      "name": "输出模式随输入翻转",
+      "observed": [
+        "ANSWER",
+        "DECLINE",
+        "CLARIFY"
+      ],
+      "passed": true,
+      "rationale": ""
+    }
+  ],
+  "evidence_level": "L1-transparent-toy",
+  "experiment_id": "C03",
+  "metadata": {
+    "learning": {
+      "category": "conditional-computation",
+      "claim_id": "H-C03",
+      "claim_revision": 1,
+      "does_not_show": "不说明真实模型只有少数可分离状态，也不证明某个 prompt 只走一条路径。",
+      "falsifier": "固定权重网络对不同输入无法形成不同激活或输出。",
+      "intuition": "参数定义函数，输入决定函数本次落在哪个激活区域。",
+      "lab_path": "docs/labs/06-input-conditioning.md",
+      "lesson_path": "docs/course/01-model-as-conditional-system.md",
+      "model_revision": "transparent-numpy-v1",
+      "reproduction_status": "transparent-proxy",
+      "source_urls": [
+        "https://transformer-circuits.pub/2021/framework/index.html",
+        "https://transformer-circuits.pub/2025/bulk-update/index.html"
+      ]
+    }
+  },
+  "metrics": {
+    "observations": {
+      "policy_dominant": {
+        "features": [
+          0.03,
+          1.3,
+          0.07,
+          0.0
+        ],
+        "input": [
+          0.1,
+          1.0,
+          0.0
+        ],
+        "logits": [
+          -0.987,
+          2.705,
+          0.256
+        ],
+        "probabilities": [
+          0.0224260437301,
+          0.899845381299,
+          0.0777285749708
+        ],
+        "top_token": "DECLINE"
+      },
+      "task_dominant": {
+        "features": [
+          1.21,
+          0.0,
+          0.27,
+          0.6
+        ],
+        "input": [
+          1.0,
+          0.0,
+          0.1
+        ],
+        "logits": [
+          2.873,
+          -0.753,
+          0.546
+        ],
+        "probabilities": [
+          0.889513102408,
+          0.0236810283752,
+          0.0868058692163
+        ],
+        "top_token": "ANSWER"
+      },
+      "uncertain": {
+        "features": [
+          0.13,
+          0.14,
+          1.18,
+          0.04
+        ],
+        "input": [
+          0.1,
+          0.1,
+          1.0
+        ],
+        "logits": [
+          0.062,
+          0.098,
+          2.142
+        ],
+        "probabilities": [
+          0.0995904367114,
+          0.103241008471,
+          0.797168554817
+        ],
+        "top_token": "CLARIFY"
+      }
+    },
+    "weights_fixed": true
+  },
+  "status": "pass",
+  "theory_claim": "权重固定时，不同输入仍可激活不同路径并翻转输出。",
+  "title": "输入条件计算"
+}

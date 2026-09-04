@@ -1,0 +1,64 @@
+{
+  "caveats": [
+    "真实 activation patching 可能把分布外状态注入模型，必须配置位置、层和负对照。",
+    "成功恢复说明该状态足以传递效应，不自动证明它是唯一自然中介。"
+  ],
+  "checks": [
+    {
+      "expectation": "把 clean 的因果维度 patch 到 corrupted 后恢复比例为 1",
+      "name": "候选中介恢复输出",
+      "observed": 1.0,
+      "passed": true,
+      "rationale": ""
+    },
+    {
+      "expectation": "patch 无关维度不应恢复输出",
+      "name": "无关维度负对照",
+      "observed": 0.0,
+      "passed": true,
+      "rationale": ""
+    }
+  ],
+  "evidence_level": "L1-transparent-toy",
+  "experiment_id": "C08",
+  "metadata": {
+    "learning": {
+      "category": "methods",
+      "claim_id": "H-C08",
+      "claim_revision": 1,
+      "does_not_show": "恢复不证明候选状态是唯一、最自然或完整的中介。",
+      "falsifier": "patch 候选中介与 patch 无关维度对输出恢复没有区别。",
+      "intuition": "把 clean 中间状态放入 corrupted 运行，能检验该状态是否传递目标信息。",
+      "lab_path": "docs/labs/08-activation-patching.md",
+      "lesson_path": "docs/course/06-causal-interpretability.md",
+      "model_revision": "transparent-numpy-v1",
+      "reproduction_status": "transparent-proxy",
+      "source_urls": [
+        "https://transformer-circuits.pub/2025/attribution-graphs/methods.html",
+        "https://transformer-circuits.pub/2025/attribution-graphs/biology.html"
+      ]
+    }
+  },
+  "metrics": {
+    "clean_hidden": [
+      1.0,
+      0.25
+    ],
+    "clean_output_gap": 4.0,
+    "corrupted_hidden": [
+      -1.0,
+      0.25
+    ],
+    "corrupted_output_gap": -4.0,
+    "negative_control_restoration": 0.0,
+    "patched_hidden": [
+      1.0,
+      0.25
+    ],
+    "patched_output_gap": 4.0,
+    "restoration_fraction": 1.0
+  },
+  "status": "pass",
+  "theory_claim": "反事实替换中间状态可测试候选因果中介。",
+  "title": "Activation patching"
+}

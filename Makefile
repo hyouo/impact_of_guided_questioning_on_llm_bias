@@ -1,4 +1,4 @@
-.PHONY: help install install-dev format lint test coverage theory learning docs docs-serve build toy smoke check clean
+.PHONY: help install install-dev format lint test coverage theory learning evidence docs docs-serve build toy smoke check clean
 
 PYTHON ?= python
 
@@ -12,6 +12,7 @@ help:
 	  "coverage     Run tests with coverage reports" \
 	  "theory       Validate sources, repository, and Markdown" \
 	  "learning     Validate course, labs, exercises, and examples" \
+	  "evidence     Reproduce and validate the evidence bundle" \
 	  "docs         Build documentation in strict mode" \
 	  "docs-serve   Serve documentation locally" \
 	  "build        Build and validate wheel/sdist" \
@@ -50,6 +51,9 @@ theory:
 learning:
 	$(PYTHON) scripts/check_learning_path.py
 
+evidence:
+	$(PYTHON) scripts/check_evidence_baseline.py
+
 docs:
 	$(PYTHON) -m mkdocs build --strict
 
@@ -67,8 +71,10 @@ toy:
 smoke:
 	llm-theory-lab roadmap
 	llm-theory-lab explain C12
+	llm-theory-lab reproduce --ids C01 C02 --output-dir reports/smoke-reproduction
+	llm-theory-lab validate-evidence reports/smoke-reproduction --bundle --allow-partial
 
-check: lint theory learning test smoke docs build toy
+check: lint theory learning evidence test smoke docs build toy
 
 clean:
 	rm -rf build dist site reports .coverage coverage.xml htmlcov .pytest_cache .ruff_cache

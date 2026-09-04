@@ -72,6 +72,7 @@ nav:
       - C12. Steering 对照: labs/12-steering-controls.md
       - 实验协议: experiments/EXPERIMENT_PROTOCOL.md
       - 结果结构: experiments/RESULT_SCHEMA.md
+      - 证据台账与复现: experiments/EVIDENCE_LEDGER.md
   - 练习与评估:
       - 基础练习册: exercises/index.md
       - 基础答案与解析: exercises/solutions.md

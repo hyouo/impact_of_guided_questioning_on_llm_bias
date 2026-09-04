@@ -6,6 +6,19 @@
 
 ### Added
 
+- 为 C01–C12 增加稳定 `H-Cxx` claim ID、原始来源映射和透明系统 revision。
+- 版本化 evidence ledger schema，记录数据/生成器哈希、代码 revision、结果哈希、预注册检查、不确定性和结论边界。
+- CLI `reproduce`，独立运行 CPU-safe 实验并生成自验证复现 bundle。
+- CLI `validate-evidence`，校验 ledger、manifest、文件大小和 SHA-256。
+- 规范化结果漂移基线，以及缺字段、重复记录、伪造来源、哈希重封装和路径穿越等 red-team 测试。
+- 证据矩阵与证据台账使用文档。
+- wheel 内置 ledger schema 与审查基线，使仓库外安装也能生成自验证 bundle。
+
+### Changed
+
+- 结果状态扩展为 `pass`、`fail`、`observational`、`skipped`、`inconclusive` 与 `error`，避免把代码异常当作理论反证。
+- CI 会生成、验证并上传完整复现 bundle；结果漂移必须经人工审查后才能更新基线。
+- Release workflow 会附带来源目录、schema、canonical results、ledger 与 manifest 的证据压缩包。
 - 预留开放模型配对数据、跨模型 patching、SAE 评价与训练动力学实验。
 
 ## [0.4.0] - 2026-09-03

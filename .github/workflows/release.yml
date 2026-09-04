@@ -46,11 +46,20 @@ jobs:
           pip install build twine
           python -m build
           python -m twine check dist/*
+      - name: Build and validate evidence bundle
+        env:
+          LLM_THEORY_LAB_GIT_REVISION: ${{ github.sha }}
+        run: |
+          pip install -e .
+          llm-theory-lab reproduce --output-dir release-evidence
+          llm-theory-lab validate-evidence release-evidence --bundle
+          version=$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["version"])')
+          tar -czf "dist/llm_theory_lab-${version}-evidence.tar.gz" -C release-evidence .
           (cd dist && sha256sum * > SHA256SUMS.txt)
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v7
         with:
-          name: python-distributions-${{ github.ref_name }}
+          name: release-assets-${{ github.ref_name }}
           path: dist/
           if-no-files-found: error
           retention-days: 30

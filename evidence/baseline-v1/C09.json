@@ -1,0 +1,87 @@
+{
+  "caveats": [
+    "这是访问控制类无害代理，不模拟任何真实有害请求或越狱载荷。",
+    "它只证明 detection、policy、action 在机制上可分离，不证明具体模型采用同一坐标。"
+  ],
+  "checks": [
+    {
+      "expectation": "检测维度可为高，但若未路由到 policy state，输出仍可选择 PROCEED",
+      "name": "识别信号存在但不保证行为",
+      "observed": {
+        "chosen_action": "PROCEED",
+        "probabilities": [
+          0.839353668821,
+          0.0598973434138,
+          0.100748987766
+        ],
+        "restriction_detected": 1.0
+      },
+      "passed": true,
+      "rationale": ""
+    },
+    {
+      "expectation": "只 patch decline-policy state 后应转为 DECLINE",
+      "name": "增强策略状态可翻转行为",
+      "observed": {
+        "chosen_action": "DECLINE",
+        "probabilities": [
+          0.306319123188,
+          0.629312179732,
+          0.0643686970803
+        ]
+      },
+      "passed": true,
+      "rationale": ""
+    }
+  ],
+  "evidence_level": "L1-harmless-structural-counterexample",
+  "experiment_id": "C09",
+  "metadata": {
+    "learning": {
+      "category": "safety-proxy",
+      "claim_id": "H-C09",
+      "claim_revision": 1,
+      "does_not_show": "无害代理不证明真实聊天模型使用相同坐标，也不提供可复用越狱方法。",
+      "falsifier": "检测维度一旦存在就必然直接决定最终动作。",
+      "intuition": "内容属性、权限/策略状态和动作 logits 可以由不同路径承载。",
+      "lab_path": "docs/labs/09-safety-routing.md",
+      "lesson_path": "docs/course/07-safety-routing.md",
+      "model_revision": "transparent-numpy-v1",
+      "reproduction_status": "transparent-proxy",
+      "source_urls": [
+        "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+        "https://transformer-circuits.pub/2025/november-update/index.html"
+      ]
+    }
+  },
+  "metrics": {
+    "labels": [
+      "PROCEED",
+      "DECLINE",
+      "ASK"
+    ],
+    "natural_probabilities": [
+      0.839353668821,
+      0.0598973434138,
+      0.100748987766
+    ],
+    "natural_state": [
+      1.0,
+      0.1,
+      1.2
+    ],
+    "patched_probabilities": [
+      0.306319123188,
+      0.629312179732,
+      0.0643686970803
+    ],
+    "patched_state": [
+      1.0,
+      1.5,
+      1.2
+    ]
+  },
+  "status": "pass",
+  "theory_claim": "识别信号存在不保证策略状态和最终行为一致。",
+  "title": "识别与行为分离"
+}

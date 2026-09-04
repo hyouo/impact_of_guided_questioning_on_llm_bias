@@ -1,0 +1,107 @@
+{
+  "caveats": [
+    "目标方向由 readout 方向直接构造，因此实验验证的是对照逻辑，不是特征发现。",
+    "真实模型 steering 还需错误层、错误位置、行为副作用和跨提示复现。",
+    "超过随机方向不证明该方向是唯一自然表征，也不证明它对原行为必要。"
+  ],
+  "checks": [
+    {
+      "expectation": "剂量增加时 readout score 严格增加",
+      "name": "目标方向呈单调剂量响应",
+      "observed": {
+        "doses": [
+          -1.0,
+          -0.5,
+          0.0,
+          0.5,
+          1.0
+        ],
+        "scores": [
+          -1.0,
+          -0.5,
+          0.0,
+          0.5,
+          1.0
+        ]
+      },
+      "passed": true,
+      "rationale": ""
+    },
+    {
+      "expectation": "+1 与 -1 剂量产生大小约 1、符号相反的效应",
+      "name": "反向干预产生反号效应",
+      "observed": {
+        "negative": -1.0,
+        "positive": 1.0
+      },
+      "passed": true,
+      "rationale": ""
+    },
+    {
+      "expectation": "目标效应大于随机方向绝对效应的 99% 分位数",
+      "name": "目标效应超过等范数随机对照",
+      "observed": {
+        "random_abs_q99": 0.320379433089,
+        "target_effect": 1.0
+      },
+      "passed": true,
+      "rationale": ""
+    },
+    {
+      "expectation": "构造的正交方向对 readout 的效应接近 0",
+      "name": "正交方向是零效应对照",
+      "observed": 1.38777878078e-17,
+      "passed": true,
+      "rationale": ""
+    }
+  ],
+  "evidence_level": "L1-transparent-methodology",
+  "experiment_id": "C12",
+  "metadata": {
+    "learning": {
+      "category": "methods",
+      "claim_id": "H-C12",
+      "claim_revision": 1,
+      "does_not_show": "超过随机方向只增强可操纵性证据，不证明方向自然、唯一或必要。",
+      "falsifier": "目标方向不呈剂量/符号响应，或不超过等范数随机方向。",
+      "intuition": "任意扰动都可能改变输出，目标方向必须相对合理控制表现出特异性。",
+      "lab_path": "docs/labs/12-steering-controls.md",
+      "lesson_path": "docs/course/06-causal-interpretability.md",
+      "model_revision": "transparent-numpy-v1",
+      "reproduction_status": "transparent-proxy",
+      "source_urls": [
+        "https://transformer-circuits.pub/2024/scaling-monosemanticity/index.html",
+        "https://transformer-circuits.pub/2026/may-update/index.html",
+        "https://transformer-circuits.pub/2026/emotions/index.html"
+      ]
+    }
+  },
+  "metrics": {
+    "dimensions": 64,
+    "doses": [
+      -1.0,
+      -0.5,
+      0.0,
+      0.5,
+      1.0
+    ],
+    "orthogonal_effect": 1.38777878078e-17,
+    "random_abs_q99": 0.320379433089,
+    "random_controls": 4096,
+    "random_effect_mean": -0.000873424900782,
+    "random_effect_std": 0.126978561905,
+    "seed": 29,
+    "target_negative_effect": -1.0,
+    "target_positive_effect": 1.0,
+    "target_scores": [
+      -1.0,
+      -0.5,
+      0.0,
+      0.5,
+      1.0
+    ]
+  },
+  "status": "pass",
+  "theory_claim": "Steering 的机制特异性需要剂量、反向和等范数方向对照。",
+  "title": "Steering 对照"
+}

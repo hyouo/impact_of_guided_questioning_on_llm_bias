@@ -1,0 +1,72 @@
+{
+  "caveats": [
+    "数学 softmax 要求 T>0；许多 API 的 temperature=0 是 greedy/argmax 的约定。",
+    "赔率变化本身不保证最终采样 token 翻转，还取决于全部词表 logits 和解码规则。"
+  ],
+  "checks": [
+    {
+      "expectation": "log(p_i/p_j) = (z_i-z_j)/T，数值误差 < 1e-12",
+      "name": "赔率恒等式",
+      "observed": {
+        "0.5": 0.0,
+        "1.0": 0.0,
+        "2.0": 0.0
+      },
+      "passed": true,
+      "rationale": ""
+    },
+    {
+      "expectation": "赔率乘数应等于 e",
+      "name": "T=1 时 logit +1",
+      "observed": 2.71828182846,
+      "passed": true,
+      "rationale": ""
+    },
+    {
+      "expectation": "相同 logit 差在较低正温度下具有更大 log-odds",
+      "name": "低温放大相对差异",
+      "observed": {
+        "T=0.5": 2.4,
+        "T=2.0": 0.6
+      },
+      "passed": true,
+      "rationale": ""
+    }
+  ],
+  "evidence_level": "L0-exact-identity",
+  "experiment_id": "C02",
+  "metadata": {
+    "learning": {
+      "category": "decoding",
+      "claim_id": "H-C02",
+      "claim_revision": 1,
+      "does_not_show": "不保证赔率更高的 token 一定被采样，也不把 API 的 temperature=0 代入公式。",
+      "falsifier": "数值 softmax 系统性偏离 log(p_i/p_j)=(z_i-z_j)/T。",
+      "intuition": "softmax 的公共分母在两个 token 的比值中消去，因此只剩 logit 差。",
+      "lab_path": "docs/labs/01-softmax-and-odds.md",
+      "lesson_path": "docs/course/02-weights-activations-and-logits.md",
+      "model_revision": "transparent-numpy-v1",
+      "reproduction_status": "transparent-proxy",
+      "source_urls": [
+        "https://transformer-circuits.pub/2021/framework/index.html"
+      ]
+    }
+  },
+  "metrics": {
+    "e": 2.71828182846,
+    "identity_absolute_errors": {
+      "0.5": 0.0,
+      "1.0": 0.0,
+      "2.0": 0.0
+    },
+    "logits": [
+      0.2,
+      -0.1,
+      1.4
+    ],
+    "odds_multiplier_after_plus_one_logit_at_T1": 2.71828182846
+  },
+  "status": "pass",
+  "theory_claim": "正温度下，token 对数赔率等于相对 logit 除以温度。",
+  "title": "温度与赔率"
+}
