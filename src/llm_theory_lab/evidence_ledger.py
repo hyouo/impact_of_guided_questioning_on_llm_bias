@@ -333,10 +333,7 @@ def validate_ledger(
         if status == "fail":
             _require(bool(checks), f"{experiment_id}: fail lacks checks")
             _require(
-                any(
-                    isinstance(check, Mapping) and check.get("passed") is False
-                    for check in checks
-                ),
+                any(isinstance(check, Mapping) and check.get("passed") is False for check in checks),
                 f"{experiment_id}: fail lacks a failed check",
             )
 
