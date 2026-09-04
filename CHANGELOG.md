@@ -8,17 +8,21 @@
 
 - 为 C01–C12 增加稳定 `H-Cxx` claim ID、原始来源映射和透明系统 revision。
 - 版本化 evidence ledger schema，记录数据/生成器哈希、代码 revision、结果哈希、预注册检查、不确定性和结论边界。
-- CLI `reproduce`，独立运行 CPU-safe 实验并生成自验证复现 bundle。
-- CLI `validate-evidence`，校验 ledger、manifest、文件大小和 SHA-256。
+- CLI `reproduce` 与 `validate-evidence`，生成并校验自验证证据 bundle。
 - 规范化结果漂移基线，以及缺字段、重复记录、伪造来源、哈希重封装和路径穿越等 red-team 测试。
-- 证据矩阵与证据台账使用文档。
-- wheel 内置 ledger schema 与审查基线，使仓库外安装也能生成自验证 bundle。
+- 覆盖全部 56 条公开来源的机器可读 reproduction registry。
+- 覆盖程度、当前复现模式、精确复现可行性、阻塞项、优先级、计算档位、验收条件和下一步字段。
+- CLI `reproduction-map` 与 `validate-reproduction-map`，支持按状态、模式、主题和优先级查询。
+- 从 reproduction registry 确定性生成的人类可读覆盖矩阵。
+- wheel 内置来源目录、复现地图、两个 schema 与审查基线。
 
 ### Changed
 
-- 结果状态扩展为 `pass`、`fail`、`observational`、`skipped`、`inconclusive` 与 `error`，避免把代码异常当作理论反证。
-- CI 会生成、验证并上传完整复现 bundle；结果漂移必须经人工审查后才能更新基线。
-- Release workflow 会附带来源目录、schema、canonical results、ledger 与 manifest 的证据压缩包。
+- 结果状态扩展为 `pass`、`fail`、`observational`、`skipped`、`inconclusive` 与 `error`。
+- evidence bundle 现在携带并验证完整 56 条来源地图及 `source_coverage` 摘要。
+- CI 同时验证来源目录、复现地图、协议双向链接、package-data 镜像和生成文档漂移。
+- README 和文档首页明确显示当前没有任何来源被声明为完整复现。
+- Release workflow 产物通过 wheel 和 evidence bundle 携带来源目录、复现 registry、schema、canonical results、ledger 与 manifest。
 - 预留开放模型配对数据、跨模型 patching、SAE 评价与训练动力学实验。
 
 ## [0.4.0] - 2026-09-03
