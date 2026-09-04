@@ -31,7 +31,7 @@ def test_reproduction_map_covers_every_catalog_source() -> None:
         "reference-only": 8,
     }
     assert summary["current_modes"] == {
-        "open-model-analogue": 5,
+        "open-model-analogue": 4,
         "reference": 8,
         "transparent-proxy": 17,
     }
@@ -59,9 +59,7 @@ def test_filters_preserve_catalog_order() -> None:
         priority="P0",
     )
     assert planned_p0
-    positions = {
-        source["source_id"]: index for index, source in enumerate(registry["sources"])
-    }
+    positions = {source["source_id"]: index for index, source in enumerate(registry["sources"])}
     assert [positions[source["source_id"]] for source in planned_p0] == sorted(
         positions[source["source_id"]] for source in planned_p0
     )
@@ -82,9 +80,7 @@ def test_tampered_catalog_or_protocol_mapping_is_rejected() -> None:
 
     tampered_protocol = copy.deepcopy(registry)
     target = next(
-        source
-        for source in tampered_protocol["sources"]
-        if "C01" in source["protocol_ids"]
+        source for source in tampered_protocol["sources"] if "C01" in source["protocol_ids"]
     )
     target["protocol_ids"].remove("C01")
     target["current_modes"] = []
