@@ -138,9 +138,7 @@ def _load_reviewed_baseline_with_source(
 
     expected_ids = [spec.experiment_id for spec in list_experiments()]
     actual_ids = [
-        str(payload.get("experiment_id"))
-        for payload in payloads
-        if isinstance(payload, Mapping)
+        str(payload.get("experiment_id")) for payload in payloads if isinstance(payload, Mapping)
     ]
     if actual_ids != expected_ids:
         raise EvidenceValidationError("reviewed baseline IDs do not match the registry")
