@@ -7,6 +7,13 @@ import json
 from collections.abc import Sequence
 from pathlib import Path
 
+from .evidence import (
+    EvidenceValidationError,
+    load_catalog_urls,
+    validate_bundle,
+    validate_ledger,
+    write_reproduction_bundle,
+)
 from .experiments.hf_models import (
     run_activation_patch_scan,
     run_prefix_feedback,
@@ -33,12 +40,17 @@ def _print_result(result: ExperimentResult) -> None:
 
 def _print_spec(spec: ExperimentSpec) -> None:
     print(f"{spec.experiment_id} | {spec.title}")
+    print(f"主张 ID: {spec.claim_id}@{spec.claim_revision}")
+    print(f"复现类型: {spec.reproduction_status}")
     print(f"理论命题: {spec.theory_claim}")
     print(f"直觉: {spec.intuition}")
     print(f"反证条件: {spec.falsifier}")
     print(f"课程: {spec.lesson_path}")
     print(f"实验手册: {spec.lab_path}")
     print(f"不能推出: {spec.does_not_show}")
+    print("来源:")
+    for url in spec.source_urls:
+        print(f"  - {url}")
     print(f"运行: llm-theory-lab run-toy --ids {spec.experiment_id}")
 
 
@@ -62,9 +74,46 @@ def _build_parser() -> argparse.ArgumentParser:
         "--ids",
         nargs="*",
         default=None,
-        help="optional experiment IDs, e.g. C01 C04 C11",
+        help="optional experiment IDs, e.g. C01 C04 C12",
     )
     toy.add_argument("--output-dir", default="reports/toy", help="report directory")
+
+    reproduce = subparsers.add_parser(
+        "reproduce",
+        help="run CPU-safe experiments and write a self-verifying evidence bundle",
+    )
+    reproduce.add_argument("--ids", nargs="*", default=None, help="optional experiment IDs")
+    reproduce.add_argument(
+        "--output-dir",
+        default="reports/reproduction",
+        help="directory for results, ledger, matrix, and manifest",
+    )
+    reproduce.add_argument(
+        "--allow-nonpassing",
+        action="store_true",
+        help="return success even when a result is fail or error; records are still preserved",
+    )
+
+    validate = subparsers.add_parser(
+        "validate-evidence",
+        help="validate an evidence ledger or a complete reproduction bundle",
+    )
+    validate.add_argument("path", help="ledger JSON path or reproduction bundle directory")
+    validate.add_argument(
+        "--bundle",
+        action="store_true",
+        help="treat path as a reproduction bundle directory",
+    )
+    validate.add_argument(
+        "--allow-partial",
+        action="store_true",
+        help="allow a ledger or bundle that does not contain every registered experiment",
+    )
+    validate.add_argument(
+        "--catalog",
+        default="sources/transformer_circuits_catalog.csv",
+        help="source catalog used to reject uncatalogued citations",
+    )
 
     tokenization = subparsers.add_parser(
         "hf-tokenization",
@@ -121,7 +170,7 @@ def main(argv: Sequence[str] | None = None) -> None:
         if args.category:
             specs = tuple(spec for spec in specs if spec.category == args.category)
         for spec in specs:
-            print(f"{spec.experiment_id}\t{spec.category}\t{spec.title}")
+            print(f"{spec.experiment_id}\t{spec.claim_id}\t{spec.category}\t{spec.title}")
         if not specs:
             parser.error(f"no experiments found for category {args.category!r}")
         return
@@ -131,6 +180,7 @@ def main(argv: Sequence[str] | None = None) -> None:
         for number, title, path in COURSE_STEPS:
             print(f"{number}. {title}\n   {path}")
         print("\n开始: llm-theory-lab explain C01")
+        print("完整复现: llm-theory-lab reproduce")
         return
 
     if args.command == "explain":
@@ -156,6 +206,47 @@ def main(argv: Sequence[str] | None = None) -> None:
         print(f"报告: {output_dir / 'report.md'}")
         if any(result.status == "fail" for result in results):
             raise SystemExit(1)
+        return
+
+    if args.command == "reproduce":
+        try:
+            manifest = write_reproduction_bundle(
+                args.output_dir,
+                experiment_ids=args.ids,
+            )
+        except (EvidenceValidationError, KeyError, OSError, ValueError) as exc:
+            parser.error(str(exc))
+        for status, count in manifest["status_counts"].items():
+            print(f"{status}: {count}")
+        print(f"复现清单: {Path(args.output_dir) / 'manifest.json'}")
+        nonpassing = {"fail", "error", "inconclusive", "skipped"}
+        if not args.allow_nonpassing and nonpassing & set(manifest["status_counts"]):
+            raise SystemExit(1)
+        return
+
+    if args.command == "validate-evidence":
+        require_complete = not args.allow_partial
+        path = Path(args.path)
+        try:
+            if args.bundle:
+                manifest = validate_bundle(path, require_complete=require_complete)
+                print(
+                    f"bundle valid: {len(manifest['experiment_ids'])} experiments, "
+                    f"revision {manifest['code_revision']}"
+                )
+                return
+
+            ledger = json.loads(path.read_text(encoding="utf-8"))
+            catalog_path = Path(args.catalog)
+            catalog_urls = load_catalog_urls(catalog_path) if catalog_path.is_file() else None
+            validate_ledger(
+                ledger,
+                require_complete=require_complete,
+                catalog_urls=catalog_urls,
+            )
+        except (EvidenceValidationError, OSError, ValueError) as exc:
+            parser.error(str(exc))
+        print(f"ledger valid: {len(ledger['records'])} records")
         return
 
     if args.command == "hf-tokenization":

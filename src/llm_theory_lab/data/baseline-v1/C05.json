@@ -1,0 +1,117 @@
+{
+  "caveats": [
+    "反馈矩阵是人为构造的，证明的是结构可能性，不是自然语言生成中的效应大小。",
+    "真实模型还会受长上下文、采样和多条竞争路径影响。"
+  ],
+  "checks": [
+    {
+      "expectation": "在相同权重与初态下，只改变首 token 应使轨迹分叉",
+      "name": "不同首 token 产生不同序列",
+      "observed": {
+        "prefix_A": [
+          "A",
+          "A",
+          "A",
+          "A",
+          "A",
+          "A"
+        ],
+        "prefix_B": [
+          "B",
+          "B",
+          "B",
+          "B",
+          "B",
+          "B"
+        ]
+      },
+      "passed": true,
+      "rationale": ""
+    },
+    {
+      "expectation": "A/B 的反馈应分别强化后续 A/B",
+      "name": "反馈强化局部模式",
+      "observed": {
+        "prefix_A": [
+          "A",
+          "A",
+          "A",
+          "A",
+          "A",
+          "A"
+        ],
+        "prefix_B": [
+          "B",
+          "B",
+          "B",
+          "B",
+          "B",
+          "B"
+        ]
+      },
+      "passed": true,
+      "rationale": ""
+    },
+    {
+      "expectation": "两条轨迹的最终状态 L2 距离 > 2",
+      "name": "最终状态显著分离",
+      "observed": 5.51543289326,
+      "passed": true,
+      "rationale": ""
+    }
+  ],
+  "evidence_level": "L1-transparent-toy",
+  "experiment_id": "C05",
+  "metadata": {
+    "learning": {
+      "category": "generation",
+      "claim_id": "H-C05",
+      "claim_revision": 1,
+      "does_not_show": "不估计自然语言模型中的真实效应大小，也不证明所有轨迹都有正反馈。",
+      "falsifier": "只改变首 token 后，后续状态与序列仍完全相同。",
+      "intuition": "每个已选 token 都成为下一步输入，因此局部选择会改变未来状态。",
+      "lab_path": "docs/labs/05-autoregressive-feedback.md",
+      "lesson_path": "docs/course/05-reasoning-and-feedback.md",
+      "model_revision": "transparent-numpy-v1",
+      "reproduction_status": "transparent-proxy",
+      "source_urls": [
+        "https://transformer-circuits.pub/2022/in-context-learning-and-induction-heads/index.html",
+        "https://transformer-circuits.pub/2025/attribution-graphs/biology.html"
+      ]
+    }
+  },
+  "metrics": {
+    "final_state_A": [
+      3.32,
+      -0.58
+    ],
+    "final_state_B": [
+      -0.58,
+      3.32
+    ],
+    "final_state_distance": 5.51543289326,
+    "initial_state": [
+      0.02,
+      0.02
+    ],
+    "trajectory_forced_A": [
+      "A",
+      "A",
+      "A",
+      "A",
+      "A",
+      "A"
+    ],
+    "trajectory_forced_B": [
+      "B",
+      "B",
+      "B",
+      "B",
+      "B",
+      "B"
+    ]
+  },
+  "status": "pass",
+  "theory_claim": "首 token 写回上下文后可放大成长期轨迹分叉。",
+  "title": "自回归反馈"
+}

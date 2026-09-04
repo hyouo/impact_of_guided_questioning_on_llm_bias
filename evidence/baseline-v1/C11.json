@@ -1,0 +1,72 @@
+{
+  "caveats": [
+    "这里的两条路径完全重复；真实模型中的冗余通常只在部分输入上成立。",
+    "真实消融可能触发补偿、分布外状态或其他模块的非线性响应。",
+    "准确率不变不等于 logits、校准、鲁棒性或生成轨迹完全不变。"
+  ],
+  "checks": [
+    {
+      "expectation": "基线和两个单路径消融的分类准确率都为 1",
+      "name": "单路径消融不降低当前准确率",
+      "observed": {
+        "ablate_a": 1.0,
+        "ablate_b": 1.0,
+        "baseline": 1.0
+      },
+      "passed": true,
+      "rationale": ""
+    },
+    {
+      "expectation": "任一单路径消融都让平均绝对 margin 改变 > 0.9",
+      "name": "单路径仍改变连续 margin",
+      "observed": {
+        "ablate_a": 1.0,
+        "ablate_b": 1.0
+      },
+      "passed": true,
+      "rationale": ""
+    },
+    {
+      "expectation": "平衡数据上联合消融准确率为 0.5",
+      "name": "联合消融暴露冗余",
+      "observed": 0.5,
+      "passed": true,
+      "rationale": ""
+    }
+  ],
+  "evidence_level": "L1-transparent-counterexample",
+  "experiment_id": "C11",
+  "metadata": {
+    "learning": {
+      "category": "methods",
+      "claim_id": "H-C11",
+      "claim_revision": 1,
+      "does_not_show": "不证明所有无消融效应都来自冗余；干预错误和指标不敏感也可能造成零结果。",
+      "falsifier": "在双路径构造中，单点消融必然降低准确率，或联合消融仍不暴露冗余。",
+      "intuition": "两个冗余路径可让离散行为饱和，同时每条路径仍改变连续 margin。",
+      "lab_path": "docs/labs/11-redundant-paths.md",
+      "lesson_path": "docs/course/06-causal-interpretability.md",
+      "model_revision": "transparent-numpy-v1",
+      "reproduction_status": "transparent-proxy",
+      "source_urls": [
+        "https://transformer-circuits.pub/2025/faithfulness-toy-model/index.html",
+        "https://transformer-circuits.pub/2025/attribution-graphs/methods.html"
+      ]
+    }
+  },
+  "metrics": {
+    "accuracy_after_ablate_a": 1.0,
+    "accuracy_after_ablate_b": 1.0,
+    "accuracy_after_joint_ablation": 0.5,
+    "baseline_accuracy": 1.0,
+    "baseline_mean_absolute_margin": 2.0,
+    "mean_margin_change_after_ablate_a": 1.0,
+    "mean_margin_change_after_ablate_b": 1.0,
+    "samples": 2000,
+    "seed": 23,
+    "single_path_mean_absolute_margin": 1.0
+  },
+  "status": "pass",
+  "theory_claim": "单路径消融不降低准确率，不足以证明该路径未参与计算。",
+  "title": "冗余路径与消融"
+}

@@ -1,0 +1,85 @@
+{
+  "caveats": [
+    "这是线性子图中的精确等价；非线性、LayerNorm 和架构约束会限制可用变换。",
+    "函数等价不意味着所有基底同样稀疏、稳定或容易解释。",
+    "实际训练可能形成 privileged basis，因此结论不是‘神经元永远没有意义’。"
+  ],
+  "checks": [
+    {
+      "expectation": "同步变换表示和下游权重后，最大输出误差 < 1e-12",
+      "name": "协调变换保持输出",
+      "observed": 1.7763568394e-15,
+      "passed": true,
+      "rationale": ""
+    },
+    {
+      "expectation": "平均隐藏坐标 L2 变化 > 0.2",
+      "name": "内部坐标发生实质变化",
+      "observed": 0.494354689862,
+      "passed": true,
+      "rationale": ""
+    },
+    {
+      "expectation": "只变表示、不变下游映射时，平均输出误差 > 0.1",
+      "name": "未补偿变换会改变函数",
+      "observed": 0.866984608413,
+      "passed": true,
+      "rationale": ""
+    },
+    {
+      "expectation": "基底矩阵条件数 < 10",
+      "name": "变换矩阵数值稳定",
+      "observed": 1.58953032283,
+      "passed": true,
+      "rationale": ""
+    }
+  ],
+  "evidence_level": "L0-exact-linear-equivalence",
+  "experiment_id": "C10",
+  "metadata": {
+    "learning": {
+      "category": "representation",
+      "claim_id": "H-C10",
+      "claim_revision": 1,
+      "does_not_show": "不说明所有基底同样有用，也不否认实际架构可能形成 privileged basis。",
+      "falsifier": "协调改变表示与下游映射后，输出仍无法在数值精度内保持一致。",
+      "intuition": "神经元是某个坐标系中的轴；同一函数可以由不同内部坐标描述。",
+      "lab_path": "docs/labs/10-basis-invariance.md",
+      "lesson_path": "docs/course/04-features-and-superposition.md",
+      "model_revision": "transparent-numpy-v1",
+      "reproduction_status": "transparent-proxy",
+      "source_urls": [
+        "https://transformer-circuits.pub/2022/mech-interp-essay/index.html",
+        "https://transformer-circuits.pub/2023/privileged-basis/index.html"
+      ]
+    }
+  },
+  "metrics": {
+    "basis": [
+      [
+        1.2,
+        0.3,
+        -0.1
+      ],
+      [
+        0.0,
+        0.8,
+        0.25
+      ],
+      [
+        0.15,
+        -0.2,
+        1.1
+      ]
+    ],
+    "basis_condition_number": 1.58953032283,
+    "max_output_error_after_compensated_change": 1.7763568394e-15,
+    "mean_hidden_coordinate_shift": 0.494354689862,
+    "mean_output_error_without_compensation": 0.866984608413,
+    "samples": 512,
+    "seed": 17
+  },
+  "status": "pass",
+  "theory_claim": "可逆表示变换可配合下游权重变换保持线性函数不变。",
+  "title": "基底不变性"
+}

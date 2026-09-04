@@ -10,6 +10,14 @@ from __future__ import annotations
 
 from importlib.metadata import PackageNotFoundError, version
 
+from .evidence import (
+    EvidenceValidationError,
+    build_ledger,
+    canonical_result,
+    validate_bundle,
+    validate_ledger,
+    write_reproduction_bundle,
+)
 from .registry import EXPERIMENTS, get_experiment, list_experiments, run_toy_suite
 from .result import CheckResult, ExperimentResult, write_report
 
@@ -21,10 +29,16 @@ except PackageNotFoundError:  # pragma: no cover - source tree without installat
 __all__ = [
     "CheckResult",
     "EXPERIMENTS",
+    "EvidenceValidationError",
     "ExperimentResult",
     "__version__",
+    "build_ledger",
+    "canonical_result",
     "get_experiment",
     "list_experiments",
     "run_toy_suite",
+    "validate_bundle",
+    "validate_ledger",
     "write_report",
+    "write_reproduction_bundle",
 ]

@@ -35,27 +35,48 @@ REQUIRED_FILES = (
     ".github/workflows/ci.yml",
     ".github/workflows/codeql.yml",
     ".github/workflows/docs.yml",
+    ".github/workflows/release.yml",
     "scripts/check_learning_path.py",
+    "scripts/check_evidence_baseline.py",
     "src/llm_theory_lab/__init__.py",
+    "src/llm_theory_lab/evidence.py",
+    "src/llm_theory_lab/evidence_bundle.py",
+    "src/llm_theory_lab/evidence_core.py",
+    "src/llm_theory_lab/evidence_ledger.py",
+    "src/llm_theory_lab/evidence_run.py",
+    "src/llm_theory_lab/evidence_verify.py",
     "src/llm_theory_lab/py.typed",
+    "src/llm_theory_lab/data/__init__.py",
+    "src/llm_theory_lab/data/evidence-ledger-v1.schema.json",
     "tests/test_package_metadata.py",
+    "tests/test_evidence.py",
     "docs/course/index.md",
     "docs/labs/index.md",
     "docs/exercises/index.md",
     "docs/exercises/solutions.md",
+    "docs/experiments/EVIDENCE_LEDGER.md",
+    "docs/experiments/RESULT_SCHEMA.md",
     "docs/reference/unified-theory.md",
     "docs/reference/source-digest.md",
+    "evidence/README.md",
+    "schemas/evidence-ledger-v1.schema.json",
 )
 
 REQUIRED_DIRS = (
     "docs/course",
     "docs/labs",
     "docs/exercises",
+    "docs/experiments",
     "docs/reference",
+    "evidence",
     "examples",
+    "schemas",
     "scripts",
     "sources",
     "src/llm_theory_lab",
+    "src/llm_theory_lab/data",
+    "src/llm_theory_lab/data/baseline-v1",
+    "evidence/baseline-v1",
     "tests",
 )
 
@@ -63,6 +84,21 @@ FORBIDDEN_PATHS = (
     "code",
     ".github/workflows/integrate-exercises-once.yml",
 )
+
+MIRRORED_EVIDENCE_FILES = (
+    (
+        "schemas/evidence-ledger-v1.schema.json",
+        "src/llm_theory_lab/data/evidence-ledger-v1.schema.json",
+    ),
+    *(
+        (
+            f"evidence/baseline-v1/C{index:02d}.json",
+            f"src/llm_theory_lab/data/baseline-v1/C{index:02d}.json",
+        )
+        for index in range(1, 13)
+    ),
+)
+
 
 STALE_PATTERNS = (
     'pip install -e "./code',
@@ -122,6 +158,20 @@ def main() -> int:
         changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
         if f"## [{version}]" not in changelog:
             fail(f"CHANGELOG.md has no section for version {version}")
+            errors += 1
+
+    if pyproject_path.is_file():
+        pyproject_text = pyproject_path.read_text(encoding="utf-8")
+        required_package_globs = ('"data/*.json"', '"data/baseline-v1/*.json"')
+        if not all(glob in pyproject_text for glob in required_package_globs):
+            fail("pyproject.toml does not package all evidence data resources")
+            errors += 1
+
+    for source_relative, package_relative in MIRRORED_EVIDENCE_FILES:
+        source = ROOT / source_relative
+        packaged = ROOT / package_relative
+        if source.is_file() and packaged.is_file() and source.read_bytes() != packaged.read_bytes():
+            fail(f"packaged evidence resource drift: {source_relative} != {package_relative}")
             errors += 1
 
     for path in [ROOT / "README.md", ROOT / "CONTRIBUTING.md", ROOT / "docs"]:

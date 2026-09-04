@@ -1,0 +1,228 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias/blob/main/schemas/evidence-ledger-v1.schema.json",
+  "title": "LLM Theory Lab Evidence Ledger v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "ledger_kind",
+    "generated_by",
+    "generated_at",
+    "code_revision",
+    "status_counts",
+    "records",
+    "ledger_sha256"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "ledger_kind": {
+      "const": "run-evidence"
+    },
+    "generated_by": {
+      "type": "string",
+      "minLength": 1
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "code_revision": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status_counts": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/record"
+      }
+    },
+    "ledger_sha256": {
+      "$ref": "#/$defs/sha256"
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "record_id",
+        "claim_id",
+        "claim_revision",
+        "experiment_id",
+        "claim",
+        "title",
+        "status",
+        "evidence_level",
+        "model_revision",
+        "reproduction_status",
+        "dataset",
+        "dataset_sha256",
+        "code_revision",
+        "source_urls",
+        "effect_size",
+        "uncertainty",
+        "preregistered_checks",
+        "deviations",
+        "scope_limit",
+        "lesson_path",
+        "lab_path",
+        "result_sha256",
+        "artifacts"
+      ],
+      "properties": {
+        "record_id": {
+          "$ref": "#/$defs/sha256"
+        },
+        "claim_id": {
+          "type": "string",
+          "pattern": "^H-C[0-9]{2,}$"
+        },
+        "claim_revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "experiment_id": {
+          "type": "string",
+          "pattern": "^C[0-9]{2,}$"
+        },
+        "claim": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "pass",
+            "fail",
+            "observational",
+            "skipped",
+            "inconclusive",
+            "error"
+          ]
+        },
+        "evidence_level": {
+          "type": "string",
+          "pattern": "^L[0-5]"
+        },
+        "model_revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reproduction_status": {
+          "enum": [
+            "reproduced-exactly",
+            "reproduced-on-open-model",
+            "transparent-proxy",
+            "partial",
+            "blocked-public-assets",
+            "not-yet-implemented"
+          ]
+        },
+        "dataset": {
+          "type": "object"
+        },
+        "dataset_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "code_revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_urls": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "effect_size": {
+          "type": "object"
+        },
+        "uncertainty": {
+          "type": "object",
+          "required": [
+            "kind",
+            "reason"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "minLength": 1
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": true
+        },
+        "preregistered_checks": {
+          "type": "array"
+        },
+        "deviations": {
+          "type": "array"
+        },
+        "scope_limit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "lesson_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "lab_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "result_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "artifacts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "path",
+              "selector",
+              "sha256"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "selector": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sha256": {
+                "$ref": "#/$defs/sha256"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    }
+  }
+}

@@ -40,10 +40,21 @@ jobs:
           python scripts/check_repository.py
           python scripts/check_learning_path.py
           python scripts/check_markdown_links.py
+      - name: Reproduce and validate evidence
+        run: python scripts/check_evidence_baseline.py
+      - name: Upload reproduction bundle
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: reproduction-evidence-${{ github.sha }}
+          path: reports/reproduction/
+          if-no-files-found: warn
+          retention-days: 30
       - name: Smoke-test learner CLI
         run: |
           llm-theory-lab roadmap
           llm-theory-lab explain C07
+          llm-theory-lab validate-evidence reports/reproduction --bundle
       - name: Build documentation
         run: mkdocs build --strict
       - name: Build distribution

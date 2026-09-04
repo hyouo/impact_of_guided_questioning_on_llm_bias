@@ -85,7 +85,11 @@ Source = "https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias"
 where = ["src"]
 
 [tool.setuptools.package-data]
-llm_theory_lab = ["py.typed"]
+llm_theory_lab = [
+  "py.typed",
+  "data/*.json",
+  "data/baseline-v1/*.json",
+]
 
 [tool.pytest.ini_options]
 addopts = "-ra --strict-config --strict-markers"

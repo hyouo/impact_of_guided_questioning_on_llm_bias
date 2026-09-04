@@ -1,0 +1,83 @@
+{
+  "caveats": [
+    "实验只有一个头、一个查询位置和固定线性映射。",
+    "真实 attention 的所有可读位置通过 softmax 耦合，并受到层归一化和其他头影响。"
+  ],
+  "checks": [
+    {
+      "expectation": "修改位置 0 的 key 后，最高注意力位置应转到 0",
+      "name": "局部 token 改变注意力路由",
+      "observed": {
+        "baseline_top": 3,
+        "perturbed_top": 0
+      },
+      "passed": true,
+      "rationale": ""
+    },
+    {
+      "expectation": "OV 聚合输出应产生非平凡变化",
+      "name": "路由变化改变写回内容",
+      "observed": 0.548646484614,
+      "passed": true,
+      "rationale": ""
+    }
+  ],
+  "evidence_level": "L1-transparent-toy",
+  "experiment_id": "C04",
+  "metadata": {
+    "learning": {
+      "category": "attention",
+      "claim_id": "H-C04",
+      "claim_revision": 1,
+      "does_not_show": "不证明 Attention 热图就是解释，也不为真实模型中的头赋予单一语义标签。",
+      "falsifier": "key-relevant 扰动不改变注意力分布或聚合输出。",
+      "intuition": "QK 决定相对读取权重，value 与输出映射决定写回内容。",
+      "lab_path": "docs/labs/03-attention-routing.md",
+      "lesson_path": "docs/course/03-attention-and-circuits.md",
+      "model_revision": "transparent-numpy-v1",
+      "reproduction_status": "transparent-proxy",
+      "source_urls": [
+        "https://transformer-circuits.pub/2021/framework/index.html",
+        "https://transformer-circuits.pub/2025/attention-qk/index.html"
+      ]
+    }
+  },
+  "metrics": {
+    "baseline_attention": [
+      0.187957296112,
+      0.267673560244,
+      0.163170135488,
+      0.381199008156
+    ],
+    "baseline_output": [
+      0.514297567089,
+      0.187957296112
+    ],
+    "baseline_scores": [
+      0.0,
+      0.353553390593,
+      -0.141421356237,
+      0.707106781187
+    ],
+    "output_l2_shift": 0.548646484614,
+    "perturbed_attention": [
+      0.658806972673,
+      0.112467425565,
+      0.0685586019429,
+      0.160166999819
+    ],
+    "perturbed_output": [
+      0.795924176559,
+      0.658806972673
+    ],
+    "perturbed_scores": [
+      2.12132034356,
+      0.353553390593,
+      -0.141421356237,
+      0.707106781187
+    ]
+  },
+  "status": "pass",
+  "theory_claim": "改变 token 表示可通过 QK 改变读取位置，并通过 OV 改变写回。",
+  "title": "Attention 路由"
+}

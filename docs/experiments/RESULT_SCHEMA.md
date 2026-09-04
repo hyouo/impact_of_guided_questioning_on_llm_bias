@@ -5,7 +5,7 @@
 ```json
 {
   "experiment_id": "C02",
-  "title": "温度、softmax 与 token 赔率",
+  "title": "温度与赔率",
   "theory_claim": "...",
   "evidence_level": "L0-exact-identity",
   "status": "pass",
@@ -24,12 +24,16 @@
     "python": "...",
     "numpy": "...",
     "learning": {
+      "claim_id": "H-C02",
+      "claim_revision": 1,
+      "reproduction_status": "transparent-proxy",
       "category": "decoding",
       "intuition": "...",
       "falsifier": "...",
       "lesson_path": "docs/course/02-weights-activations-and-logits.md",
       "lab_path": "docs/labs/01-softmax-and-odds.md",
-      "does_not_show": "..."
+      "does_not_show": "...",
+      "source_urls": ["..."]
     }
   },
   "created_at": "..."
@@ -41,9 +45,11 @@
 - `pass`：透明实验的预注册检查全部通过；不表示跨模型普遍成立。
 - `fail`：至少一个预注册检查失败，应保留原始结果而不是删除案例。
 - `observational`：开放模型探索，没有把单次现象包装成二元定律。
-- `skipped`：依赖、模型或运行条件不满足。
+- `skipped`：依赖、模型或合法运行条件不满足。
+- `inconclusive`：现有样本、指标或对照不足以区分支持与反证。
+- `error`：代码、下载或运行环境异常。
 
-代码错误、下载失败和理论反证不应使用同一种状态解释。当前公开结构保留四种稳定状态；更复杂的研究运行若需要 `error` 或 `inconclusive`，应先扩展 schema、CLI、报告和测试，再开始收集正式结果。
+代码错误、下载失败、无结论和理论反证必须使用不同状态。复现运行器会按实验独立捕获异常，因此一个 `error` 不会删除其他实验已经产生的证据。
 
 ## 证据层级
 
@@ -61,6 +67,21 @@
 - `metrics`：保存完整观测，不只保存最终判断；
 - `checks`：表明在看结果前准备判断什么；
 - `caveats`：限制具体实现和数据的解释范围；
-- `learning`：把报告重新连接到课程、实验手册、直觉、反证条件与禁止外推。
+- `learning`：把报告重新连接到 claim ID、课程、实验手册、公开来源、反证条件与禁止外推。
 
-只保留一个总分或一排绿色状态，会重新制造旧研究中的不可审计问题。Markdown 报告因此会在数值表之前展示“反证条件”和“不能推出”。
+只保留一个总分或一排绿色状态，会重新制造不可审计问题。Markdown 报告因此会在数值表之前展示状态解释、反证条件和不能推出的结论。
+
+## 从单次结果到证据台账
+
+`ExperimentResult` 是单次实验对象；正式研究记录还需要版本化 claim、复现类型、模型 revision、数据/生成器哈希、代码 commit、artifact 哈希和来源映射。这些字段存入[证据台账与复现 bundle](EVIDENCE_LEDGER.md)。
+
+```bash
+llm-theory-lab reproduce --output-dir reports/reproduction
+llm-theory-lab validate-evidence reports/reproduction --bundle
+```
+
+机器可读 ledger schema 位于：
+
+```text
+schemas/evidence-ledger-v1.schema.json
+```

@@ -11,6 +11,15 @@ from typing import Any
 
 import numpy as np
 
+ALLOWED_RESULT_STATUSES = {
+    "pass",
+    "fail",
+    "observational",
+    "skipped",
+    "inconclusive",
+    "error",
+}
+
 
 def _builtin(value: Any) -> Any:
     if isinstance(value, np.ndarray):
@@ -50,13 +59,17 @@ class ExperimentResult:
     created_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
     def __post_init__(self) -> None:
-        allowed = {"pass", "fail", "observational", "skipped"}
-        if self.status not in allowed:
-            raise ValueError(f"status must be one of {sorted(allowed)}")
+        if self.status not in ALLOWED_RESULT_STATUSES:
+            raise ValueError(f"status must be one of {sorted(ALLOWED_RESULT_STATUSES)}")
         if self.status == "pass" and self.checks and not all(check.passed for check in self.checks):
             raise ValueError("a passing result cannot contain a failed check")
         if self.status == "fail" and self.checks and all(check.passed for check in self.checks):
             raise ValueError("a failing result must contain at least one failed check")
+        if self.status in {"error", "skipped", "inconclusive"} and self.checks:
+            if all(check.passed for check in self.checks):
+                raise ValueError(
+                    f"a {self.status} result must not look like a fully passing checked result"
+                )
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -122,6 +135,25 @@ def _append_learning_guide(lines: list[str], result: ExperimentResult) -> None:
             lines.append(f"- **{label}：** {value}")
 
 
+def _report_title(result: ExperimentResult) -> str:
+    """Preserve stable human-facing titles while claim IDs carry canonical identity."""
+
+    aliases = {"C02": "温度、softmax 与 token 赔率"}
+    return aliases.get(result.experiment_id, result.title)
+
+
+def _status_interpretation(status: str) -> str:
+    explanations = {
+        "pass": "全部预注册检查通过；结论仍受证据层级和实验范围限制。",
+        "fail": "至少一条预注册检查失败；保留结果并重新审查命题或实现。",
+        "observational": "这是观察性结果，不作二元机制判定。",
+        "skipped": "运行条件不满足；这不是理论反证。",
+        "inconclusive": "现有数据或指标不足以区分支持与反证。",
+        "error": "实验执行异常；这不是支持性证据，也不是理论反证。",
+    }
+    return explanations[status]
+
+
 def write_report(
     results: Iterable[ExperimentResult],
     *,
@@ -151,7 +183,7 @@ def write_report(
     ]
     for result in result_list:
         lines.append(
-            f"| `{result.experiment_id}` | {result.title} | {result.evidence_level} | "
+            f"| `{result.experiment_id}` | {_report_title(result)} | {result.evidence_level} | "
             f"**{result.status}** |"
         )
 
@@ -159,11 +191,13 @@ def write_report(
         lines.extend(
             [
                 "",
-                f"## {result.experiment_id}｜{result.title}",
+                f"## {result.experiment_id}｜{_report_title(result)}",
                 "",
                 f"**理论命题：** {result.theory_claim}",
                 "",
                 f"**状态：** `{result.status}`；**证据层级：** `{result.evidence_level}`",
+                "",
+                f"**状态解释：** {_status_interpretation(result.status)}",
             ]
         )
         _append_learning_guide(lines, result)
@@ -177,8 +211,10 @@ def write_report(
                     f"| {check.name} | {'是' if check.passed else '否'} | "
                     f"`{observed}` | {check.expectation} |"
                 )
-        else:
+        elif result.status == "observational":
             lines.append("该实验是探索性观测，不使用二元通过/失败标准。")
+        else:
+            lines.append("本记录没有可判定的预注册检查；请根据状态和限制解释。")
 
         lines.extend(["", "### 原始指标", "", "```json"])
         lines.append(json.dumps(_builtin(result.metrics), ensure_ascii=False, indent=2))
