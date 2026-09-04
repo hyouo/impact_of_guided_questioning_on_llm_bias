@@ -135,6 +135,13 @@ def _append_learning_guide(lines: list[str], result: ExperimentResult) -> None:
             lines.append(f"- **{label}：** {value}")
 
 
+def _report_title(result: ExperimentResult) -> str:
+    """Preserve stable human-facing titles while claim IDs carry canonical identity."""
+
+    aliases = {"C02": "温度、softmax 与 token 赔率"}
+    return aliases.get(result.experiment_id, result.title)
+
+
 def _status_interpretation(status: str) -> str:
     explanations = {
         "pass": "全部预注册检查通过；结论仍受证据层级和实验范围限制。",
@@ -176,7 +183,7 @@ def write_report(
     ]
     for result in result_list:
         lines.append(
-            f"| `{result.experiment_id}` | {result.title} | {result.evidence_level} | "
+            f"| `{result.experiment_id}` | {_report_title(result)} | {result.evidence_level} | "
             f"**{result.status}** |"
         )
 
@@ -184,7 +191,7 @@ def write_report(
         lines.extend(
             [
                 "",
-                f"## {result.experiment_id}｜{result.title}",
+                f"## {result.experiment_id}｜{_report_title(result)}",
                 "",
                 f"**理论命题：** {result.theory_claim}",
                 "",
