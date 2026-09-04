@@ -122,9 +122,7 @@ def validate_bundle(path: str | Path, *, require_complete: bool = True) -> dict[
         (root / "context/reproduction-registry-v1.schema.json").read_text(encoding="utf-8")
     )
     _require(
-        reproduction_schema_payload.get("properties", {})
-        .get("schema_version", {})
-        .get("const")
+        reproduction_schema_payload.get("properties", {}).get("schema_version", {}).get("const")
         == REGISTRY_SCHEMA_VERSION,
         "bundled reproduction schema version differs from runtime",
     )
