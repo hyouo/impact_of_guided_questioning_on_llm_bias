@@ -116,7 +116,12 @@ def _source_id(url: str) -> str:
     return "TC-" + hashlib.sha256(url.encode("utf-8")).hexdigest()[:10].upper()
 
 
-def _strings(value: Any, name: str, *, allow_empty: bool = False) -> list[str]:
+def _strings(
+    value: Any,
+    name: str,
+    *,
+    allow_empty: bool = False,
+) -> list[str]:
     _require(isinstance(value, list), f"{name} must be a list")
     result = []
     for index, item in enumerate(value):
@@ -330,7 +335,10 @@ def validate_reproduction_map(
         target = source.get("target_mode")
         _require(target in TARGET_MODES, f"{url}: invalid target mode")
         _require(source.get("priority") in PRIORITIES, f"{url}: invalid priority")
-        _require(source.get("compute_tier") in COMPUTE_TIERS, f"{url}: invalid compute tier")
+        _require(
+            source.get("compute_tier") in COMPUTE_TIERS,
+            f"{url}: invalid compute tier",
+        )
         _strings(source.get("blockers"), f"{url}.blockers", allow_empty=True)
         _require(
             isinstance(source.get("acceptance_criteria"), str)
