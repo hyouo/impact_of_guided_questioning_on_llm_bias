@@ -1,25 +1,26 @@
-.PHONY: help install install-dev format lint test coverage theory learning evidence docs docs-serve build toy smoke check clean
+.PHONY: help install install-dev format lint test coverage theory learning evidence reproduction-map docs docs-serve build toy smoke check clean
 
 PYTHON ?= python
 
 help:
 	@printf "%s\n" \
-	  "install      Install runtime package" \
-	  "install-dev  Install development and documentation tools" \
-	  "format       Format Python files with Ruff" \
-	  "lint         Run Ruff lint and format checks" \
-	  "test         Run the test suite" \
-	  "coverage     Run tests with coverage reports" \
-	  "theory       Validate sources, repository, and Markdown" \
-	  "learning     Validate course, labs, exercises, and examples" \
-	  "evidence     Reproduce and validate the evidence bundle" \
-	  "docs         Build documentation in strict mode" \
-	  "docs-serve   Serve documentation locally" \
-	  "build        Build and validate wheel/sdist" \
-	  "toy          Run C01-C12 experiments" \
-	  "smoke        Exercise learner-facing CLI entry points" \
-	  "check        Run all local quality gates" \
-	  "clean        Remove generated artifacts"
+	  "install           Install runtime package" \
+	  "install-dev       Install development and documentation tools" \
+	  "format            Format Python files with Ruff" \
+	  "lint              Run Ruff lint and format checks" \
+	  "test              Run the test suite" \
+	  "coverage          Run tests with coverage reports" \
+	  "theory            Validate sources, repository, and Markdown" \
+	  "learning          Validate course, labs, exercises, and examples" \
+	  "evidence          Reproduce and validate the evidence bundle" \
+	  "reproduction-map  Validate all 56 public-source coverage records" \
+	  "docs              Build documentation in strict mode" \
+	  "docs-serve        Serve documentation locally" \
+	  "build             Build and validate wheel/sdist" \
+	  "toy               Run C01-C12 experiments" \
+	  "smoke             Exercise learner-facing CLI entry points" \
+	  "check             Run all local quality gates" \
+	  "clean             Remove generated artifacts"
 
 install:
 	$(PYTHON) -m pip install -e .
@@ -45,6 +46,7 @@ theory:
 	$(PYTHON) scripts/normalize_markdown_math.py --check
 	$(PYTHON) scripts/validate_catalog.py
 	$(PYTHON) scripts/validate_source_digest.py
+	$(PYTHON) scripts/validate_reproduction_map.py
 	$(PYTHON) scripts/check_repository.py
 	$(PYTHON) scripts/check_markdown_links.py
 
@@ -53,6 +55,9 @@ learning:
 
 evidence:
 	$(PYTHON) scripts/check_evidence_baseline.py
+
+reproduction-map:
+	$(PYTHON) scripts/validate_reproduction_map.py
 
 docs:
 	$(PYTHON) -m mkdocs build --strict
@@ -71,6 +76,8 @@ toy:
 smoke:
 	llm-theory-lab roadmap
 	llm-theory-lab explain C12
+	llm-theory-lab reproduction-map --summary-only
+	llm-theory-lab validate-reproduction-map
 	llm-theory-lab reproduce --ids C01 C02 --output-dir reports/smoke-reproduction
 	llm-theory-lab validate-evidence reports/smoke-reproduction --bundle --allow-partial
 

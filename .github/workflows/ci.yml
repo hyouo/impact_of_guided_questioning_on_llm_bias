@@ -37,6 +37,7 @@ jobs:
           python scripts/normalize_markdown_math.py --check
           python scripts/validate_catalog.py
           python scripts/validate_source_digest.py
+          python scripts/validate_reproduction_map.py
           python scripts/check_repository.py
           python scripts/check_learning_path.py
           python scripts/check_markdown_links.py
@@ -54,6 +55,8 @@ jobs:
         run: |
           llm-theory-lab roadmap
           llm-theory-lab explain C07
+          llm-theory-lab reproduction-map --summary-only
+          llm-theory-lab validate-reproduction-map
           llm-theory-lab validate-evidence reports/reproduction --bundle
       - name: Build documentation
         run: mkdocs build --strict

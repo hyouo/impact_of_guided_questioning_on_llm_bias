@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import pytest
@@ -30,6 +31,7 @@ def test_cli_roadmap(capsys) -> None:
     assert "综合项目" in output
     assert "docs/course/01-model-as-conditional-system.md" in output
     assert "llm-theory-lab reproduce" in output
+    assert "llm-theory-lab reproduction-map" in output
 
 
 def test_cli_explain(capsys) -> None:
@@ -83,3 +85,36 @@ def test_cli_reproduce_and_validate_partial_bundle(tmp_path: Path, capsys) -> No
     )
     output = capsys.readouterr().out
     assert "bundle valid" in output
+
+
+def test_cli_reproduction_map_summary(capsys) -> None:
+    main(["reproduction-map", "--summary-only"])
+    output = capsys.readouterr().out
+    assert "公开来源总数: 56" in output
+    assert "implemented-partial: 20" in output
+    assert "planned: 28" in output
+    assert "reference-only: 8" in output
+
+
+def test_cli_reproduction_map_json_filter(capsys) -> None:
+    main(
+        [
+            "reproduction-map",
+            "--status",
+            "planned",
+            "--priority",
+            "P0",
+            "--json",
+        ]
+    )
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["summary"]["total_sources"] == 56
+    assert payload["sources"]
+    assert all(source["coverage_status"] == "planned" for source in payload["sources"])
+    assert all(source["priority"] == "P0" for source in payload["sources"])
+
+
+def test_cli_validate_reproduction_map(capsys) -> None:
+    main(["validate-reproduction-map"])
+    output = capsys.readouterr().out
+    assert "reproduction map valid: 56 sources" in output

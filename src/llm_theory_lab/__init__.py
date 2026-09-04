@@ -19,6 +19,14 @@ from .evidence import (
     write_reproduction_bundle,
 )
 from .registry import EXPERIMENTS, get_experiment, list_experiments, run_toy_suite
+from .reproduction_map import (
+    ReproductionMapError,
+    load_reproduction_map,
+    render_reproduction_map,
+    select_sources,
+    summarize_reproduction_map,
+    validate_reproduction_map,
+)
 from .result import CheckResult, ExperimentResult, write_report
 
 try:
@@ -31,14 +39,20 @@ __all__ = [
     "EXPERIMENTS",
     "EvidenceValidationError",
     "ExperimentResult",
+    "ReproductionMapError",
     "__version__",
     "build_ledger",
     "canonical_result",
     "get_experiment",
     "list_experiments",
+    "load_reproduction_map",
+    "render_reproduction_map",
     "run_toy_suite",
+    "select_sources",
+    "summarize_reproduction_map",
     "validate_bundle",
     "validate_ledger",
+    "validate_reproduction_map",
     "write_report",
     "write_reproduction_bundle",
 ]

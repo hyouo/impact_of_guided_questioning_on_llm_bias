@@ -38,6 +38,7 @@ REQUIRED_FILES = (
     ".github/workflows/release.yml",
     "scripts/check_learning_path.py",
     "scripts/check_evidence_baseline.py",
+    "scripts/validate_reproduction_map.py",
     "src/llm_theory_lab/__init__.py",
     "src/llm_theory_lab/evidence.py",
     "src/llm_theory_lab/evidence_bundle.py",
@@ -45,11 +46,16 @@ REQUIRED_FILES = (
     "src/llm_theory_lab/evidence_ledger.py",
     "src/llm_theory_lab/evidence_run.py",
     "src/llm_theory_lab/evidence_verify.py",
+    "src/llm_theory_lab/reproduction_map.py",
     "src/llm_theory_lab/py.typed",
     "src/llm_theory_lab/data/__init__.py",
     "src/llm_theory_lab/data/evidence-ledger-v1.schema.json",
+    "src/llm_theory_lab/data/reproduction-registry-v1.schema.json",
+    "src/llm_theory_lab/data/transformer_circuits_reproduction_v1.json",
+    "src/llm_theory_lab/data/transformer_circuits_catalog.csv",
     "tests/test_package_metadata.py",
     "tests/test_evidence.py",
+    "tests/test_reproduction_map.py",
     "docs/course/index.md",
     "docs/labs/index.md",
     "docs/exercises/index.md",
@@ -58,8 +64,12 @@ REQUIRED_FILES = (
     "docs/experiments/RESULT_SCHEMA.md",
     "docs/reference/unified-theory.md",
     "docs/reference/source-digest.md",
+    "docs/reference/reproduction-map.md",
     "evidence/README.md",
+    "reproductions/README.md",
+    "reproductions/transformer_circuits_v1.json",
     "schemas/evidence-ledger-v1.schema.json",
+    "schemas/reproduction-registry-v1.schema.json",
 )
 
 REQUIRED_DIRS = (
@@ -69,6 +79,7 @@ REQUIRED_DIRS = (
     "docs/experiments",
     "docs/reference",
     "evidence",
+    "reproductions",
     "examples",
     "schemas",
     "scripts",
@@ -90,6 +101,18 @@ MIRRORED_EVIDENCE_FILES = (
         "schemas/evidence-ledger-v1.schema.json",
         "src/llm_theory_lab/data/evidence-ledger-v1.schema.json",
     ),
+    (
+        "schemas/reproduction-registry-v1.schema.json",
+        "src/llm_theory_lab/data/reproduction-registry-v1.schema.json",
+    ),
+    (
+        "reproductions/transformer_circuits_v1.json",
+        "src/llm_theory_lab/data/transformer_circuits_reproduction_v1.json",
+    ),
+    (
+        "sources/transformer_circuits_catalog.csv",
+        "src/llm_theory_lab/data/transformer_circuits_catalog.csv",
+    ),
     *(
         (
             f"evidence/baseline-v1/C{index:02d}.json",
@@ -98,7 +121,6 @@ MIRRORED_EVIDENCE_FILES = (
         for index in range(1, 13)
     ),
 )
-
 
 STALE_PATTERNS = (
     'pip install -e "./code',
@@ -162,9 +184,13 @@ def main() -> int:
 
     if pyproject_path.is_file():
         pyproject_text = pyproject_path.read_text(encoding="utf-8")
-        required_package_globs = ('"data/*.json"', '"data/baseline-v1/*.json"')
+        required_package_globs = (
+            '"data/*.json"',
+            '"data/*.csv"',
+            '"data/baseline-v1/*.json"',
+        )
         if not all(glob in pyproject_text for glob in required_package_globs):
-            fail("pyproject.toml does not package all evidence data resources")
+            fail("pyproject.toml does not package all evidence and reproduction resources")
             errors += 1
 
     for source_relative, package_relative in MIRRORED_EVIDENCE_FILES:

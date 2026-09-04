@@ -88,6 +88,7 @@ where = ["src"]
 llm_theory_lab = [
   "py.typed",
   "data/*.json",
+  "data/*.csv",
   "data/baseline-v1/*.json",
 ]
 

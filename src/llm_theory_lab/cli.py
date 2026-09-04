@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from pathlib import Path
 
 from .evidence import (
@@ -20,6 +20,17 @@ from .experiments.hf_models import (
     run_tokenization_sensitivity,
 )
 from .registry import ExperimentSpec, get_experiment, list_experiments, run_toy_suite
+from .reproduction_map import (
+    COVERAGE_STATUSES,
+    MODES,
+    PRIORITIES,
+    ReproductionMapError,
+    load_catalog_bytes,
+    load_reproduction_map,
+    select_sources,
+    summarize_reproduction_map,
+    validate_reproduction_map,
+)
 from .result import ExperimentResult, write_report
 
 COURSE_STEPS: tuple[tuple[str, str, str], ...] = (
@@ -52,6 +63,40 @@ def _print_spec(spec: ExperimentSpec) -> None:
     for url in spec.source_urls:
         print(f"  - {url}")
     print(f"运行: llm-theory-lab run-toy --ids {spec.experiment_id}")
+
+
+def _print_reproduction_summary(summary: Mapping[str, object]) -> None:
+    print(f"公开来源总数: {summary['total_sources']}")
+    for heading, key in (
+        ("覆盖状态", "coverage_status"),
+        ("当前复现模式", "current_modes"),
+        ("精确复现可行性", "exact_reproduction_feasibility"),
+        ("优先级", "priority"),
+    ):
+        print(f"{heading}:")
+        values = summary[key]
+        if isinstance(values, Mapping):
+            for name, count in values.items():
+                print(f"  {name}: {count}")
+
+
+def _print_reproduction_sources(sources: Sequence[Mapping[str, object]]) -> None:
+    if not sources:
+        print("没有匹配的公开来源。")
+        return
+    for source in sources:
+        protocols = ", ".join(str(item) for item in source["protocol_ids"]) or "—"
+        modes = ", ".join(str(item) for item in source["current_modes"]) or "—"
+        print(
+            f"{source['source_id']} | {source['period']} | {source['title']}\n"
+            f"  覆盖: {source['coverage_status']}\n"
+            f"  当前模式: {modes}\n"
+            f"  协议: {protocols}\n"
+            f"  精确复现可行性: {source['exact_reproduction_feasibility']}\n"
+            f"  优先级/计算: {source['priority']} / {source['compute_tier']}\n"
+            f"  下一步: {source['next_step']}\n"
+            f"  来源: {source['url']}"
+        )
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -115,6 +160,46 @@ def _build_parser() -> argparse.ArgumentParser:
         help="source catalog used to reject uncatalogued citations",
     )
 
+    reproduction_map = subparsers.add_parser(
+        "reproduction-map",
+        help="inspect coverage of all public Transformer Circuits sources",
+    )
+    reproduction_map.add_argument(
+        "--status",
+        choices=sorted(COVERAGE_STATUSES),
+        default=None,
+        help="filter by coverage status",
+    )
+    reproduction_map.add_argument(
+        "--mode",
+        choices=sorted(MODES),
+        default=None,
+        help="filter by current reproduction mode",
+    )
+    reproduction_map.add_argument("--theme", default=None, help="filter by source theme")
+    reproduction_map.add_argument(
+        "--priority",
+        choices=sorted(PRIORITIES),
+        default=None,
+        help="filter by implementation priority",
+    )
+    reproduction_map.add_argument(
+        "--summary-only",
+        action="store_true",
+        help="print only aggregate coverage counts",
+    )
+    reproduction_map.add_argument(
+        "--json",
+        dest="as_json",
+        action="store_true",
+        help="emit machine-readable JSON",
+    )
+
+    subparsers.add_parser(
+        "validate-reproduction-map",
+        help="validate 56-source coverage, hashes, protocol mappings, and package data",
+    )
+
     tokenization = subparsers.add_parser(
         "hf-tokenization",
         help="compare two prompts on an open Hugging Face causal LM",
@@ -161,6 +246,13 @@ def _write_single(result: ExperimentResult, path: str) -> None:
     _print_result(result)
 
 
+def _load_validated_reproduction_map() -> tuple[dict[str, object], bytes]:
+    registry = load_reproduction_map()
+    catalog = load_catalog_bytes()
+    validate_reproduction_map(registry, catalog_content=catalog)
+    return registry, catalog
+
+
 def main(argv: Sequence[str] | None = None) -> None:
     parser = _build_parser()
     args = parser.parse_args(argv)
@@ -180,7 +272,8 @@ def main(argv: Sequence[str] | None = None) -> None:
         for number, title, path in COURSE_STEPS:
             print(f"{number}. {title}\n   {path}")
         print("\n开始: llm-theory-lab explain C01")
-        print("完整复现: llm-theory-lab reproduce")
+        print("完整透明复现: llm-theory-lab reproduce")
+        print("公开来源覆盖: llm-theory-lab reproduction-map --summary-only")
         return
 
     if args.command == "explain":
@@ -247,6 +340,43 @@ def main(argv: Sequence[str] | None = None) -> None:
         except (EvidenceValidationError, OSError, ValueError) as exc:
             parser.error(str(exc))
         print(f"ledger valid: {len(ledger['records'])} records")
+        return
+
+    if args.command == "reproduction-map":
+        try:
+            registry, _ = _load_validated_reproduction_map()
+            summary = summarize_reproduction_map(registry)
+            selected = select_sources(
+                registry,
+                coverage_status=args.status,
+                mode=args.mode,
+                theme=args.theme,
+                priority=args.priority,
+            )
+        except (OSError, ReproductionMapError, ValueError) as exc:
+            parser.error(str(exc))
+        if args.as_json:
+            payload: dict[str, object] = {"summary": summary}
+            if not args.summary_only:
+                payload["sources"] = selected
+            print(json.dumps(payload, ensure_ascii=False, indent=2))
+            return
+        _print_reproduction_summary(summary)
+        if not args.summary_only:
+            print(f"匹配来源: {len(selected)}")
+            _print_reproduction_sources(selected)
+        return
+
+    if args.command == "validate-reproduction-map":
+        try:
+            registry, _ = _load_validated_reproduction_map()
+            summary = summarize_reproduction_map(registry)
+        except (OSError, ReproductionMapError, ValueError) as exc:
+            parser.error(str(exc))
+        print(
+            "reproduction map valid: "
+            f"{summary['total_sources']} sources; {summary['coverage_status']}"
+        )
         return
 
     if args.command == "hf-tokenization":
