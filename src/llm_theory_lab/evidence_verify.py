@@ -105,17 +105,13 @@ def validate_bundle(path: str | Path, *, require_complete: bool = True) -> dict[
         (root / "context/evidence-ledger-v1.schema.json").read_text(encoding="utf-8")
     )
     _require(
-        schema_payload.get("properties", {})
-        .get("schema_version", {})
-        .get("const")
+        schema_payload.get("properties", {}).get("schema_version", {}).get("const")
         == LEDGER_SCHEMA_VERSION,
         "bundled ledger schema version differs from runtime",
     )
 
     ledger = json.loads((root / "evidence-ledger.json").read_text(encoding="utf-8"))
-    canonical_results = json.loads(
-        (root / "canonical-results.json").read_text(encoding="utf-8")
-    )
+    canonical_results = json.loads((root / "canonical-results.json").read_text(encoding="utf-8"))
     _require(isinstance(canonical_results, list), "canonical-results.json must be a list")
 
     claim_source_payload = json.loads(
@@ -132,10 +128,7 @@ def validate_bundle(path: str | Path, *, require_complete: bool = True) -> dict[
         "claim-source index differs from registry",
     )
     claim_urls = {
-        url
-        for row in claim_rows
-        for url in row.get("source_urls", [])
-        if isinstance(url, str)
+        url for row in claim_rows for url in row.get("source_urls", []) if isinstance(url, str)
     }
 
     catalog_path = root / "context/transformer_circuits_catalog.csv"
