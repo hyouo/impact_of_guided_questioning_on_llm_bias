@@ -39,9 +39,7 @@ def main() -> int:
         ledger = json.loads(ledger_path.read_text(encoding="utf-8"))
         catalog_urls = load_catalog_urls(ROOT / "sources/transformer_circuits_catalog.csv")
         validate_ledger(ledger, catalog_urls=catalog_urls)
-        generated = json.loads(
-            (output_dir / "canonical-results.json").read_text(encoding="utf-8")
-        )
+        generated = json.loads((output_dir / "canonical-results.json").read_text(encoding="utf-8"))
         if generated != reviewed_baseline:
             raise EvidenceValidationError(
                 "canonical experiment results drifted from the reviewed baseline"
