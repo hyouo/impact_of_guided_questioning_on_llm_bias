@@ -1,1 +1,1469 @@
-PLACEHOLDER_REGISTRY_COPY
+{
+  "schema_version": "1.0.0",
+  "registry_kind": "transformer-circuits-reproduction-map",
+  "snapshot_date": "2026-09-04",
+  "catalog_path": "sources/transformer_circuits_catalog.csv",
+  "catalog_sha256": "45fd8686a38c23953a6437f2c5c25f42385dda811c9f426a7980f5b0f501088e",
+  "audit_note": "This registry tracks public reproducibility without equating transparent proxies or open-model analogues with numerical reproduction on proprietary Anthropic models.",
+  "coverage_status_definitions": {
+    "implemented-complete": "All registered headline result families have a validated protocol at the stated mode.",
+    "implemented-partial": "At least one relevant protocol exists, but the source's result set is not fully reproduced.",
+    "planned": "The source is in scope, but no validated protocol currently covers it.",
+    "reference-only": "The item is educational, methodological, strategic, tooling, infrastructure, or historical rather than one reproducible result set."
+  },
+  "mode_definitions": {
+    "exact-reproduction": "Original/publicly equivalent model, data, metric, and protocol are matched within declared tolerances.",
+    "open-model-analogue": "The same directional hypothesis is tested on pinned open weights; not an original numerical reproduction.",
+    "transparent-proxy": "A fully transparent toy or mathematical system tests a structural claim or invalid inference.",
+    "reference": "Integrated as curriculum, methodology, tooling, or history without an empirical reproduction claim."
+  },
+  "protocols": {
+    "C01": {
+      "kind": "transparent-proxy",
+      "maturity": "validated",
+      "runner": "llm_theory_lab.experiments.weights:run_weight_activation",
+      "evidence_ceiling": "L1-structural-demonstration",
+      "default_ci": true,
+      "requires": [
+        "numpy"
+      ]
+    },
+    "C02": {
+      "kind": "transparent-proxy",
+      "maturity": "validated",
+      "runner": "llm_theory_lab.experiments.temperature:run_temperature_odds",
+      "evidence_ceiling": "L0-mathematical-identity",
+      "default_ci": true,
+      "requires": [
+        "numpy"
+      ]
+    },
+    "C03": {
+      "kind": "transparent-proxy",
+      "maturity": "validated",
+      "runner": "llm_theory_lab.experiments.conditional:run_input_conditioning",
+      "evidence_ceiling": "L1-structural-demonstration",
+      "default_ci": true,
+      "requires": [
+        "numpy"
+      ]
+    },
+    "C04": {
+      "kind": "transparent-proxy",
+      "maturity": "validated",
+      "runner": "llm_theory_lab.experiments.attention:run_attention_routing",
+      "evidence_ceiling": "L1-structural-demonstration",
+      "default_ci": true,
+      "requires": [
+        "numpy"
+      ]
+    },
+    "C05": {
+      "kind": "transparent-proxy",
+      "maturity": "validated",
+      "runner": "llm_theory_lab.experiments.feedback:run_autoregressive_feedback",
+      "evidence_ceiling": "L1-structural-demonstration",
+      "default_ci": true,
+      "requires": [
+        "numpy"
+      ]
+    },
+    "C06": {
+      "kind": "transparent-proxy",
+      "maturity": "validated",
+      "runner": "llm_theory_lab.experiments.superposition:run_superposition",
+      "evidence_ceiling": "L1-structural-demonstration",
+      "default_ci": true,
+      "requires": [
+        "numpy"
+      ]
+    },
+    "C07": {
+      "kind": "transparent-proxy",
+      "maturity": "validated",
+      "runner": "llm_theory_lab.experiments.probe_causality:run_probe_vs_causality",
+      "evidence_ceiling": "L1-logical-counterexample",
+      "default_ci": true,
+      "requires": [
+        "numpy"
+      ]
+    },
+    "C08": {
+      "kind": "transparent-proxy",
+      "maturity": "validated",
+      "runner": "llm_theory_lab.experiments.patching:run_activation_patching",
+      "evidence_ceiling": "L1-structural-demonstration",
+      "default_ci": true,
+      "requires": [
+        "numpy"
+      ]
+    },
+    "C09": {
+      "kind": "transparent-proxy",
+      "maturity": "validated",
+      "runner": "llm_theory_lab.experiments.safety_routing:run_recognition_action_dissociation",
+      "evidence_ceiling": "L1-structural-demonstration",
+      "default_ci": true,
+      "requires": [
+        "numpy"
+      ]
+    },
+    "C10": {
+      "kind": "transparent-proxy",
+      "maturity": "validated",
+      "runner": "llm_theory_lab.experiments.basis_invariance:run_basis_invariance",
+      "evidence_ceiling": "L0-linear-algebra-identity",
+      "default_ci": true,
+      "requires": [
+        "numpy"
+      ]
+    },
+    "C11": {
+      "kind": "transparent-proxy",
+      "maturity": "validated",
+      "runner": "llm_theory_lab.experiments.redundancy:run_redundant_paths",
+      "evidence_ceiling": "L1-logical-counterexample",
+      "default_ci": true,
+      "requires": [
+        "numpy"
+      ]
+    },
+    "C12": {
+      "kind": "transparent-proxy",
+      "maturity": "validated",
+      "runner": "llm_theory_lab.experiments.steering_controls:run_steering_controls",
+      "evidence_ceiling": "L1-method-control-demonstration",
+      "default_ci": true,
+      "requires": [
+        "numpy"
+      ]
+    },
+    "M01": {
+      "kind": "open-model-analogue",
+      "maturity": "prototype",
+      "runner": "llm_theory_lab.experiments.hf_models:run_tokenization_sensitivity",
+      "evidence_ceiling": "L2-open-model-observation",
+      "default_ci": false,
+      "requires": [
+        "torch",
+        "transformers",
+        "model checkpoint"
+      ]
+    },
+    "M02": {
+      "kind": "open-model-analogue",
+      "maturity": "prototype",
+      "runner": "llm_theory_lab.experiments.hf_models:run_prefix_feedback",
+      "evidence_ceiling": "L2-open-model-context-counterfactual",
+      "default_ci": false,
+      "requires": [
+        "torch",
+        "transformers",
+        "model checkpoint"
+      ]
+    },
+    "M03": {
+      "kind": "open-model-analogue",
+      "maturity": "prototype",
+      "runner": "llm_theory_lab.experiments.hf_models:run_activation_patch_scan",
+      "evidence_ceiling": "L3-open-model-local-intervention",
+      "default_ci": false,
+      "requires": [
+        "torch",
+        "transformers",
+        "GPT-2-style model checkpoint"
+      ]
+    }
+  },
+  "sources": [
+    {
+      "source_id": "TC-7AD561BE51",
+      "period": "2026-08-21",
+      "title": "Characterizing interference weights in a tiny language model",
+      "url": "https://transformer-circuits.pub/2026/interference_effectiveness_helpfulness/index.html",
+      "source_type": "paper",
+      "theme": "global_weights",
+      "catalog_role": "区分虚拟权重大小、有效性与帮助性；展示真实 transformer 中的干扰权重。",
+      "coverage_status": "implemented-partial",
+      "current_modes": [
+        "transparent-proxy"
+      ],
+      "protocol_ids": [
+        "C01"
+      ],
+      "exact_reproduction_feasibility": "public-protocol-likely-feasible",
+      "target_mode": "exact-or-close-reproduction",
+      "priority": "P0",
+      "compute_tier": "cpu",
+      "blockers": [
+        "在宣称精确复现前仍需锁定代码、数据、模型 revision、随机种子和数值容差。"
+      ],
+      "acceptance_criteria": "按公开协议锁定模型/架构、数据、优化器、指标与容差；保存样本级结果、环境和哈希，并解释所有偏离。",
+      "next_step": "训练并保存可公开的小型 Transformer；复现虚拟权重的 magnitude、effectiveness 与 helpfulness 分布，并用损失干预验证。"
+    },
+    {
+      "source_id": "TC-E98DED276D",
+      "period": "2026-07",
+      "title": "Verbalizable Representations Form a Global Workspace in Language Models",
+      "url": "https://transformer-circuits.pub/2026/workspace/index.html",
+      "source_type": "paper",
+      "theme": "reasoning",
+      "catalog_role": "提出更可报告、可控制、可复用的 J-space/global-workspace 功能结构。",
+      "coverage_status": "implemented-partial",
+      "current_modes": [
+        "open-model-analogue"
+      ],
+      "protocol_ids": [
+        "M02"
+      ],
+      "exact_reproduction_feasibility": "blocked-by-proprietary-or-unpublished-assets",
+      "target_mode": "open-model-analogue",
+      "priority": "P0",
+      "compute_tier": "multi-gpu",
+      "blockers": [
+        "原始模型权重、内部激活接口、训练数据或中间分析资产至少有一项未公开。",
+        "公开仓库只能实现开放模型类比；不得把方向性复现标成原论文数值复现。"
+      ],
+      "acceptance_criteria": "在至少两个固定开放 checkpoint 上复现同一方向的机制预测，包含负对照和干预；标题与报告明确标注 analogue。",
+      "next_step": "在固定开放权重模型上构造可报告/不可报告中间状态任务，比较读出、控制、复用与 activation patching，并跨任务复现。"
+    },
+    {
+      "source_id": "TC-5693BDC281",
+      "period": "2026-06",
+      "title": "Circuits Updates — June 2026",
+      "url": "https://transformer-circuits.pub/2026/june-update/index.html",
+      "source_type": "research_update",
+      "theme": "representations",
+      "catalog_role": "turn-averaged sparse autoencoders；探索跨 token 聚合的表示分解。",
+      "coverage_status": "planned",
+      "current_modes": [],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "blocked-by-proprietary-or-unpublished-assets",
+      "target_mode": "open-model-analogue",
+      "priority": "P2",
+      "compute_tier": "multi-gpu",
+      "blockers": [
+        "原始模型权重、内部激活接口、训练数据或中间分析资产至少有一项未公开。",
+        "公开仓库只能实现开放模型类比；不得把方向性复现标成原论文数值复现。"
+      ],
+      "acceptance_criteria": "在至少两个固定开放 checkpoint 上复现同一方向的机制预测，包含负对照和干预；标题与报告明确标注 analogue。",
+      "next_step": "训练或加载可公开的 SAE/crosscoder 字典，报告重建、稀疏度、feature splitting/merging、困难负样本与因果干预。"
+    },
+    {
+      "source_id": "TC-7BB06AA88A",
+      "period": "2026-05",
+      "title": "Circuits Updates — May 2026",
+      "url": "https://transformer-circuits.pub/2026/may-update/index.html",
+      "source_type": "research_update",
+      "theme": "circuits",
+      "catalog_role": "用下游连接理解特征，并研究哪些特征更可能有效 steering。",
+      "coverage_status": "implemented-partial",
+      "current_modes": [
+        "transparent-proxy"
+      ],
+      "protocol_ids": [
+        "C12"
+      ],
+      "exact_reproduction_feasibility": "blocked-by-proprietary-or-unpublished-assets",
+      "target_mode": "open-model-analogue",
+      "priority": "P0",
+      "compute_tier": "multi-gpu",
+      "blockers": [
+        "原始模型权重、内部激活接口、训练数据或中间分析资产至少有一项未公开。",
+        "公开仓库只能实现开放模型类比；不得把方向性复现标成原论文数值复现。"
+      ],
+      "acceptance_criteria": "在至少两个固定开放 checkpoint 上复现同一方向的机制预测，包含负对照和干预；标题与报告明确标注 analogue。",
+      "next_step": "完成逐项资产审计并登记可执行协议。"
+    },
+    {
+      "source_id": "TC-A3D958E6C3",
+      "period": "2026-05-07",
+      "title": "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations",
+      "url": "https://transformer-circuits.pub/2026/nla/index.html",
+      "source_type": "paper",
+      "theme": "activation_interfaces",
+      "catalog_role": "用 verbalizer/reconstructor 与自然语言瓶颈重建激活，作为假设生成和审计接口。",
+      "coverage_status": "planned",
+      "current_modes": [],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "blocked-by-proprietary-or-unpublished-assets",
+      "target_mode": "open-model-analogue",
+      "priority": "P0",
+      "compute_tier": "multi-gpu",
+      "blockers": [
+        "原始模型权重、内部激活接口、训练数据或中间分析资产至少有一项未公开。",
+        "公开仓库只能实现开放模型类比；不得把方向性复现标成原论文数值复现。"
+      ],
+      "acceptance_criteria": "在至少两个固定开放 checkpoint 上复现同一方向的机制预测，包含负对照和干预；标题与报告明确标注 analogue。",
+      "next_step": "在开放模型激活上训练 verbalizer/reconstructor 或 activation oracle，固定数据切分并同时评价重建与解释忠实性。"
+    },
+    {
+      "source_id": "TC-63534E7549",
+      "period": "2026-05-04",
+      "title": "HeadVis: An Interactive Tool For Investigating Attention Heads",
+      "url": "https://transformer-circuits.pub/2026/headvis/index.html",
+      "source_type": "tool",
+      "theme": "attention",
+      "catalog_role": "在全数据分布上可视化高秩、上下文相关的注意力头行为。",
+      "coverage_status": "reference-only",
+      "current_modes": [
+        "reference"
+      ],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "not-applicable",
+      "target_mode": "reference-only",
+      "priority": "P3",
+      "compute_tier": "none",
+      "blockers": [],
+      "acceptance_criteria": "原始材料被索引、准确摘要并连接到课程或工具说明；不生成虚假的实验通过状态。",
+      "next_step": "建立成对输入数据，分离 QK 与 OV，做头/位置/方向消融、patching 和随机负对照，并报告全分布而非精选样例。"
+    },
+    {
+      "source_id": "TC-A6C91CD803",
+      "period": "2026-04-02",
+      "title": "Emotion Concepts and their Function in a Large Language Model",
+      "url": "https://transformer-circuits.pub/2026/emotions/index.html",
+      "source_type": "paper",
+      "theme": "representations",
+      "catalog_role": "提取情绪概念表示并验证其行为因果效应；不等同于主观体验。",
+      "coverage_status": "implemented-partial",
+      "current_modes": [
+        "transparent-proxy"
+      ],
+      "protocol_ids": [
+        "C12"
+      ],
+      "exact_reproduction_feasibility": "blocked-by-proprietary-or-unpublished-assets",
+      "target_mode": "open-model-analogue",
+      "priority": "P0",
+      "compute_tier": "multi-gpu",
+      "blockers": [
+        "原始模型权重、内部激活接口、训练数据或中间分析资产至少有一项未公开。",
+        "公开仓库只能实现开放模型类比；不得把方向性复现标成原论文数值复现。"
+      ],
+      "acceptance_criteria": "在至少两个固定开放 checkpoint 上复现同一方向的机制预测，包含负对照和干预；标题与报告明确标注 analogue。",
+      "next_step": "训练或加载可公开的 SAE/crosscoder 字典，报告重建、稀疏度、feature splitting/merging、困难负样本与因果干预。"
+    },
+    {
+      "source_id": "TC-D7B90B802E",
+      "period": "2025-12",
+      "title": "Circuits Cross-Post — Activation Oracles",
+      "url": "https://alignment.anthropic.com/2025/activation-oracles/",
+      "source_type": "cross_post",
+      "theme": "activation_interfaces",
+      "catalog_role": "训练模型用自然语言回答有关自身激活的问题，探索有限内部状态读出。",
+      "coverage_status": "planned",
+      "current_modes": [],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "blocked-by-proprietary-or-unpublished-assets",
+      "target_mode": "open-model-analogue",
+      "priority": "P2",
+      "compute_tier": "multi-gpu",
+      "blockers": [
+        "原始模型权重、内部激活接口、训练数据或中间分析资产至少有一项未公开。",
+        "公开仓库只能实现开放模型类比；不得把方向性复现标成原论文数值复现。"
+      ],
+      "acceptance_criteria": "在至少两个固定开放 checkpoint 上复现同一方向的机制预测，包含负对照和干预；标题与报告明确标注 analogue。",
+      "next_step": "在开放模型激活上训练 verbalizer/reconstructor 或 activation oracle，固定数据切分并同时评价重建与解释忠实性。"
+    },
+    {
+      "source_id": "TC-E6C3D9B0FA",
+      "period": "2025-11",
+      "title": "Circuits Updates — November 2025",
+      "url": "https://transformer-circuits.pub/2025/november-update/index.html",
+      "source_type": "research_update",
+      "theme": "safety",
+      "catalog_role": "研究 harm pressure 如何通过注意力路由影响回答与安全行为。",
+      "coverage_status": "implemented-partial",
+      "current_modes": [
+        "transparent-proxy"
+      ],
+      "protocol_ids": [
+        "C09"
+      ],
+      "exact_reproduction_feasibility": "blocked-by-proprietary-or-unpublished-assets",
+      "target_mode": "open-model-analogue",
+      "priority": "P0",
+      "compute_tier": "multi-gpu",
+      "blockers": [
+        "原始模型权重、内部激活接口、训练数据或中间分析资产至少有一项未公开。",
+        "公开仓库只能实现开放模型类比；不得把方向性复现标成原论文数值复现。"
+      ],
+      "acceptance_criteria": "在至少两个固定开放 checkpoint 上复现同一方向的机制预测，包含负对照和干预；标题与报告明确标注 analogue。",
+      "next_step": "使用无害权限与内容代理任务，分别测量识别、角色/来源绑定、策略状态和输出竞争；禁止优化真实攻击载荷。"
+    },
+    {
+      "source_id": "TC-4C2BD77EB2",
+      "period": "2025-10",
+      "title": "Emergent Introspective Awareness in Large Language Models",
+      "url": "https://transformer-circuits.pub/2025/introspection/index.html",
+      "source_type": "paper",
+      "theme": "introspection",
+      "catalog_role": "测试模型对注入内部状态的识别和报告能力，并讨论严格边界。",
+      "coverage_status": "planned",
+      "current_modes": [],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "blocked-by-proprietary-or-unpublished-assets",
+      "target_mode": "open-model-analogue",
+      "priority": "P1",
+      "compute_tier": "multi-gpu",
+      "blockers": [
+        "原始模型权重、内部激活接口、训练数据或中间分析资产至少有一项未公开。",
+        "公开仓库只能实现开放模型类比；不得把方向性复现标成原论文数值复现。"
+      ],
+      "acceptance_criteria": "在至少两个固定开放 checkpoint 上复现同一方向的机制预测，包含负对照和干预；标题与报告明确标注 analogue。",
+      "next_step": "在开放模型中注入已知激活扰动，测试检测、定位和自然语言报告，并加入盲测、随机方向与假阳性对照。"
+    },
+    {
+      "source_id": "TC-D2EF558D57",
+      "period": "2025-10",
+      "title": "Circuits Updates — October 2025",
+      "url": "https://transformer-circuits.pub/2025/october-update/index.html",
+      "source_type": "research_update",
+      "theme": "representations",
+      "catalog_role": "跨文本视觉形式的特征与 dictionary 初始化方法。",
+      "coverage_status": "planned",
+      "current_modes": [],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "blocked-by-proprietary-or-unpublished-assets",
+      "target_mode": "open-model-analogue",
+      "priority": "P2",
+      "compute_tier": "multi-gpu",
+      "blockers": [
+        "原始模型权重、内部激活接口、训练数据或中间分析资产至少有一项未公开。",
+        "公开仓库只能实现开放模型类比；不得把方向性复现标成原论文数值复现。"
+      ],
+      "acceptance_criteria": "在至少两个固定开放 checkpoint 上复现同一方向的机制预测，包含负对照和干预；标题与报告明确标注 analogue。",
+      "next_step": "训练或加载可公开的 SAE/crosscoder 字典，报告重建、稀疏度、feature splitting/merging、困难负样本与因果干预。"
+    },
+    {
+      "source_id": "TC-E2D64806D8",
+      "period": "2025-10",
+      "title": "When Models Manipulate Manifolds: The Geometry of a Counting Task",
+      "url": "https://transformer-circuits.pub/2025/linebreaks/index.html",
+      "source_type": "paper",
+      "theme": "geometry",
+      "catalog_role": "以换行计数展示离散特征、连续流形、QK 扭转和分布式计算的统一。",
+      "coverage_status": "implemented-partial",
+      "current_modes": [
+        "open-model-analogue"
+      ],
+      "protocol_ids": [
+        "M01"
+      ],
+      "exact_reproduction_feasibility": "blocked-by-proprietary-or-unpublished-assets",
+      "target_mode": "open-model-analogue",
+      "priority": "P0",
+      "compute_tier": "multi-gpu",
+      "blockers": [
+        "原始模型权重、内部激活接口、训练数据或中间分析资产至少有一项未公开。",
+        "公开仓库只能实现开放模型类比；不得把方向性复现标成原论文数值复现。"
+      ],
+      "acceptance_criteria": "在至少两个固定开放 checkpoint 上复现同一方向的机制预测，包含负对照和干预；标题与报告明确标注 analogue。",
+      "next_step": "复现计数或有限状态任务的低维流形，验证坐标、QK 变换和因果 patching，并测试分布外长度。"
+    },
+    {
+      "source_id": "TC-D6C098FC6F",
+      "period": "2025-09",
+      "title": "Circuits Updates — September 2025",
+      "url": "https://transformer-circuits.pub/2025/september-update/index.html",
+      "source_type": "research_update",
+      "theme": "in_context_learning",
+      "catalog_role": "探索特征与 in-context learning 的关系。",
+      "coverage_status": "planned",
+      "current_modes": [],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "blocked-by-proprietary-or-unpublished-assets",
+      "target_mode": "open-model-analogue",
+      "priority": "P2",
+      "compute_tier": "multi-gpu",
+      "blockers": [
+        "原始模型权重、内部激活接口、训练数据或中间分析资产至少有一项未公开。",
+        "公开仓库只能实现开放模型类比；不得把方向性复现标成原论文数值复现。"
+      ],
+      "acceptance_criteria": "在至少两个固定开放 checkpoint 上复现同一方向的机制预测，包含负对照和干预；标题与报告明确标注 analogue。",
+      "next_step": "训练或加载小型开放 Transformer，复现 induction score、训练相变、头组合与 in-context performance 的时间对齐。"
+    },
+    {
+      "source_id": "TC-0EAF9D49E4",
+      "period": "2025-08",
+      "title": "Circuits Updates — August 2025",
+      "url": "https://transformer-circuits.pub/2025/august-update/index.html",
+      "source_type": "research_update",
+      "theme": "persona",
+      "catalog_role": "研究 persona 如何调制知识报告、风格和行为。",
+      "coverage_status": "planned",
+      "current_modes": [],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "blocked-by-proprietary-or-unpublished-assets",
+      "target_mode": "open-model-analogue",
+      "priority": "P2",
+      "compute_tier": "multi-gpu",
+      "blockers": [
+        "原始模型权重、内部激活接口、训练数据或中间分析资产至少有一项未公开。",
+        "公开仓库只能实现开放模型类比；不得把方向性复现标成原论文数值复现。"
+      ],
+      "acceptance_criteria": "在至少两个固定开放 checkpoint 上复现同一方向的机制预测，包含负对照和干预；标题与报告明确标注 analogue。",
+      "next_step": "构造角色条件的成对提示，区分知识可用性、报告策略与风格；用 patching 和错误角色/位置对照测试中介。"
+    },
+    {
+      "source_id": "TC-28A346D65A",
+      "period": "2025-07",
+      "title": "A Toy Model of Mechanistic (Un)Faithfulness",
+      "url": "https://transformer-circuits.pub/2025/faithfulness-toy-model/index.html",
+      "source_type": "research_update",
+      "theme": "methods",
+      "catalog_role": "说明 replacement model/transcoder 解释可能产生机制不忠实。",
+      "coverage_status": "implemented-partial",
+      "current_modes": [
+        "transparent-proxy"
+      ],
+      "protocol_ids": [
+        "C11"
+      ],
+      "exact_reproduction_feasibility": "public-protocol-likely-feasible",
+      "target_mode": "exact-or-close-reproduction",
+      "priority": "P0",
+      "compute_tier": "cpu",
+      "blockers": [
+        "在宣称精确复现前仍需锁定代码、数据、模型 revision、随机种子和数值容差。"
+      ],
+      "acceptance_criteria": "按公开协议锁定模型/架构、数据、优化器、指标与容差；保存样本级结果、环境和哈希，并解释所有偏离。",
+      "next_step": "实现替代模型与原模型的双重干预基准，比较输出忠实、重建忠实和机制忠实，并保留失败案例。"
+    },
+    {
+      "source_id": "TC-40408D3D25",
+      "period": "2025-07",
+      "title": "Tracing Attention Computation Through Feature Interactions",
+      "url": "https://transformer-circuits.pub/2025/attention-qk/index.html",
+      "source_type": "paper",
+      "theme": "attention",
+      "catalog_role": "把 QK 注意力分数展开为 query/key 特征交互并接入归因图。",
+      "coverage_status": "implemented-partial",
+      "current_modes": [
+        "transparent-proxy"
+      ],
+      "protocol_ids": [
+        "C04"
+      ],
+      "exact_reproduction_feasibility": "public-protocol-likely-feasible",
+      "target_mode": "exact-or-close-reproduction",
+      "priority": "P0",
+      "compute_tier": "cpu",
+      "blockers": [
+        "在宣称精确复现前仍需锁定代码、数据、模型 revision、随机种子和数值容差。"
+      ],
+      "acceptance_criteria": "按公开协议锁定模型/架构、数据、优化器、指标与容差；保存样本级结果、环境和哈希，并解释所有偏离。",
+      "next_step": "建立成对输入数据，分离 QK 与 OV，做头/位置/方向消融、patching 和随机负对照，并报告全分布而非精选样例。"
+    },
+    {
+      "source_id": "TC-9A2C59E608",
+      "period": "2025-07",
+      "title": "A Toy Model of Interference Weights",
+      "url": "https://transformer-circuits.pub/2025/interference-weights/index.html",
+      "source_type": "research_update",
+      "theme": "global_weights",
+      "catalog_role": "用玩具模型澄清权重叠加与干扰权重的多种定义。",
+      "coverage_status": "implemented-partial",
+      "current_modes": [
+        "transparent-proxy"
+      ],
+      "protocol_ids": [
+        "C01"
+      ],
+      "exact_reproduction_feasibility": "public-protocol-likely-feasible",
+      "target_mode": "exact-or-close-reproduction",
+      "priority": "P0",
+      "compute_tier": "cpu",
+      "blockers": [
+        "在宣称精确复现前仍需锁定代码、数据、模型 revision、随机种子和数值容差。"
+      ],
+      "acceptance_criteria": "按公开协议锁定模型/架构、数据、优化器、指标与容差；保存样本级结果、环境和哈希，并解释所有偏离。",
+      "next_step": "训练并保存可公开的小型 Transformer；复现虚拟权重的 magnitude、effectiveness 与 helpfulness 分布，并用损失干预验证。"
+    },
+    {
+      "source_id": "TC-B0B1E6EF1D",
+      "period": "2025-07",
+      "title": "Sparse mixtures of linear transforms",
+      "url": "https://transformer-circuits.pub/2025/bulk-update/index.html",
+      "source_type": "research_update",
+      "theme": "circuits",
+      "catalog_role": "把“何时激活”和“激活时执行什么变换”共同建模为稀疏线性变换混合。",
+      "coverage_status": "implemented-partial",
+      "current_modes": [
+        "transparent-proxy"
+      ],
+      "protocol_ids": [
+        "C03"
+      ],
+      "exact_reproduction_feasibility": "public-protocol-likely-feasible",
+      "target_mode": "exact-or-close-reproduction",
+      "priority": "P0",
+      "compute_tier": "cpu",
+      "blockers": [
+        "在宣称精确复现前仍需锁定代码、数据、模型 revision、随机种子和数值容差。"
+      ],
+      "acceptance_criteria": "按公开协议锁定模型/架构、数据、优化器、指标与容差；保存样本级结果、环境和哈希，并解释所有偏离。",
+      "next_step": "完成逐项资产审计并登记可执行协议。"
+    },
+    {
+      "source_id": "TC-444BC86B75",
+      "period": "2025-07",
+      "title": "Circuits Updates — July 2025",
+      "url": "https://transformer-circuits.pub/2025/july-update/index.html",
+      "source_type": "research_update",
+      "theme": "methods",
+      "catalog_role": "回顾数学框架、虚拟权重和可解释性在生物学等方向的应用。",
+      "coverage_status": "planned",
+      "current_modes": [],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "source-specific-audit-required",
+      "target_mode": "source-audit-then-decide",
+      "priority": "P2",
+      "compute_tier": "cpu",
+      "blockers": [
+        "尚未完成逐项公开资产、许可证、模型 revision、数据生成与指标定义审计。"
+      ],
+      "acceptance_criteria": "先完成来源、代码、数据、许可和指标审计，再登记可执行协议、计算预算、成功阈值与反证条件。",
+      "next_step": "实现替代模型与原模型的双重干预基准，比较输出忠实、重建忠实和机制忠实，并保留失败案例。"
+    },
+    {
+      "source_id": "TC-33E68B26C9",
+      "period": "2025-07",
+      "title": "Automated Auditing",
+      "url": "https://alignment.anthropic.com/2025/automated-auditing/",
+      "source_type": "cross_post",
+      "theme": "auditing",
+      "catalog_role": "探索使用代理和可解释性工具进行自动化对齐审计。",
+      "coverage_status": "planned",
+      "current_modes": [],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "blocked-by-proprietary-or-unpublished-assets",
+      "target_mode": "open-model-analogue",
+      "priority": "P2",
+      "compute_tier": "multi-gpu",
+      "blockers": [
+        "原始模型权重、内部激活接口、训练数据或中间分析资产至少有一项未公开。",
+        "公开仓库只能实现开放模型类比；不得把方向性复现标成原论文数值复现。"
+      ],
+      "acceptance_criteria": "在至少两个固定开放 checkpoint 上复现同一方向的机制预测，包含负对照和干预；标题与报告明确标注 analogue。",
+      "next_step": "为开放模型建立自动审计基准，固定隐藏行为、工具权限和评分规则，并比较行为测试与内部工具的增益。"
+    },
+    {
+      "source_id": "TC-3EB24C535B",
+      "period": "2025-04",
+      "title": "Circuits Updates — April 2025",
+      "url": "https://transformer-circuits.pub/2025/april-update/index.html",
+      "source_type": "research_update",
+      "theme": "safety",
+      "catalog_role": "失败越狱、密集特征和机制可解释性研究实践；包含重要失败案例。",
+      "coverage_status": "implemented-partial",
+      "current_modes": [
+        "open-model-analogue"
+      ],
+      "protocol_ids": [
+        "M01"
+      ],
+      "exact_reproduction_feasibility": "blocked-by-proprietary-or-unpublished-assets",
+      "target_mode": "open-model-analogue",
+      "priority": "P1",
+      "compute_tier": "multi-gpu",
+      "blockers": [
+        "原始模型权重、内部激活接口、训练数据或中间分析资产至少有一项未公开。",
+        "公开仓库只能实现开放模型类比；不得把方向性复现标成原论文数值复现。"
+      ],
+      "acceptance_criteria": "在至少两个固定开放 checkpoint 上复现同一方向的机制预测，包含负对照和干预；标题与报告明确标注 analogue。",
+      "next_step": "使用无害权限与内容代理任务，分别测量识别、角色/来源绑定、策略状态和输出竞争；禁止优化真实攻击载荷。"
+    },
+    {
+      "source_id": "TC-F189E98B43",
+      "period": "2025-04",
+      "title": "Progress on Attention",
+      "url": "https://transformer-circuits.pub/2025/attention-update/index.html",
+      "source_type": "research_update",
+      "theme": "attention",
+      "catalog_role": "总结注意力解释的困难及 QK/OV 分析进展。",
+      "coverage_status": "planned",
+      "current_modes": [],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "source-specific-audit-required",
+      "target_mode": "source-audit-then-decide",
+      "priority": "P2",
+      "compute_tier": "single-gpu",
+      "blockers": [
+        "尚未完成逐项公开资产、许可证、模型 revision、数据生成与指标定义审计。"
+      ],
+      "acceptance_criteria": "先完成来源、代码、数据、许可和指标审计，再登记可执行协议、计算预算、成功阈值与反证条件。",
+      "next_step": "建立成对输入数据，分离 QK 与 OV，做头/位置/方向消融、patching 和随机负对照，并报告全分布而非精选样例。"
+    },
+    {
+      "source_id": "TC-573987B7FD",
+      "period": "2025-03",
+      "title": "On the Biology of a Large Language Model",
+      "url": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+      "source_type": "paper",
+      "theme": "case_studies",
+      "catalog_role": "用归因图研究多步推理、规划、幻觉、拒绝、越狱和 CoT 忠实性。",
+      "coverage_status": "implemented-partial",
+      "current_modes": [
+        "transparent-proxy",
+        "open-model-analogue"
+      ],
+      "protocol_ids": [
+        "C05",
+        "C08",
+        "C09",
+        "M02",
+        "M03"
+      ],
+      "exact_reproduction_feasibility": "blocked-by-proprietary-or-unpublished-assets",
+      "target_mode": "open-model-analogue",
+      "priority": "P0",
+      "compute_tier": "multi-gpu",
+      "blockers": [
+        "原始模型权重、内部激活接口、训练数据或中间分析资产至少有一项未公开。",
+        "公开仓库只能实现开放模型类比；不得把方向性复现标成原论文数值复现。"
+      ],
+      "acceptance_criteria": "在至少两个固定开放 checkpoint 上复现同一方向的机制预测，包含负对照和干预；标题与报告明确标注 analogue。",
+      "next_step": "完成逐项资产审计并登记可执行协议。"
+    },
+    {
+      "source_id": "TC-21EF8BF2A7",
+      "period": "2025-03",
+      "title": "Circuit Tracing: Revealing Computational Graphs in Language Models",
+      "url": "https://transformer-circuits.pub/2025/attribution-graphs/methods.html",
+      "source_type": "paper",
+      "theme": "methods",
+      "catalog_role": "提出 cross-layer transcoder 与 prompt-specific attribution graph 方法。",
+      "coverage_status": "implemented-partial",
+      "current_modes": [
+        "transparent-proxy",
+        "open-model-analogue"
+      ],
+      "protocol_ids": [
+        "C07",
+        "C08",
+        "C11",
+        "M03"
+      ],
+      "exact_reproduction_feasibility": "blocked-by-proprietary-or-unpublished-assets",
+      "target_mode": "open-model-analogue",
+      "priority": "P0",
+      "compute_tier": "multi-gpu",
+      "blockers": [
+        "原始模型权重、内部激活接口、训练数据或中间分析资产至少有一项未公开。",
+        "公开仓库只能实现开放模型类比；不得把方向性复现标成原论文数值复现。"
+      ],
+      "acceptance_criteria": "在至少两个固定开放 checkpoint 上复现同一方向的机制预测，包含负对照和干预；标题与报告明确标注 analogue。",
+      "next_step": "实现替代模型与原模型的双重干预基准，比较输出忠实、重建忠实和机制忠实，并保留失败案例。"
+    },
+    {
+      "source_id": "TC-BC7F77D254",
+      "period": "2025-02",
+      "title": "Insights on Crosscoder Model Diffing",
+      "url": "https://transformer-circuits.pub/2025/crosscoder-diffing-update/index.html",
+      "source_type": "research_update",
+      "theme": "model_diffing",
+      "catalog_role": "用 crosscoder 比较模型表示与微调差异的初步结果。",
+      "coverage_status": "planned",
+      "current_modes": [],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "blocked-by-proprietary-or-unpublished-assets",
+      "target_mode": "open-model-analogue",
+      "priority": "P2",
+      "compute_tier": "multi-gpu",
+      "blockers": [
+        "原始模型权重、内部激活接口、训练数据或中间分析资产至少有一项未公开。",
+        "公开仓库只能实现开放模型类比；不得把方向性复现标成原论文数值复现。"
+      ],
+      "acceptance_criteria": "在至少两个固定开放 checkpoint 上复现同一方向的机制预测，包含负对照和干预；标题与报告明确标注 analogue。",
+      "next_step": "选择公开基础/微调 checkpoint，训练共享 crosscoder，进行 stage-wise 对照并验证特征差异的因果作用。"
+    },
+    {
+      "source_id": "TC-183FC4CAAE",
+      "period": "2025-01",
+      "title": "Circuits Updates — January 2025",
+      "url": "https://transformer-circuits.pub/2025/january-update/index.html",
+      "source_type": "research_update",
+      "theme": "dictionary_learning",
+      "catalog_role": "dictionary learning 的优化与训练技术。",
+      "coverage_status": "planned",
+      "current_modes": [],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "source-specific-audit-required",
+      "target_mode": "source-audit-then-decide",
+      "priority": "P2",
+      "compute_tier": "single-gpu",
+      "blockers": [
+        "尚未完成逐项公开资产、许可证、模型 revision、数据生成与指标定义审计。"
+      ],
+      "acceptance_criteria": "先完成来源、代码、数据、许可和指标审计，再登记可执行协议、计算预算、成功阈值与反证条件。",
+      "next_step": "在固定开放 checkpoint 与激活语料上比较 TopK、gated 等 SAE；报告训练预算、重建、稀疏度、稳定性和下游因果性。"
+    },
+    {
+      "source_id": "TC-B81E55708E",
+      "period": "2024-12",
+      "title": "Stage-Wise Model Diffing",
+      "url": "https://transformer-circuits.pub/2024/model-diffing/index.html",
+      "source_type": "research_update",
+      "theme": "model_diffing",
+      "catalog_role": "通过分阶段引入数据与模型变化，隔离微调特征变化。",
+      "coverage_status": "planned",
+      "current_modes": [],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "blocked-by-proprietary-or-unpublished-assets",
+      "target_mode": "open-model-analogue",
+      "priority": "P2",
+      "compute_tier": "multi-gpu",
+      "blockers": [
+        "原始模型权重、内部激活接口、训练数据或中间分析资产至少有一项未公开。",
+        "公开仓库只能实现开放模型类比；不得把方向性复现标成原论文数值复现。"
+      ],
+      "acceptance_criteria": "在至少两个固定开放 checkpoint 上复现同一方向的机制预测，包含负对照和干预；标题与报告明确标注 analogue。",
+      "next_step": "选择公开基础/微调 checkpoint，训练共享 crosscoder，进行 stage-wise 对照并验证特征差异的因果作用。"
+    },
+    {
+      "source_id": "TC-3C519406E3",
+      "period": "2024-10",
+      "title": "Sparse Crosscoders for Cross-Layer Features and Model Diffing",
+      "url": "https://transformer-circuits.pub/2024/crosscoders/index.html",
+      "source_type": "research_update",
+      "theme": "representations",
+      "catalog_role": "跨层/跨模型联合特征分解，减少层间重复并建立共享坐标。",
+      "coverage_status": "planned",
+      "current_modes": [],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "blocked-by-proprietary-or-unpublished-assets",
+      "target_mode": "open-model-analogue",
+      "priority": "P0",
+      "compute_tier": "multi-gpu",
+      "blockers": [
+        "原始模型权重、内部激活接口、训练数据或中间分析资产至少有一项未公开。",
+        "公开仓库只能实现开放模型类比；不得把方向性复现标成原论文数值复现。"
+      ],
+      "acceptance_criteria": "在至少两个固定开放 checkpoint 上复现同一方向的机制预测，包含负对照和干预；标题与报告明确标注 analogue。",
+      "next_step": "训练或加载可公开的 SAE/crosscoder 字典，报告重建、稀疏度、feature splitting/merging、困难负样本与因果干预。"
+    },
+    {
+      "source_id": "TC-5C4D1067C8",
+      "period": "2024-10",
+      "title": "Using Dictionary Learning Features as Classifiers",
+      "url": "https://transformer-circuits.pub/2024/features-as-classifiers/index.html",
+      "source_type": "research_update",
+      "theme": "safety",
+      "catalog_role": "比较字典特征与原始激活的有害性分类能力。",
+      "coverage_status": "planned",
+      "current_modes": [],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "blocked-by-proprietary-or-unpublished-assets",
+      "target_mode": "open-model-analogue",
+      "priority": "P2",
+      "compute_tier": "multi-gpu",
+      "blockers": [
+        "原始模型权重、内部激活接口、训练数据或中间分析资产至少有一项未公开。",
+        "公开仓库只能实现开放模型类比；不得把方向性复现标成原论文数值复现。"
+      ],
+      "acceptance_criteria": "在至少两个固定开放 checkpoint 上复现同一方向的机制预测，包含负对照和干预；标题与报告明确标注 analogue。",
+      "next_step": "使用无害权限与内容代理任务，分别测量识别、角色/来源绑定、策略状态和输出竞争；禁止优化真实攻击载荷。"
+    },
+    {
+      "source_id": "TC-B4AFFC2E98",
+      "period": "2024-09",
+      "title": "Circuits Updates — September 2024",
+      "url": "https://transformer-circuits.pub/2024/september-update/index.html",
+      "source_type": "research_update",
+      "theme": "dictionary_learning",
+      "catalog_role": "successor heads、SAE 数据过采样等初步研究。",
+      "coverage_status": "planned",
+      "current_modes": [],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "source-specific-audit-required",
+      "target_mode": "source-audit-then-decide",
+      "priority": "P2",
+      "compute_tier": "single-gpu",
+      "blockers": [
+        "尚未完成逐项公开资产、许可证、模型 revision、数据生成与指标定义审计。"
+      ],
+      "acceptance_criteria": "先完成来源、代码、数据、许可和指标审计，再登记可执行协议、计算预算、成功阈值与反证条件。",
+      "next_step": "在固定开放 checkpoint 与激活语料上比较 TopK、gated 等 SAE；报告训练预算、重建、稀疏度、稳定性和下游因果性。"
+    },
+    {
+      "source_id": "TC-2D75B54C8B",
+      "period": "2024-08",
+      "title": "Circuits Updates — August 2024",
+      "url": "https://transformer-circuits.pub/2024/august-update/index.html",
+      "source_type": "research_update",
+      "theme": "evaluation",
+      "catalog_role": "可解释性评估与自我解释复现。",
+      "coverage_status": "planned",
+      "current_modes": [],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "source-specific-audit-required",
+      "target_mode": "source-audit-then-decide",
+      "priority": "P2",
+      "compute_tier": "single-gpu",
+      "blockers": [
+        "尚未完成逐项公开资产、许可证、模型 revision、数据生成与指标定义审计。"
+      ],
+      "acceptance_criteria": "先完成来源、代码、数据、许可和指标审计，再登记可执行协议、计算预算、成功阈值与反证条件。",
+      "next_step": "建立带已知机制或可验证反事实的评估集，比较自动解释、人类评分、干预预测和跨分布稳定性。"
+    },
+    {
+      "source_id": "TC-617276E404",
+      "period": "2024-07",
+      "title": "Circuits Updates — July 2024",
+      "url": "https://transformer-circuits.pub/2024/july-update/index.html",
+      "source_type": "research_update",
+      "theme": "methods",
+      "catalog_role": "总结可解释性的五个障碍、线性表示、暗物质和特征敏感性。",
+      "coverage_status": "planned",
+      "current_modes": [],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "source-specific-audit-required",
+      "target_mode": "source-audit-then-decide",
+      "priority": "P2",
+      "compute_tier": "unknown",
+      "blockers": [
+        "尚未完成逐项公开资产、许可证、模型 revision、数据生成与指标定义审计。"
+      ],
+      "acceptance_criteria": "先完成来源、代码、数据、许可和指标审计，再登记可执行协议、计算预算、成功阈值与反证条件。",
+      "next_step": "实现替代模型与原模型的双重干预基准，比较输出忠实、重建忠实和机制忠实，并保留失败案例。"
+    },
+    {
+      "source_id": "TC-C44513DB0D",
+      "period": "2024-06",
+      "title": "Circuits Updates — June 2024",
+      "url": "https://transformer-circuits.pub/2024/june-update/index.html",
+      "source_type": "research_update",
+      "theme": "dictionary_learning",
+      "catalog_role": "TopK 与 gated SAE 等训练方法。",
+      "coverage_status": "planned",
+      "current_modes": [],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "source-specific-audit-required",
+      "target_mode": "source-audit-then-decide",
+      "priority": "P2",
+      "compute_tier": "single-gpu",
+      "blockers": [
+        "尚未完成逐项公开资产、许可证、模型 revision、数据生成与指标定义审计。"
+      ],
+      "acceptance_criteria": "先完成来源、代码、数据、许可和指标审计，再登记可执行协议、计算预算、成功阈值与反证条件。",
+      "next_step": "在固定开放 checkpoint 与激活语料上比较 TopK、gated 等 SAE；报告训练预算、重建、稀疏度、稳定性和下游因果性。"
+    },
+    {
+      "source_id": "TC-C2E7229B82",
+      "period": "2024-05",
+      "title": "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet",
+      "url": "https://transformer-circuits.pub/2024/scaling-monosemanticity/index.html",
+      "source_type": "paper",
+      "theme": "representations",
+      "catalog_role": "把 SAE 扩展到生产级模型，研究抽象特征、因果 steering 与安全相关表示。",
+      "coverage_status": "implemented-partial",
+      "current_modes": [
+        "transparent-proxy"
+      ],
+      "protocol_ids": [
+        "C12"
+      ],
+      "exact_reproduction_feasibility": "blocked-by-proprietary-or-unpublished-assets",
+      "target_mode": "open-model-analogue",
+      "priority": "P0",
+      "compute_tier": "multi-gpu",
+      "blockers": [
+        "原始模型权重、内部激活接口、训练数据或中间分析资产至少有一项未公开。",
+        "公开仓库只能实现开放模型类比；不得把方向性复现标成原论文数值复现。"
+      ],
+      "acceptance_criteria": "在至少两个固定开放 checkpoint 上复现同一方向的机制预测，包含负对照和干预；标题与报告明确标注 analogue。",
+      "next_step": "训练或加载可公开的 SAE/crosscoder 字典，报告重建、稀疏度、feature splitting/merging、困难负样本与因果干预。"
+    },
+    {
+      "source_id": "TC-7CCB80EE99",
+      "period": "2024-04",
+      "title": "Circuits Updates — April 2024",
+      "url": "https://transformer-circuits.pub/2024/april-update/index.html",
+      "source_type": "research_update",
+      "theme": "dictionary_learning",
+      "catalog_role": "SAE 训练、特征评估和相关实验更新。",
+      "coverage_status": "planned",
+      "current_modes": [],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "source-specific-audit-required",
+      "target_mode": "source-audit-then-decide",
+      "priority": "P2",
+      "compute_tier": "single-gpu",
+      "blockers": [
+        "尚未完成逐项公开资产、许可证、模型 revision、数据生成与指标定义审计。"
+      ],
+      "acceptance_criteria": "先完成来源、代码、数据、许可和指标审计，再登记可执行协议、计算预算、成功阈值与反证条件。",
+      "next_step": "在固定开放 checkpoint 与激活语料上比较 TopK、gated 等 SAE；报告训练预算、重建、稀疏度、稳定性和下游因果性。"
+    },
+    {
+      "source_id": "TC-1B65E26883",
+      "period": "2024-03",
+      "title": "Circuits Updates — March 2024",
+      "url": "https://transformer-circuits.pub/2024/march-update/index.html",
+      "source_type": "research_update",
+      "theme": "dictionary_learning",
+      "catalog_role": "机制可解释性与字典学习的短期研究结果。",
+      "coverage_status": "planned",
+      "current_modes": [],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "source-specific-audit-required",
+      "target_mode": "source-audit-then-decide",
+      "priority": "P2",
+      "compute_tier": "single-gpu",
+      "blockers": [
+        "尚未完成逐项公开资产、许可证、模型 revision、数据生成与指标定义审计。"
+      ],
+      "acceptance_criteria": "先完成来源、代码、数据、许可和指标审计，再登记可执行协议、计算预算、成功阈值与反证条件。",
+      "next_step": "在固定开放 checkpoint 与激活语料上比较 TopK、gated 等 SAE；报告训练预算、重建、稀疏度、稳定性和下游因果性。"
+    },
+    {
+      "source_id": "TC-C2B0D2ACF2",
+      "period": "2024-03",
+      "title": "Reflections on Qualitative Research",
+      "url": "https://transformer-circuits.pub/2024/qualitative-essay/index.html",
+      "source_type": "essay",
+      "theme": "methodology",
+      "catalog_role": "讨论前范式领域中定性发现、可视化与“结构信号”的科学角色。",
+      "coverage_status": "reference-only",
+      "current_modes": [
+        "reference"
+      ],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "not-applicable",
+      "target_mode": "reference-only",
+      "priority": "P3",
+      "compute_tier": "none",
+      "blockers": [],
+      "acceptance_criteria": "原始材料被索引、准确摘要并连接到课程或工具说明；不生成虚假的实验通过状态。",
+      "next_step": "把方法论原则转成审稿清单、负对照模板和证据等级规则，而不是制造不存在的数值复现。"
+    },
+    {
+      "source_id": "TC-EE0687E541",
+      "period": "2024-02",
+      "title": "Circuits Updates — February 2024",
+      "url": "https://transformer-circuits.pub/2024/feb-update/index.html",
+      "source_type": "research_update",
+      "theme": "dictionary_learning",
+      "catalog_role": "可解释性团队的阶段性研究记录。",
+      "coverage_status": "planned",
+      "current_modes": [],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "source-specific-audit-required",
+      "target_mode": "source-audit-then-decide",
+      "priority": "P2",
+      "compute_tier": "single-gpu",
+      "blockers": [
+        "尚未完成逐项公开资产、许可证、模型 revision、数据生成与指标定义审计。"
+      ],
+      "acceptance_criteria": "先完成来源、代码、数据、许可和指标审计，再登记可执行协议、计算预算、成功阈值与反证条件。",
+      "next_step": "在固定开放 checkpoint 与激活语料上比较 TopK、gated 等 SAE；报告训练预算、重建、稀疏度、稳定性和下游因果性。"
+    },
+    {
+      "source_id": "TC-EB3A66CE68",
+      "period": "2024-01",
+      "title": "Circuits Updates — January 2024",
+      "url": "https://transformer-circuits.pub/2024/jan-update/index.html",
+      "source_type": "research_update",
+      "theme": "dictionary_learning",
+      "catalog_role": "特征分解、训练和分析的阶段性研究记录。",
+      "coverage_status": "planned",
+      "current_modes": [],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "source-specific-audit-required",
+      "target_mode": "source-audit-then-decide",
+      "priority": "P2",
+      "compute_tier": "single-gpu",
+      "blockers": [
+        "尚未完成逐项公开资产、许可证、模型 revision、数据生成与指标定义审计。"
+      ],
+      "acceptance_criteria": "先完成来源、代码、数据、许可和指标审计，再登记可执行协议、计算预算、成功阈值与反证条件。",
+      "next_step": "在固定开放 checkpoint 与激活语料上比较 TopK、gated 等 SAE；报告训练预算、重建、稀疏度、稳定性和下游因果性。"
+    },
+    {
+      "source_id": "TC-6B96C467BA",
+      "period": "2023-10",
+      "title": "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning",
+      "url": "https://transformer-circuits.pub/2023/monosemantic-features/index.html",
+      "source_type": "paper",
+      "theme": "representations",
+      "catalog_role": "用 SAE 从一层 transformer 中提取比神经元更可解释的稀疏特征。",
+      "coverage_status": "planned",
+      "current_modes": [],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "public-protocol-likely-feasible",
+      "target_mode": "exact-or-close-reproduction",
+      "priority": "P0",
+      "compute_tier": "cpu",
+      "blockers": [
+        "在宣称精确复现前仍需锁定代码、数据、模型 revision、随机种子和数值容差。"
+      ],
+      "acceptance_criteria": "按公开协议锁定模型/架构、数据、优化器、指标与容差；保存样本级结果、环境和哈希，并解释所有偏离。",
+      "next_step": "训练或加载可公开的 SAE/crosscoder 字典，报告重建、稀疏度、feature splitting/merging、困难负样本与因果干预。"
+    },
+    {
+      "source_id": "TC-07DCD8CF1B",
+      "period": "2023-07",
+      "title": "Circuits Updates — July 2023",
+      "url": "https://transformer-circuits.pub/2023/july-update/index.html",
+      "source_type": "research_update",
+      "theme": "safety",
+      "catalog_role": "有限数据区间、安全相关特征和 skip-trigram 回路。",
+      "coverage_status": "planned",
+      "current_modes": [],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "source-specific-audit-required",
+      "target_mode": "source-audit-then-decide",
+      "priority": "P2",
+      "compute_tier": "single-gpu",
+      "blockers": [
+        "尚未完成逐项公开资产、许可证、模型 revision、数据生成与指标定义审计。"
+      ],
+      "acceptance_criteria": "先完成来源、代码、数据、许可和指标审计，再登记可执行协议、计算预算、成功阈值与反证条件。",
+      "next_step": "使用无害权限与内容代理任务，分别测量识别、角色/来源绑定、策略状态和输出竞争；禁止优化真实攻击载荷。"
+    },
+    {
+      "source_id": "TC-8967179AC4",
+      "period": "2023-05",
+      "title": "Circuits Updates — May 2023",
+      "url": "https://transformer-circuits.pub/2023/may-update/index.html",
+      "source_type": "research_update",
+      "theme": "representations",
+      "catalog_role": "dictionary learning、特征定义、权重/头叠加等早期思考。",
+      "coverage_status": "planned",
+      "current_modes": [],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "source-specific-audit-required",
+      "target_mode": "source-audit-then-decide",
+      "priority": "P2",
+      "compute_tier": "single-gpu",
+      "blockers": [
+        "尚未完成逐项公开资产、许可证、模型 revision、数据生成与指标定义审计。"
+      ],
+      "acceptance_criteria": "先完成来源、代码、数据、许可和指标审计，再登记可执行协议、计算预算、成功阈值与反证条件。",
+      "next_step": "训练或加载可公开的 SAE/crosscoder 字典，报告重建、稀疏度、feature splitting/merging、困难负样本与因果干预。"
+    },
+    {
+      "source_id": "TC-40243386D6",
+      "period": "2023-05",
+      "title": "Interpretability Dreams",
+      "url": "https://transformer-circuits.pub/2023/interpretability-dreams/index.html",
+      "source_type": "essay",
+      "theme": "strategy",
+      "catalog_role": "描述机制可解释性的长期目标、潜在安全用途和研究路线。",
+      "coverage_status": "reference-only",
+      "current_modes": [
+        "reference"
+      ],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "not-applicable",
+      "target_mode": "reference-only",
+      "priority": "P3",
+      "compute_tier": "none",
+      "blockers": [],
+      "acceptance_criteria": "原始材料被索引、准确摘要并连接到课程或工具说明；不生成虚假的实验通过状态。",
+      "next_step": "维护为研究路线与优先级依据；所有实证主张必须回指独立的可执行协议。"
+    },
+    {
+      "source_id": "TC-0DE9FB5706",
+      "period": "2023-05",
+      "title": "Distributed Representations: Composition & Superposition",
+      "url": "https://transformer-circuits.pub/2023/superposition-composition/index.html",
+      "source_type": "essay",
+      "theme": "representations",
+      "catalog_role": "区分有意义的组合表示与容量压缩产生的叠加。",
+      "coverage_status": "implemented-partial",
+      "current_modes": [
+        "transparent-proxy"
+      ],
+      "protocol_ids": [
+        "C06"
+      ],
+      "exact_reproduction_feasibility": "source-specific-audit-required",
+      "target_mode": "source-audit-then-decide",
+      "priority": "P0",
+      "compute_tier": "cpu",
+      "blockers": [
+        "尚未完成逐项公开资产、许可证、模型 revision、数据生成与指标定义审计。"
+      ],
+      "acceptance_criteria": "先完成来源、代码、数据、许可和指标审计，再登记可执行协议、计算预算、成功阈值与反证条件。",
+      "next_step": "训练或加载可公开的 SAE/crosscoder 字典，报告重建、稀疏度、feature splitting/merging、困难负样本与因果干预。"
+    },
+    {
+      "source_id": "TC-6B6784D3AF",
+      "period": "2023-03",
+      "title": "Privileged Bases in the Transformer Residual Stream",
+      "url": "https://transformer-circuits.pub/2023/privileged-basis/index.html",
+      "source_type": "paper",
+      "theme": "representations",
+      "catalog_role": "研究残差流坐标为何在实际训练中可能并非完全旋转对称。",
+      "coverage_status": "implemented-partial",
+      "current_modes": [
+        "transparent-proxy"
+      ],
+      "protocol_ids": [
+        "C10"
+      ],
+      "exact_reproduction_feasibility": "public-protocol-likely-feasible",
+      "target_mode": "exact-or-close-reproduction",
+      "priority": "P0",
+      "compute_tier": "cpu",
+      "blockers": [
+        "在宣称精确复现前仍需锁定代码、数据、模型 revision、随机种子和数值容差。"
+      ],
+      "acceptance_criteria": "按公开协议锁定模型/架构、数据、优化器、指标与容差；保存样本级结果、环境和哈希，并解释所有偏离。",
+      "next_step": "训练或加载可公开的 SAE/crosscoder 字典，报告重建、稀疏度、feature splitting/merging、困难负样本与因果干预。"
+    },
+    {
+      "source_id": "TC-5B0A82B2B9",
+      "period": "2023-01",
+      "title": "Superposition, Memorization, and Double Descent",
+      "url": "https://transformer-circuits.pub/2023/toy-double-descent/index.html",
+      "source_type": "paper",
+      "theme": "learning_dynamics",
+      "catalog_role": "连接有限数据、记忆、泛化、叠加与 double descent。",
+      "coverage_status": "planned",
+      "current_modes": [],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "public-protocol-likely-feasible",
+      "target_mode": "exact-or-close-reproduction",
+      "priority": "P1",
+      "compute_tier": "cpu",
+      "blockers": [
+        "在宣称精确复现前仍需锁定代码、数据、模型 revision、随机种子和数值容差。"
+      ],
+      "acceptance_criteria": "按公开协议锁定模型/架构、数据、优化器、指标与容差；保存样本级结果、环境和哈希，并解释所有偏离。",
+      "next_step": "按公开设置复现样本量/宽度扫描，记录记忆、泛化、superposition 与 double descent 的相变和随机种子区间。"
+    },
+    {
+      "source_id": "TC-84B5006C95",
+      "period": "2022-09",
+      "title": "Toy Models of Superposition",
+      "url": "https://transformer-circuits.pub/2022/toy_model/index.html",
+      "source_type": "paper",
+      "theme": "representations",
+      "catalog_role": "在可控玩具网络中建立 superposition、polysemanticity、相变与几何的基础。",
+      "coverage_status": "implemented-partial",
+      "current_modes": [
+        "transparent-proxy"
+      ],
+      "protocol_ids": [
+        "C06"
+      ],
+      "exact_reproduction_feasibility": "public-protocol-likely-feasible",
+      "target_mode": "exact-or-close-reproduction",
+      "priority": "P0",
+      "compute_tier": "cpu",
+      "blockers": [
+        "在宣称精确复现前仍需锁定代码、数据、模型 revision、随机种子和数值容差。"
+      ],
+      "acceptance_criteria": "按公开协议锁定模型/架构、数据、优化器、指标与容差；保存样本级结果、环境和哈希，并解释所有偏离。",
+      "next_step": "训练或加载可公开的 SAE/crosscoder 字典，报告重建、稀疏度、feature splitting/merging、困难负样本与因果干预。"
+    },
+    {
+      "source_id": "TC-5D225BC073",
+      "period": "2022-06",
+      "title": "Softmax Linear Units",
+      "url": "https://transformer-circuits.pub/2022/solu/index.html",
+      "source_type": "paper",
+      "theme": "architecture",
+      "catalog_role": "研究替代激活函数能否提高神经元表面可解释性。",
+      "coverage_status": "planned",
+      "current_modes": [],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "public-protocol-likely-feasible",
+      "target_mode": "exact-or-close-reproduction",
+      "priority": "P1",
+      "compute_tier": "cpu",
+      "blockers": [
+        "在宣称精确复现前仍需锁定代码、数据、模型 revision、随机种子和数值容差。"
+      ],
+      "acceptance_criteria": "按公开协议锁定模型/架构、数据、优化器、指标与容差；保存样本级结果、环境和哈希，并解释所有偏离。",
+      "next_step": "训练匹配预算的 SoLU 与基线 Transformer，比较性能、神经元可解释性、稀疏度和机制稳定性。"
+    },
+    {
+      "source_id": "TC-11FE24F0C6",
+      "period": "2022-06",
+      "title": "Mechanistic Interpretability, Variables, and the Importance of Interpretable Bases",
+      "url": "https://transformer-circuits.pub/2022/mech-interp-essay/index.html",
+      "source_type": "essay",
+      "theme": "methodology",
+      "catalog_role": "讨论变量、基底与机制解释单位的概念基础。",
+      "coverage_status": "implemented-partial",
+      "current_modes": [
+        "transparent-proxy"
+      ],
+      "protocol_ids": [
+        "C07",
+        "C10"
+      ],
+      "exact_reproduction_feasibility": "source-specific-audit-required",
+      "target_mode": "source-audit-then-decide",
+      "priority": "P0",
+      "compute_tier": "cpu",
+      "blockers": [
+        "尚未完成逐项公开资产、许可证、模型 revision、数据生成与指标定义审计。"
+      ],
+      "acceptance_criteria": "先完成来源、代码、数据、许可和指标审计，再登记可执行协议、计算预算、成功阈值与反证条件。",
+      "next_step": "把方法论原则转成审稿清单、负对照模板和证据等级规则，而不是制造不存在的数值复现。"
+    },
+    {
+      "source_id": "TC-B8B47C35CD",
+      "period": "2022-03",
+      "title": "In-context Learning and Induction Heads",
+      "url": "https://transformer-circuits.pub/2022/in-context-learning-and-induction-heads/index.html",
+      "source_type": "paper",
+      "theme": "in_context_learning",
+      "catalog_role": "研究 induction heads、训练相变与 in-context learning 的机制联系。",
+      "coverage_status": "implemented-partial",
+      "current_modes": [
+        "transparent-proxy"
+      ],
+      "protocol_ids": [
+        "C05"
+      ],
+      "exact_reproduction_feasibility": "public-protocol-likely-feasible",
+      "target_mode": "exact-or-close-reproduction",
+      "priority": "P0",
+      "compute_tier": "cpu",
+      "blockers": [
+        "在宣称精确复现前仍需锁定代码、数据、模型 revision、随机种子和数值容差。"
+      ],
+      "acceptance_criteria": "按公开协议锁定模型/架构、数据、优化器、指标与容差；保存样本级结果、环境和哈希，并解释所有偏离。",
+      "next_step": "训练或加载小型开放 Transformer，复现 induction score、训练相变、头组合与 in-context performance 的时间对齐。"
+    },
+    {
+      "source_id": "TC-06CE357D56",
+      "period": "2021-12",
+      "title": "A Mathematical Framework for Transformer Circuits",
+      "url": "https://transformer-circuits.pub/2021/framework/index.html",
+      "source_type": "paper",
+      "theme": "foundations",
+      "catalog_role": "建立 residual stream、QK/OV、路径展开、虚拟权重与小模型逆向工程框架。",
+      "coverage_status": "implemented-partial",
+      "current_modes": [
+        "transparent-proxy"
+      ],
+      "protocol_ids": [
+        "C02",
+        "C03",
+        "C04"
+      ],
+      "exact_reproduction_feasibility": "public-protocol-likely-feasible",
+      "target_mode": "exact-or-close-reproduction",
+      "priority": "P0",
+      "compute_tier": "cpu",
+      "blockers": [
+        "在宣称精确复现前仍需锁定代码、数据、模型 revision、随机种子和数值容差。"
+      ],
+      "acceptance_criteria": "按公开协议锁定模型/架构、数据、优化器、指标与容差；保存样本级结果、环境和哈希，并解释所有偏离。",
+      "next_step": "实现小型 Transformer 的 residual stream、QK/OV、路径展开和虚拟权重分析，并对手工已知回路做逐项单元测试。"
+    },
+    {
+      "source_id": "TC-044738CB83",
+      "period": "2021-12",
+      "title": "Transformer Circuit Exercises",
+      "url": "https://transformer-circuits.pub/2021/exercises/index.html",
+      "source_type": "exercises",
+      "theme": "education",
+      "catalog_role": "通过参数级算法练习建立机制推理能力。",
+      "coverage_status": "reference-only",
+      "current_modes": [
+        "reference"
+      ],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "not-applicable",
+      "target_mode": "reference-only",
+      "priority": "P3",
+      "compute_tier": "none",
+      "blockers": [],
+      "acceptance_criteria": "原始材料被索引、准确摘要并连接到课程或工具说明；不生成虚假的实验通过状态。",
+      "next_step": "把材料连接到课程练习、答案与可运行最小例子；不将教学资源伪装成待复现实验。"
+    },
+    {
+      "source_id": "TC-CE72F82AC4",
+      "period": "2021-12",
+      "title": "Transformer Circuit Videos",
+      "url": "https://transformer-circuits.pub/2021/videos/index.html",
+      "source_type": "education",
+      "theme": "education",
+      "catalog_role": "早期非正式讲解与研究思路。",
+      "coverage_status": "reference-only",
+      "current_modes": [
+        "reference"
+      ],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "not-applicable",
+      "target_mode": "reference-only",
+      "priority": "P3",
+      "compute_tier": "none",
+      "blockers": [],
+      "acceptance_criteria": "原始材料被索引、准确摘要并连接到课程或工具说明；不生成虚假的实验通过状态。",
+      "next_step": "把材料连接到课程练习、答案与可运行最小例子；不将教学资源伪装成待复现实验。"
+    },
+    {
+      "source_id": "TC-C4622F75E3",
+      "period": "2021-12",
+      "title": "PySvelte",
+      "url": "https://github.com/anthropics/PySvelte",
+      "source_type": "infrastructure",
+      "theme": "visualization",
+      "catalog_role": "连接 Python 与交互式网页可视化的基础设施。",
+      "coverage_status": "reference-only",
+      "current_modes": [
+        "reference"
+      ],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "not-applicable",
+      "target_mode": "reference-only",
+      "priority": "P3",
+      "compute_tier": "none",
+      "blockers": [],
+      "acceptance_criteria": "原始材料被索引、准确摘要并连接到课程或工具说明；不生成虚假的实验通过状态。",
+      "next_step": "作为可选可视化后端集成，并用固定 JSON 数据验证展示不改变分析结果。"
+    },
+    {
+      "source_id": "TC-65F5920C4B",
+      "period": "2021-12",
+      "title": "Garcon",
+      "url": "https://transformer-circuits.pub/2021/garcon/index.html",
+      "source_type": "infrastructure",
+      "theme": "infrastructure",
+      "catalog_role": "面向大模型可解释性实验的数据与计算工具。",
+      "coverage_status": "reference-only",
+      "current_modes": [
+        "reference"
+      ],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "not-applicable",
+      "target_mode": "reference-only",
+      "priority": "P3",
+      "compute_tier": "none",
+      "blockers": [],
+      "acceptance_criteria": "原始材料被索引、准确摘要并连接到课程或工具说明；不生成虚假的实验通过状态。",
+      "next_step": "记录历史用途和接口；只有仍可维护、许可兼容且支持当前实验时才集成。"
+    },
+    {
+      "source_id": "TC-B0E991068B",
+      "period": "2020-03/2021-04",
+      "title": "Original Distill Circuits Thread",
+      "url": "https://distill.pub/2020/circuits/",
+      "source_type": "predecessor",
+      "theme": "foundations",
+      "catalog_role": "Transformer Circuits 的视觉化、逆向工程与 circuits 研究前史。",
+      "coverage_status": "reference-only",
+      "current_modes": [
+        "reference"
+      ],
+      "protocol_ids": [],
+      "exact_reproduction_feasibility": "not-applicable",
+      "target_mode": "reference-only",
+      "priority": "P3",
+      "compute_tier": "none",
+      "blockers": [],
+      "acceptance_criteria": "原始材料被索引、准确摘要并连接到课程或工具说明；不生成虚假的实验通过状态。",
+      "next_step": "实现小型 Transformer 的 residual stream、QK/OV、路径展开和虚拟权重分析，并对手工已知回路做逐项单元测试。"
+    }
+  ]
+}
