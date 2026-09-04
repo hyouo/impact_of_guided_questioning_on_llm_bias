@@ -24,6 +24,7 @@ from .evidence_core import (
 from .evidence_ledger import build_ledger, load_catalog_urls, validate_ledger, write_evidence_matrix
 from .registry import ExperimentSpec, list_experiments, run_toy_suite
 from .repro import runtime_metadata
+from .reproduction_map import summarize_reproduction_map, validate_reproduction_map
 from .result import ExperimentResult, write_report
 
 
@@ -168,6 +169,32 @@ def _claim_source_index() -> dict[str, Any]:
     }
 
 
+def _add_context_resource(
+    *,
+    repository_root: Path,
+    output: Path,
+    repository_path: str,
+    package_filename: str,
+    bundle_filename: str,
+    file_paths: list[Path],
+    inputs: list[dict[str, Any]],
+) -> tuple[Path, bytes]:
+    content, source_label = _repository_or_package_bytes(
+        repository_root,
+        repository_path=repository_path,
+        package_filename=package_filename,
+    )
+    destination, input_entry = _copy_context_bytes(
+        content=content,
+        output=output,
+        filename=bundle_filename,
+        source_label=source_label,
+    )
+    file_paths.append(destination)
+    inputs.append(input_entry)
+    return destination, content
+
+
 def write_reproduction_bundle(
     output_dir: str | Path,
     *,
@@ -224,19 +251,15 @@ def write_reproduction_bundle(
         }
     )
 
-    content, source_label = _repository_or_package_bytes(
-        repository_root,
+    _add_context_resource(
+        repository_root=repository_root,
+        output=output,
         repository_path="schemas/evidence-ledger-v1.schema.json",
         package_filename="evidence-ledger-v1.schema.json",
+        bundle_filename="evidence-ledger-v1.schema.json",
+        file_paths=file_paths,
+        inputs=inputs,
     )
-    destination, input_entry = _copy_context_bytes(
-        content=content,
-        output=output,
-        filename="evidence-ledger-v1.schema.json",
-        source_label=source_label,
-    )
-    file_paths.append(destination)
-    inputs.append(input_entry)
 
     baseline_payload, baseline_source = _load_reviewed_baseline_with_source(repository_root)
     baseline_destination = output / "context/canonical-results-v1.json"
@@ -250,19 +273,39 @@ def write_reproduction_bundle(
         }
     )
 
-    catalog_source = repository_root / "sources/transformer_circuits_catalog.csv"
-    if catalog_source.is_file():
-        destination, input_entry = _copy_context_bytes(
-            content=catalog_source.read_bytes(),
-            output=output,
-            filename="transformer_circuits_catalog.csv",
-            source_label="sources/transformer_circuits_catalog.csv",
-        )
-        file_paths.append(destination)
-        inputs.append(input_entry)
+    catalog_destination, catalog_content = _add_context_resource(
+        repository_root=repository_root,
+        output=output,
+        repository_path="sources/transformer_circuits_catalog.csv",
+        package_filename="transformer_circuits_catalog.csv",
+        bundle_filename="transformer_circuits_catalog.csv",
+        file_paths=file_paths,
+        inputs=inputs,
+    )
+    _, reproduction_registry_content = _add_context_resource(
+        repository_root=repository_root,
+        output=output,
+        repository_path="reproductions/transformer_circuits_v1.json",
+        package_filename="transformer_circuits_reproduction_v1.json",
+        bundle_filename="transformer_circuits_reproduction_v1.json",
+        file_paths=file_paths,
+        inputs=inputs,
+    )
+    _add_context_resource(
+        repository_root=repository_root,
+        output=output,
+        repository_path="schemas/reproduction-registry-v1.schema.json",
+        package_filename="reproduction-registry-v1.schema.json",
+        bundle_filename="reproduction-registry-v1.schema.json",
+        file_paths=file_paths,
+        inputs=inputs,
+    )
 
-    catalog_copy = output / "context/transformer_circuits_catalog.csv"
-    catalog_urls = load_catalog_urls(catalog_copy) if catalog_copy.is_file() else None
+    reproduction_registry = json.loads(reproduction_registry_content.decode("utf-8"))
+    validate_reproduction_map(reproduction_registry, catalog_content=catalog_content)
+    source_coverage = summarize_reproduction_map(reproduction_registry)
+
+    catalog_urls = load_catalog_urls(catalog_destination)
     validate_ledger(
         ledger,
         require_complete=experiment_ids is None,
@@ -287,6 +330,7 @@ def write_reproduction_bundle(
         "command": "llm-theory-lab reproduce",
         "experiment_ids": [result.experiment_id for result in results],
         "status_counts": dict(sorted(Counter(result.status for result in results).items())),
+        "source_coverage": source_coverage,
         "runtime": runtime_metadata(),
         "inputs": inputs,
         "files": files,
