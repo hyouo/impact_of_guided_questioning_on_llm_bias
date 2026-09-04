@@ -71,9 +71,7 @@ EXPERIMENTS: tuple[ExperimentSpec, ...] = (
         lesson_path="docs/course/02-weights-activations-and-logits.md",
         lab_path="docs/labs/01-softmax-and-odds.md",
         does_not_show="不保证赔率更高的 token 一定被采样，也不把 API 的 temperature=0 代入公式。",
-        source_urls=(
-            "https://transformer-circuits.pub/2021/framework/index.html",
-        ),
+        source_urls=("https://transformer-circuits.pub/2021/framework/index.html",),
     ),
     ExperimentSpec(
         claim_id="H-C03",
