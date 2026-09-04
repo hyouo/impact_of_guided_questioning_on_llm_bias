@@ -19,6 +19,11 @@ from .evidence_core import (
 )
 from .evidence_ledger import load_catalog_urls, validate_ledger
 from .evidence_run import _claim_source_index, _manifest_without_digest
+from .reproduction_map import (
+    REGISTRY_SCHEMA_VERSION,
+    summarize_reproduction_map,
+    validate_reproduction_map,
+)
 
 
 def _safe_bundle_path(root: Path, relative: Any) -> Path:
@@ -43,6 +48,7 @@ def validate_bundle(path: str | Path, *, require_complete: bool = True) -> dict[
     _require(isinstance(manifest.get("code_revision"), str), "invalid code revision")
     _require(isinstance(manifest.get("experiment_ids"), list), "invalid experiment IDs")
     _require(isinstance(manifest.get("status_counts"), Mapping), "invalid status counts")
+    _require(isinstance(manifest.get("source_coverage"), Mapping), "invalid source coverage")
     _require(isinstance(manifest.get("inputs"), list), "manifest inputs must be a list")
     _require(_is_sha256(manifest.get("manifest_sha256")), "invalid manifest checksum")
     _require(
@@ -83,6 +89,9 @@ def validate_bundle(path: str | Path, *, require_complete: bool = True) -> dict[
         "context/claim-sources.json",
         "context/evidence-ledger-v1.schema.json",
         "context/canonical-results-v1.json",
+        "context/transformer_circuits_catalog.csv",
+        "context/transformer_circuits_reproduction_v1.json",
+        "context/reproduction-registry-v1.schema.json",
     }
     _require(
         required_paths <= seen_paths,
@@ -109,6 +118,27 @@ def validate_bundle(path: str | Path, *, require_complete: bool = True) -> dict[
         == LEDGER_SCHEMA_VERSION,
         "bundled ledger schema version differs from runtime",
     )
+    reproduction_schema_payload = json.loads(
+        (root / "context/reproduction-registry-v1.schema.json").read_text(encoding="utf-8")
+    )
+    _require(
+        reproduction_schema_payload.get("properties", {}).get("schema_version", {}).get("const")
+        == REGISTRY_SCHEMA_VERSION,
+        "bundled reproduction schema version differs from runtime",
+    )
+
+    catalog_path = root / "context/transformer_circuits_catalog.csv"
+    reproduction_registry = json.loads(
+        (root / "context/transformer_circuits_reproduction_v1.json").read_text(encoding="utf-8")
+    )
+    validate_reproduction_map(
+        reproduction_registry,
+        catalog_content=catalog_path.read_bytes(),
+    )
+    _require(
+        manifest.get("source_coverage") == summarize_reproduction_map(reproduction_registry),
+        "manifest source coverage differs from bundled reproduction registry",
+    )
 
     ledger = json.loads((root / "evidence-ledger.json").read_text(encoding="utf-8"))
     canonical_results = json.loads((root / "canonical-results.json").read_text(encoding="utf-8"))
@@ -131,8 +161,7 @@ def validate_bundle(path: str | Path, *, require_complete: bool = True) -> dict[
         url for row in claim_rows for url in row.get("source_urls", []) if isinstance(url, str)
     }
 
-    catalog_path = root / "context/transformer_circuits_catalog.csv"
-    catalog_urls = load_catalog_urls(catalog_path) if catalog_path.is_file() else claim_urls
+    catalog_urls = load_catalog_urls(catalog_path)
     _require(claim_urls <= catalog_urls, "claim-source index contains uncatalogued URLs")
     validate_ledger(
         ledger,

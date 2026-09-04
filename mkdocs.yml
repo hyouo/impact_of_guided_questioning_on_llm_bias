@@ -1,5 +1,5 @@
 site_name: LLM Theory Lab
-site_description: 从权重、激活与 Attention 到推理、因果可解释性和安全路由的中文课程与实验
+site_description: 从权重、激活与 Attention 到推理、因果可解释性、安全路由和公开结果复现的中文课程与实验
 site_url: https://hyouo.github.io/impact_of_guided_questioning_on_llm_bias/
 repo_url: https://github.com/hyouo/impact_of_guided_questioning_on_llm_bias
 repo_name: hyouo/impact_of_guided_questioning_on_llm_bias
@@ -82,6 +82,7 @@ nav:
       - 统一理论: reference/unified-theory.md
       - 经典机制案例: reference/case-studies.md
       - 方法与解释矩阵: reference/methods-matrix.md
+      - 公开结果复现地图: reference/reproduction-map.md
       - Transformer Circuits 索引: reference/transformer-circuits-index.md
       - 术语表: reference/glossary.md
       - 开放问题与路线: reference/open-problems.md

@@ -19,6 +19,7 @@ from llm_theory_lab.evidence import (
     write_reproduction_bundle,
 )
 from llm_theory_lab.registry import EXPERIMENTS, run_toy_suite
+from llm_theory_lab.reproduction_map import ReproductionMapError
 from llm_theory_lab.result import ExperimentResult
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -33,10 +34,14 @@ def _reseal_ledger(ledger: dict) -> None:
 def _reseal_manifest(bundle: Path) -> None:
     manifest_path = bundle / "manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    entries_by_path = {}
     for entry in manifest["files"]:
         path = bundle / entry["path"]
         entry["bytes"] = path.stat().st_size
         entry["sha256"] = sha256_file(path)
+        entries_by_path[entry["path"]] = entry
+    for input_entry in manifest["inputs"]:
+        input_entry["sha256"] = entries_by_path[input_entry["bundle_path"]]["sha256"]
     manifest["manifest_sha256"] = sha256_value(
         {key: value for key, value in manifest.items() if key != "manifest_sha256"}
     )
@@ -113,8 +118,12 @@ def test_partial_reproduction_bundle_is_self_verifying(tmp_path: Path) -> None:
     output = tmp_path / "bundle"
     manifest = write_reproduction_bundle(output, experiment_ids=["C01", "C02"], root=ROOT)
     assert manifest["experiment_ids"] == ["C01", "C02"]
+    assert manifest["source_coverage"]["total_sources"] == 56
     assert (output / "context/canonical-results-v1.json").is_file()
     assert (output / "context/claim-sources.json").is_file()
+    assert (output / "context/transformer_circuits_catalog.csv").is_file()
+    assert (output / "context/transformer_circuits_reproduction_v1.json").is_file()
+    assert (output / "context/reproduction-registry-v1.schema.json").is_file()
     validated = validate_bundle(output, require_complete=False)
     assert validated["manifest_sha256"] == manifest["manifest_sha256"]
 
@@ -139,6 +148,25 @@ def test_bundle_cross_checks_canonical_result_against_ledger(tmp_path: Path) -> 
         validate_bundle(output, require_complete=False)
 
 
+def test_bundle_rejects_semantically_forged_reproduction_status(tmp_path: Path) -> None:
+    output = tmp_path / "bundle"
+    write_reproduction_bundle(output, experiment_ids=["C01"], root=ROOT)
+    registry_path = output / "context/transformer_circuits_reproduction_v1.json"
+    registry = json.loads(registry_path.read_text(encoding="utf-8"))
+    target = next(source for source in registry["sources"] if "C01" in source["protocol_ids"])
+    target["coverage_status"] = "planned"
+    registry_path.write_text(
+        json.dumps(registry, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    _reseal_manifest(output)
+    with pytest.raises(
+        (ReproductionMapError, EvidenceValidationError),
+        match="(planned source already lists a protocol|manifest source coverage differs)",
+    ):
+        validate_bundle(output, require_complete=False)
+
+
 def test_bundle_rejects_manifest_path_traversal(tmp_path: Path) -> None:
     output = tmp_path / "bundle"
     write_reproduction_bundle(output, experiment_ids=["C01"], root=ROOT)
@@ -160,7 +188,8 @@ def test_bundle_uses_packaged_context_outside_repository(tmp_path: Path) -> None
     output = tmp_path / "bundle"
     empty_root = tmp_path / "empty"
     empty_root.mkdir()
-    write_reproduction_bundle(output, experiment_ids=["C02"], root=empty_root)
+    manifest = write_reproduction_bundle(output, experiment_ids=["C02"], root=empty_root)
+    assert manifest["source_coverage"]["total_sources"] == 56
     validate_bundle(output, require_complete=False)
 
 
