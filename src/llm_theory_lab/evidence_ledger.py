@@ -11,6 +11,7 @@ from typing import Any
 from .evidence_core import (
     ALLOWED_STATUSES,
     LEDGER_SCHEMA_VERSION,
+    EvidenceValidationError,
     _is_sha256,
     _package_version,
     _require,
