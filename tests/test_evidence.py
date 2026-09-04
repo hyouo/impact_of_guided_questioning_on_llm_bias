@@ -153,9 +153,7 @@ def test_bundle_rejects_semantically_forged_reproduction_status(tmp_path: Path) 
     write_reproduction_bundle(output, experiment_ids=["C01"], root=ROOT)
     registry_path = output / "context/transformer_circuits_reproduction_v1.json"
     registry = json.loads(registry_path.read_text(encoding="utf-8"))
-    target = next(
-        source for source in registry["sources"] if "C01" in source["protocol_ids"]
-    )
+    target = next(source for source in registry["sources"] if "C01" in source["protocol_ids"])
     target["coverage_status"] = "planned"
     registry_path.write_text(
         json.dumps(registry, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
