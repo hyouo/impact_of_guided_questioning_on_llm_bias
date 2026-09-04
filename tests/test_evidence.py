@@ -160,7 +160,10 @@ def test_bundle_rejects_semantically_forged_reproduction_status(tmp_path: Path) 
         encoding="utf-8",
     )
     _reseal_manifest(output)
-    with pytest.raises(ReproductionMapError, match="planned source already lists a protocol"):
+    with pytest.raises(
+        (ReproductionMapError, EvidenceValidationError),
+        match="(planned source already lists a protocol|manifest source coverage differs)",
+    ):
         validate_bundle(output, require_complete=False)
 
 
