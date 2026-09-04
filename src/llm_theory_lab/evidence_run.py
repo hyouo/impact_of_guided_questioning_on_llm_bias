@@ -116,6 +116,14 @@ def _repository_or_package_bytes(
     candidate = repository_root / repository_path
     if candidate.is_file():
         return candidate.read_bytes(), repository_path
+
+    source_package_file = Path(__file__).resolve().parent / "data" / package_filename
+    if source_package_file.is_file():
+        return (
+            source_package_file.read_bytes(),
+            f"package:llm_theory_lab.data/{package_filename}",
+        )
+
     packaged = resources.files("llm_theory_lab.data").joinpath(package_filename)
     try:
         return packaged.read_bytes(), f"package:llm_theory_lab.data/{package_filename}"
