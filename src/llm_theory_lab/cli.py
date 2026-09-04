@@ -80,7 +80,9 @@ def _print_reproduction_summary(summary: Mapping[str, object]) -> None:
                 print(f"  {name}: {count}")
 
 
-def _print_reproduction_sources(sources: Sequence[Mapping[str, object]]) -> None:
+def _print_reproduction_sources(
+    sources: Sequence[Mapping[str, object]],
+) -> None:
     if not sources:
         print("没有匹配的公开来源。")
         return
