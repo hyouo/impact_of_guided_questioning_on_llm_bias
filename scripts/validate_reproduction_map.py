@@ -21,9 +21,7 @@ from llm_theory_lab.reproduction_map import (  # noqa: E402
 
 DOC_PATH = ROOT / "docs/reference/reproduction-map.md"
 REPOSITORY_REGISTRY = ROOT / "reproductions/transformer_circuits_v1.json"
-PACKAGED_REGISTRY = (
-    ROOT / "src/llm_theory_lab/data/transformer_circuits_reproduction_v1.json"
-)
+PACKAGED_REGISTRY = ROOT / "src/llm_theory_lab/data/transformer_circuits_reproduction_v1.json"
 REPOSITORY_SCHEMA = ROOT / "schemas/reproduction-registry-v1.schema.json"
 PACKAGED_SCHEMA = ROOT / "src/llm_theory_lab/data/reproduction-registry-v1.schema.json"
 REPOSITORY_CATALOG = ROOT / "sources/transformer_circuits_catalog.csv"
